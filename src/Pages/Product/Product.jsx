@@ -1267,87 +1267,96 @@ const Product = () => {
       {/* ==========================================
           🔄 CERTIFICATION PROCESS
           ========================================== */}
-      <section
-        className="prod-certification-section"
-        ref={(el) => addToRefs(el, 6)}
-        data-section="process"
+     {/* ==========================================
+    🔄 CERTIFICATION PROCESS
+    ========================================== */}
+<section
+  className="prod-certification-section"
+  ref={(el) => addToRefs(el, 6)}
+  data-section="process"
+>
+  <div className="prod-container-inner">
+    <div className="prod-section-header">
+      <div
+        className="prod-section-badge"
+        style={{ background: primaryColor }}
       >
-        <div className="prod-container-inner">
-          <div className="prod-section-header">
-            <div
-              className="prod-section-badge"
-              style={{ background: primaryColor }}
-            >
-              <Crown size={16} />
-              Our Process
-            </div>
-            <h2 className="prod-section-title">
-              Certification <span style={{ color: primaryColor }}>Process</span>
-            </h2>
-            <div className="prod-section-divider">
-              <div
-                className="prod-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                }}
-              ></div>
-              <div
-                className="prod-divider-dot prod-pulse-dot"
-                style={{ background: primaryColor }}
-              ></div>
-              <div
-                className="prod-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                }}
-              ></div>
-            </div>
-            <p className="prod-section-description">
-              Streamlined process from inspection to certification
-            </p>
-          </div>
+        <Crown size={16} />
+        Our Process
+      </div>
+      <h2 className="prod-section-title">
+        Certification <span style={{ color: primaryColor }}>Process</span>
+      </h2>
+      <div className="prod-section-divider">
+        <div
+          className="prod-divider-line"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+          }}
+        ></div>
+        <div
+          className="prod-divider-dot prod-pulse-dot"
+          style={{ background: primaryColor }}
+        ></div>
+        <div
+          className="prod-divider-line"
+          style={{
+            background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+          }}
+        ></div>
+      </div>
+      <p className="prod-section-description">
+        Streamlined process from inspection to certification
+      </p>
+    </div>
 
-          <div className="prod-process-timeline">
-            {certificationProcess.map((process, index) => (
-              <div
-                key={index}
-                className={`prod-process-step ${animatedSteps.includes(process.step) ? "prod-animate-fade" : ""}`}
-                style={{ animationDelay: `${index * 0.3}s` }}
-              >
-                <div className="prod-process-step-indicator">
-                  <div
-                    className="prod-process-step-number prod-pulse-animation"
-                    style={{ background: process.gradient }}
-                  >
-                    {process.step}
-                    <div className="prod-process-step-glow"></div>
-                  </div>
-                  <div className="prod-process-step-icon">{process.icon}</div>
-                </div>
-                <div className="prod-process-step-content prod-hover-float">
-                  <h3 className="prod-process-step-title">{process.title}</h3>
-                  <p className="prod-process-step-description">
-                    {process.description}
-                  </p>
-                  <div className="prod-process-step-duration">
-                    <span className="prod-duration-icon prod-pulse-animation">
-                      ⏱️
-                    </span>
-                    {process.duration}
-                  </div>
-                  <div className="prod-process-step-shine"></div>
-                </div>
-                {index < certificationProcess.length - 1 && (
-                  <div
-                    className="prod-process-step-connector prod-pulse-animation"
-                    style={{ background: primaryColor }}
-                  ></div>
-                )}
-              </div>
-            ))}
+    <div className="prod-process-timeline">
+      {certificationProcess.map((process, index) => (
+        <div
+          key={index}
+          className={`prod-process-step ${
+            animatedSteps.includes(process.step)
+              ? "prod-animate-fade"
+              : ""
+          }`}
+          style={{ animationDelay: `${index * 0.2}s` }}
+        >
+          <div className="prod-process-step-indicator">
+            <div
+              className="prod-process-step-number prod-pulse-animation"
+              style={{ background: process.gradient }}
+            >
+              {process.step}
+              <div className="prod-process-step-glow"></div>
+            </div>
+            <div className="prod-process-step-icon">{process.icon}</div>
           </div>
+          
+          <div className="prod-process-step-content prod-hover-float">
+            <h3 className="prod-process-step-title">{process.title}</h3>
+            <p className="prod-process-step-description">
+              {process.description}
+            </p>
+            <div className="prod-process-step-duration">
+              <span className="prod-duration-icon prod-pulse-animation">
+                ⏱️
+              </span>
+              {process.duration}
+            </div>
+            <div className="prod-process-step-hover"></div>
+          </div>
+          
+          {index < certificationProcess.length - 1 && (
+            <div
+              className="prod-process-step-connector prod-pulse-animation"
+              style={{ background: primaryColor }}
+            ></div>
+          )}
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* ==========================================
           🎯 CTA BANNER
