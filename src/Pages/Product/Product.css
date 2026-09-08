@@ -1629,12 +1629,21 @@
     min-height: auto;
   }
 
+  .prod-container-inner{
+    /* padding: 13 10px; */
+    padding: 0px 13px 0px 13px;
+  }
+
   .prod-method-card-title {
     text-align: center;
     font-size: var(--prod-font-size-base);
     line-height: 1.4;
     max-width: 100%;
     word-break: break-word;
+  }
+
+  .prod-overview-section{
+    padding: 8px;
   }
 
   .prod-method-card-number,
@@ -1644,6 +1653,7 @@
 
   .prod-methods-grid {
     grid-template-columns: 1fr !important;
+    padding: 8px;
   }
 
   .prod-features-grid {
@@ -1670,6 +1680,7 @@
   .prod-process-step {
     flex-direction: column;
     align-items: flex-start;
+    
   }
 
   .prod-process-step-indicator {
@@ -1692,7 +1703,7 @@
   }
 
   .prod-specs-tabs-header {
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
   }
 
   .prod-specs-tab-button {
@@ -1713,6 +1724,19 @@
     width: 100%;
     padding-left: 56px;
   }
+
+  
+.prod-specs-tabs-content {
+  padding: 15px;
+  animation: prod-fadeIn 0.4s ease-out;
+}
+
+.prod-spec-item{
+  display: flex;
+  flex-direction: row;
+}
+
+
 }
 
 /* Small Mobile */
@@ -1842,4 +1866,341 @@
   .prod-spec-item {
     border: 2px solid #000;
   }
+}/* ========================================
+   SPECIFICATIONS TABS - MOBILE ROW LAYOUT
+   ======================================== */
+
+/* Main container for specs tabs */
+.tk-prod-specs-tabs-content {
+  width: 100%;
+  padding:12px
 }
+
+/* Each spec content wrapper */
+.tk-prod-specs-content {
+  width: 100%;
+}
+
+/* Header for each spec section */
+.tk-prod-specs-content-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.tk-prod-specs-content-header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #235781; /* Primary color */
+  margin-bottom: 8px;
+}
+
+.tk-prod-specs-content-header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Grid container for spec items */
+.tk-prod-specs-content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Individual spec item */
+.tk-prod-spec-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #235781; /* Primary color */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tk-prod-spec-item.tk-prod-hover-grow:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(35, 87, 129, 0.15); /* Primary color with opacity */
+}
+
+/* Icon wrapper */
+.tk-prod-spec-item-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(35, 87, 129, 0.12); /* Primary color with opacity */
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  color: #235781; /* Primary color */
+}
+
+.tk-prod-spec-item-icon.tk-prod-pulse-animation {
+  animation: tk-prod-pulseIcon 2s ease-in-out infinite;
+}
+
+@keyframes tk-prod-pulseIcon {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Property name */
+.tk-prod-spec-item-property2 {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+/* Value */
+.tk-prod-spec-item-value {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #235781; /* Primary color */
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Glow effect on hover */
+.tk-prod-spec-item-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(35, 87, 129, 0.05), rgba(35, 87, 129, 0.02));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.tk-prod-spec-item:hover .tk-prod-spec-item-glow {
+  opacity: 1;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE - ROW LAYOUT
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Make grid single column on mobile */
+  .tk-prod-specs-content-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Each spec item becomes a row with flex */
+  .tk-prod-spec-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 15px;
+    border-left-width: 3px;
+    flex-wrap: nowrap;
+    border-left-color: #235781; /* Primary color */
+  }
+
+  /* Icon - smaller on mobile */
+  .tk-prod-spec-item-icon {
+    font-size: 1.1rem;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    background: rgba(35, 87, 129, 0.12);
+    color: #235781;
+  }
+
+  /* Property - smaller font */
+  .tk-prod-spec-item-property2 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #333;
+  }
+
+  /* Value - smaller font with primary color */
+  .tk-prod-spec-item-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    white-space: nowrap;
+    color: #235781; /* Primary color */
+  }
+
+  /* Header adjustments */
+  .tk-prod-specs-content-header h3 {
+    font-size: 1.1rem;
+    color: #235781; /* Primary color */
+  }
+
+  .tk-prod-specs-content-header p {
+    font-size: 0.85rem;
+  }
+
+  /* Hover effect - disable scale on mobile */
+  .tk-prod-spec-item.tk-prod-hover-grow:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Pulse animation - slower on mobile for performance */
+  .tk-prod-spec-item-icon.tk-prod-pulse-animation {
+    animation: tk-prod-pulseIconMobile 2.5s ease-in-out infinite;
+  }
+
+  @keyframes tk-prod-pulseIconMobile {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.08);
+    }
+  }
+}
+
+/* ========================================
+   EXTRA SMALL SCREENS (480px and below)
+   ======================================== */
+
+@media (max-width: 480px) {
+  .tk-prod-spec-item {
+    padding: 15px;
+    gap: 8px;
+    border-left-width: 2px;
+    border-left-color: #235781; /* Primary color */
+  }
+
+  .tk-prod-spec-item-icon {
+    font-size: 0.95rem;
+    width: 28px;
+    height: 28px;
+    background: rgba(35, 87, 129, 0.12);
+    color: #235781;
+  }
+
+  .tk-prod-spec-item-property2 {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .tk-prod-spec-item-value {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #235781; /* Primary color */
+  }
+
+  .tk-prod-specs-content-grid {
+    gap: 8px;
+  }
+
+  .tk-prod-specs-content-header h3 {
+    font-size: 1rem;
+    color: #235781; /* Primary color */
+  }
+
+  .tk-prod-specs-content-header p {
+    font-size: 0.75rem;
+  }
+
+  .tk-prod-specs-content-header {
+    margin-bottom: 18px;
+  }
+}
+
+/* ========================================
+   TAB BUTTONS STYLING
+   ======================================== */
+
+.tk-tabs-header {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e1e1e1;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.tk-tab-button {
+  flex: 1;
+  min-width: 80px;
+  padding: 16px 20px;
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.tk-tab-button.tk-active {
+  color: #235781; /* Primary color */
+  background: white;
+  border-bottom: 3px solid #235781; /* Primary color */
+}
+
+.tk-tab-button:hover {
+  background: rgba(35, 87, 129, 0.08);
+}
+
+/* Mobile tab buttons */
+@media (max-width: 768px) {
+  .tk-tabs-header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2px;
+    background: transparent;
+    border-bottom: none;
+  }
+
+  .tk-tab-button {
+    flex: 1 1 auto;
+    min-width: 60px;
+    padding: 12px 14px;
+    font-size: 0.8rem;
+    background: #f0f0f0;
+    border-radius: 8px;
+    margin: 2px;
+    border-bottom: none;
+    color: #666;
+  }
+
+  .tk-tab-button.tk-active {
+    background: #235781; /* Primary color */
+    color: white;
+    border-bottom: none;
+  }
+
+  .tk-tab-button:hover {
+    background: rgba(35, 87, 129, 0.15);
+  }
+
+  .tk-tab-button.tk-active:hover {
+    background: #1a4463; /* Darker shade of primary color */
+  }
+}
+
+@media (max-width: 480px) {
+  .tk-tab-button {
+    font-size: 0.7rem;
+    padding: 8px 10px;
+    min-width: 50px;
+  }
+}
+
