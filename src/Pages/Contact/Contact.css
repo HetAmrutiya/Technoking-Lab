@@ -1228,6 +1228,10 @@ body {
 
   .qc-contact-hero {
     min-height: 50vh;
+      background-attachment: scroll !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-color: var(--p-dark) !important;
   }
 
   .qc-hero-title {
@@ -1302,6 +1306,10 @@ body {
 
   .qc-contact-hero {
     min-height: 40vh;
+     background-attachment: scroll !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-color: #0D3559 !important;
   }
 
   .qc-hero-title {

@@ -125,8 +125,7 @@ body {
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-attachment: fixed;
-  /* ✅ HERO MARGIN TOP FIX */
+  background-attachment: fixed; /* This works on desktop */
   margin-top: 65px;
 }
 
@@ -1086,10 +1085,20 @@ body {
   .tk-industry-hero {
     margin-top: 60px;
     min-height: 50vh;
+     background-attachment: scroll !important;
+    background-position: center !important;
+    background-size: cover !important;
   }
 }
 
 @media (max-width: 768px) {
+
+   .prod-hero-section {
+    background-attachment: scroll !important;
+    background-position: center !important;
+    background-size: cover !important;
+  }
+
   :root {
     --container-padding: 12px;
     --section-padding: 50px 0;
@@ -1098,6 +1107,9 @@ body {
   .tk-industry-hero {
     margin-top: 55px;
     min-height: 45vh;
+     background-attachment: scroll !important;
+    background-position: center !important;
+    background-size: cover !important;
   }
 
   .tk-hero-title {
@@ -1158,6 +1170,9 @@ body {
   .tk-industry-hero {
     margin-top: 50px;
     min-height: 40vh;
+     background-attachment: scroll !important;
+    background-position: center !important;
+    background-size: cover !important;
   }
 
   .tk-stats-grid {

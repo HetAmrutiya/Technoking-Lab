@@ -1633,6 +1633,11 @@
 
 /* Mobile (480px - 767px) */
 @media (max-width: 767px) {
+   .prod-hero-section {
+    background-attachment: scroll !important;
+    background-position: center !important;
+    background-size: cover !important;
+  }
   .prod-certification-section {
     padding: 40px 0;
   }
