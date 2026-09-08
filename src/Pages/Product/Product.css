@@ -1665,6 +1665,13 @@
     font-size: 1.3rem;
   }
 
+  .prod-hero-content{
+    padding: 10px;
+  }
+
+  .prod-hero-badge{
+    font-size: 8px;
+  }
   .prod-process-step-content {
     padding: var(--prod-spacing-lg);
     border-radius: var(--prod-radius-lg);
@@ -2005,6 +2012,9 @@
   }
 
   
+  .prod-hero-title {
+    font-size:10px
+  }
 
   .prod-process-timeline {
     padding-left: var(--prod-spacing-xl);
