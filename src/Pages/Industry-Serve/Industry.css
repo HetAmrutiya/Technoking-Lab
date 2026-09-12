@@ -834,7 +834,7 @@ body {
   left: 0;
   width: 100%;
   height: 4px;
-  background: var(--gradient-primary);
+  background: #235781;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--transition-base);
