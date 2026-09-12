@@ -1,105 +1,103 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Home.css";
 import Header from "../../Components/Header/Header";
-// Product.jsx
 import "../Product/Product.css";
 import testingBackground from "../../assets/ut.jpg";
 import mineralsBackground from "../../assets/ut.jpg";
 import teamBg from "../../assets/ut.jpg";
 import {
-Factory,
-Zap,
-Car,
-Ship,
-Building,
-Wrench,
-Layers,
-Shield,
-Cog,
-Users,
-CheckCircle,
-ChevronRight,
-Target,
-Briefcase,
-Award,
-Box,
-Globe,
-Rocket,
-Star,
-Sparkles,
-TrendingUp,
-Heart,
-Crown,
-Gem,
-Compass,
-Anchor,
-Plane,
-HardHat,
-Cpu,
-Battery,
-Droplet,
-Wind,
-Sun,
-Flame,
-Activity,
-BarChart3,
-Clock,
-Coffee,
-Smile,
-ThumbsUp,
-Radiation,
-Waves,
-Droplets,
-Ruler,
-Diamond,
-CircleDot,
-Atom,
-Package,
-Truck,
-Hammer,
-BarChart,
-Linkedin,
-Mail,
-Phone,
-Calendar,
-MapPin,
-ExternalLink,
-MessageSquare,
-Code,
-Palette,
-Database,
-Cloud,
-Smartphone,
-Lock,
-Server,
-GitBranch,
-Code2,
-Terminal,
-Wifi,
-ShieldCheck,
-Key,
-Fingerprint,
-Brain,
-Users2,
-Globe2,
-Puzzle,
-GitPullRequest,
-Eye,
-BrainCircuit,
-Trophy,
-Medal,
-Flag,
-Microscope,
-Magnet,
-Scan,
-Radio,
-BookOpen,
-Gauge
+  Factory,
+  ZapIcon,
+  Zap,
+  Car,
+  Ship,
+  Building,
+  Wrench,
+  Layers,
+  Shield,
+  Cog,
+  Users,
+  CheckCircle,
+  ChevronRight,
+  Target,
+  Briefcase,
+  Award,
+  Box,
+  Globe,
+  Rocket,
+  Star,
+  Sparkles,
+  TrendingUp,
+  Heart,
+  Crown,
+  Gem,
+  Compass,
+  Anchor,
+  Plane,
+  HardHat,
+  Cpu,
+  Battery,
+  Droplet,
+  Wind,
+  Sun,
+  Flame,
+  Activity,
+  BarChart3,
+  Clock,
+  Coffee,
+  Smile,
+  ThumbsUp,
+  Radiation,
+  Waves,
+  Droplets,
+  Ruler,
+  Diamond,
+  CircleDot,
+  Atom,
+  Package,
+  Truck,
+  Hammer,
+  BarChart,
+  Linkedin,
+  Mail,
+  Phone,
+  Calendar,
+  MapPin,
+  ExternalLink,
+  MessageSquare,
+  Code,
+  Palette,
+  Database,
+  Cloud,
+  Smartphone,
+  Lock,
+  Server,
+  GitBranch,
+  Code2,
+  Terminal,
+  Wifi,
+  ShieldCheck,
+  Key,
+  Fingerprint,
+  Brain,
+  Users2,
+  Globe2,
+  Puzzle,
+  GitPullRequest,
+  Eye,
+  BrainCircuit,
+  Trophy,
+  Medal,
+  Flag,
+  Microscope,
+  Magnet,
+  Scan,
+  Radio,
+  BookOpen,
+  Gauge,
 } from "lucide-react";
-
+import ServiceDetailModal from "../ServiceDetail/ServiceDetailModal";
 import { useNavigate } from "react-router-dom";
-
-// Team images (You'll need to add these images to your assets folder)
 import admin1 from "../../assets/ut.jpg";
 import admin2 from "../../assets/ut.jpg";
 import admin3 from "../../assets/ut.jpg";
@@ -137,118 +135,35 @@ const contactData = [
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("ultrasonic");
-  const [activeIndustry, setActiveIndustry] = useState(0);
-  const [visibleSections, setVisibleSections] = useState({
-    overview: true, // Set to true by default
-    methods: false,
-    "dt-methods": false,
-    specs: false,
-    process: false,
-  });
+  const [visibleSections, setVisibleSections] = useState({});
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredCard, setHoveredCard] = useState(null);
   const [animatedSteps, setAnimatedSteps] = useState([]);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [counters, setCounters] = useState({});
+  const [selectedMethod, setSelectedMethod] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeIndustry, setActiveIndustry] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [is3DHover, setIs3DHover] = useState(false);
+
   const sectionRefs = useRef([]);
   const heroRef = useRef(null);
   const navigate = useNavigate();
-  const statsRef = useRef(null);
-
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [counters, setCounters] = useState({});
   const counterRef = useRef(null);
+  const statsRef = useRef(null);
+  const cardsRef = useRef([]);
+  const formRef = useRef(null);
 
-  // 🔵 Primary Colors - Blue Theme
   const primaryColor = "#235781";
   const primaryDark = "#16405F";
   const primaryLight = "#4A82A8";
   const primaryLighter = "#6BA0C9";
+  const secondaryColor = "#0a0a0a";
+  const accentColor = "#f0f0f0";
+  const primaryLightest = "#8FB8D9";
 
-  // ============================================
-  // 📊 COUNTER ANIMATION
-  // ============================================
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const targets = [
-              { id: "projects", target: 5000, duration: 2000 },
-              { id: "clients", target: 1200, duration: 2000 },
-              { id: "countries", target: 25, duration: 2000 },
-              { id: "experience", target: 15, duration: 2000 },
-            ];
-
-            targets.forEach(({ id, target, duration }) => {
-              const steps = 60;
-              const increment = target / steps;
-              let current = 0;
-
-              const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                  current = target;
-                  clearInterval(timer);
-                }
-                setCounters((prev) => ({
-                  ...prev,
-                  [id]: Math.floor(current),
-                }));
-              }, duration / steps);
-            });
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    if (counterRef.current) {
-      observer.observe(counterRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  // ============================================
-  // 📜 SCROLL PROGRESS
-  // ============================================
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / docHeight) * 100;
-      setScrollProgress(progress);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // ============================================
-  // 🔄 STEP ANIMATION
-  // ============================================
-  useEffect(() => {
-    const stepTimer = setTimeout(() => {
-      setAnimatedSteps([1]);
-    }, 1000);
-
-    const stepInterval = setInterval(() => {
-      setAnimatedSteps((prev) => {
-        if (prev.length < 6) {
-          return [...prev, prev.length + 1];
-        }
-        return prev;
-      });
-    }, 300);
-
-    return () => {
-      clearTimeout(stepTimer);
-      clearInterval(stepInterval);
-    };
-  }, []);
-
-  // ============================================
-  // 🎯 SERVICE FEATURES
-  // ============================================
   const serviceFeatures = [
     {
       icon: <Shield size={32} />,
@@ -282,9 +197,6 @@ const Home = () => {
     },
   ];
 
-  // ============================================
-  // 🔬 TESTING METHODS (ONLY 9 METHODS - NO NDT, DT, RT)
-  // ============================================
   const testingMethods = [
     {
       id: 1,
@@ -522,110 +434,368 @@ const Home = () => {
     },
   ];
 
-  // ============================================
-  // 🖱️ MOUSE PARALLAX EFFECT
-  // ============================================
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (heroRef.current) {
-        const { left, top, width, height } =
-          heroRef.current.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setMousePosition({ x, y });
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
-          }
-        });
+  const specifications = {
+    ultrasonic: [
+      { property: "Frequency Range", value: "0.5-25 MHz", icon: "📡" },
+      { property: "Penetration Depth", value: "Up to 10m", icon: "📏" },
+      { property: "Resolution", value: "0.1mm", icon: "🔍" },
+      { property: "Scan Speed", value: "1000 mm/s", icon: "⚡" },
+      { property: "Temperature Range", value: "-20°C to 500°C", icon: "🌡️" },
+      { property: "Certification", value: "ASNT Level III", icon: "🏅" },
+      { property: "Data Recording", value: "Full A-Scan", icon: "💾" },
+      { property: "Reporting", value: "Digital & PDF", icon: "📊" },
+    ],
+    magnetic: [
+      { property: "Magnetizing Current", value: "AC / DC / HWDC", icon: "🧲" },
+      { property: "Field Strength", value: "≥ 2400 A/m", icon: "⚡" },
+      {
+        property: "Particle Type",
+        value: "Dry / Wet / Fluorescent",
+        icon: "✨",
       },
-      { threshold: 0.15, rootMargin: "-30px" }
-    );
+      { property: "Sensitivity Level", value: "Level 3-4", icon: "🎯" },
+      { property: "UV Light Intensity", value: "1000 μW/cm²", icon: "🔦" },
+      { property: "Temperature Range", value: "10-52°C", icon: "🌡️" },
+      { property: "Equipment Type", value: "Yoke / Prod / Bench", icon: "🔧" },
+      { property: "Standards", value: "ASTM E709, ISO 9934", icon: "📋" },
+    ],
+    radiographic: [
+      { property: "Source Type", value: "X-ray/Gamma", icon: "☢️" },
+      { property: "Energy Range", value: "50-300 kV", icon: "⚡" },
+      { property: "Sensitivity", value: "2-1T", icon: "🎯" },
+      { property: "Film Types", value: "D7, D4, D2", icon: "🎞️" },
+      { property: "Digital DR", value: "Available", icon: "📱" },
+      { property: "Safety Class", value: "BSS Category", icon: "🛡️" },
+      { property: "Image Quality", value: "EN 462-1", icon: "⭐" },
+      { property: "Processing", value: "Auto & Manual", icon: "🔄" },
+    ],
+    penetrant: [
+      { property: "Sensitivity Level", value: "Level 4", icon: "🔬" },
+      { property: "Developer Type", value: "Dry/Non-aq/Aq", icon: "💧" },
+      {
+        property: "Penetrant Type",
+        value: "Fluorescent/Visible",
+        icon: "🌈",
+      },
+      { property: "Removal Method", value: "Water/Solvent", icon: "🚿" },
+      { property: "Dwell Time", value: "5-60 min", icon: "⏱️" },
+      { property: "Temperature Range", value: "10-52°C", icon: "🌡️" },
+      { property: "Light Intensity", value: "1000+ lux", icon: "💡" },
+      { property: "UV Light", value: "1000 μW/cm²", icon: "🔦" },
+    ],
+  };
 
-    if (heroRef.current) {
-      heroRef.current.addEventListener("mousemove", handleMouseMove);
-    }
+  const certificationProcess = [
+    {
+      step: 1,
+      title: "Client Consultation",
+      description:
+        "Understanding testing requirements and specifications for accurate results",
+      icon: "💬",
+      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+      duration: "1-2 Days",
+    },
+    {
+      step: 2,
+      title: "Method Selection",
+      description:
+        "Choosing appropriate testing methods based on material and defect type",
+      icon: "📋",
+      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+      duration: "1 Day",
+    },
+    {
+      step: 3,
+      title: "On-site Inspection",
+      description:
+        "Deploying certified technicians with calibrated equipment for precise testing",
+      icon: "🔍",
+      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+      duration: "Variable",
+    },
+    {
+      step: 4,
+      title: "Data Analysis",
+      description:
+        "Expert analysis of test results using advanced software and AI tools",
+      icon: "📊",
+      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+      duration: "2-3 Days",
+    },
+    {
+      step: 5,
+      title: "Report Generation",
+      description:
+        "Comprehensive report with findings, analysis, and actionable recommendations",
+      icon: "📑",
+      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+      duration: "1-2 Days",
+    },
+    {
+      step: 6,
+      title: "Certification Issuance",
+      description:
+        "Official certification, quality stamp, and ongoing technical support",
+      icon: "🏆",
+      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+      duration: "1 Day",
+    },
+  ];
 
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
+  const industries = [
+    {
+      id: 0,
+      name: "Oil & Gas",
+      icon: <Factory size={20} />,
+      color: primaryColor,
+      description:
+        "Comprehensive testing solutions for pipelines, refineries, and offshore platforms.",
+      applications: [
+        "Pipeline Integrity",
+        "Pressure Vessels",
+        "Storage Tanks",
+        "Heat Exchangers",
+      ],
+      features: [
+        "API Standards Compliance",
+        "Corrosion Monitoring",
+        "Weld Inspection",
+        "Risk Assessment",
+      ],
+      materials: [
+        "Carbon Steel",
+        "Stainless Steel",
+        "Duplex Steel",
+        "Alloy Pipes",
+      ],
+    },
+      {
+      id: 3,
+      name: "Marine",
+      icon: <Ship size={20} />,
+      color: "#009688",
+      description:
+        "Rugged testing solutions for shipbuilding, offshore, and marine structures.",
+      applications: [
+        "Hull Inspection",
+        "Propulsion Systems",
+        "Deck Structures",
+        "Piping Systems",
+      ],
+      features: [
+        "DNV GL Approved",
+        "Corrosion Assessment",
+        "Weld Inspection",
+        "Underwater Testing",
+      ],
+      materials: [
+        "Marine Grade Steel",
+        "Stainless Steel",
+        "Copper Alloys",
+        "Aluminum",
+      ],
+    },
+    {
+      id: 1,
+      name: "Aerospace",
+      icon: <Plane size={20} />,
+      color: "#2196f3",
+      description:
+        "Precision NDT for aircraft components, engines, and critical structures.",
+      applications: [
+        "Turbine Blades",
+        "Fuselage Panels",
+        "Landing Gear",
+        "Engine Components",
+      ],
+      features: [
+        "NADCAP Accredited",
+        "AS9100D Compliance",
+        "Composite Testing",
+        "Fatigue Analysis",
+      ],
+      materials: [
+        "Titanium Alloys",
+        "Aluminum Alloys",
+        "Composites",
+        "Superalloys",
+      ],
+    },
+     {
+      id: 4,
+      name: "Construction",
+      icon: <HardHat size={20} />,
+      color: "#7B1FA2",
+      description:
+        "Structural testing for buildings, bridges, and infrastructure projects.",
+      applications: [
+        "Steel Structures",
+        "Concrete Reinforcement",
+        "Bridge Welds",
+        "High-Rise Buildings",
+      ],
+      features: [
+        "On-Site Testing",
+        "Non-Destructive Evaluation",
+        "Load Testing",
+        "Compliance Verification",
+      ],
+      materials: [
+        "Structural Steel",
+        "Rebar",
+        "Concrete",
+        "Composite Materials",
+      ],
+    },
+    {
+      id: 2,
+      name: "Automotive",
+      icon: <Car size={20} />,
+      color: "#1a8cff",
+      description:
+        "High-volume testing for automotive parts, welds, and safety components.",
+      applications: [
+        "Engine Blocks",
+        "Transmission Parts",
+        "Chassis Components",
+        "Safety Systems",
+      ],
+      features: [
+        "IATF 16949 Certified",
+        "High-Speed Inspection",
+        "Automated Testing",
+        "Statistical Analysis",
+      ],
+      materials: [
+        "Cast Iron",
+        "Aluminum",
+        "Steel Alloys",
+        "Engineering Plastics",
+      ],
+    },
+  
+   
+    {
+      id: 5,
+      name: "Power",
+      icon: <ZapIcon size={20} />,
+      color: "#E65100",
+      description:
+        "Critical testing for power plants, turbines, and energy infrastructure.",
+      applications: [
+        "Turbine Components",
+        "Boiler Tubes",
+        "Generator Parts",
+        "Nuclear Components",
+      ],
+      features: [
+        "ASME Certified",
+        "High-Temperature Testing",
+        "In-Service Inspection",
+        "Life Assessment",
+      ],
+      materials: [
+        "Heat-Resistant Steel",
+        "Inconel",
+        "Titanium",
+        "Ceramics",
+      ],
+    },
+  ];
 
-    return () => {
-      observer.disconnect();
-      if (heroRef.current) {
-        heroRef.current.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
-
-  // ============================================
-  // 📋 METHOD TABS FOR SPECS
-  // ============================================
   const specTabs = [
     { id: "ultrasonic", label: "UT", icon: "📡" },
     { id: "magnetic", label: "MPT", icon: "🧲" },
     { id: "penetrant", label: "DPT", icon: "🔬" },
   ];
 
-  const secondaryColor = "#0a0a0a";
-  const accentColor = "#f0f0f0";
+  const industryServices = [
+    {
+      title: "Material Selection",
+      description: "Expert guidance in choosing the right materials",
+      icon: <Layers size={28} />,
+      features: [
+        "Material testing",
+        "Cost optimization",
+        "Performance evaluation",
+        "Compliance verification",
+      ],
+    },
+    {
+      title: "Quality Assurance",
+      description:
+        "Comprehensive testing and inspection to ensure product reliability",
+      icon: <Shield size={28} />,
+      features: [
+        "NDT testing services",
+        "Dimensional inspection",
+        "Chemical analysis",
+        "Mechanical testing",
+      ],
+    },
+    {
+      title: "Custom Solutions",
+      description:
+        "Tailored products designed to meet unique industry specifications",
+      icon: <Cog size={28} />,
+      features: [
+        "Custom alloy development",
+        "Specialized coatings",
+        "Unique geometries",
+        "Prototype development",
+      ],
+    },
+    {
+      title: "Technical Support",
+      description:
+        "24/7 expert support for installation, maintenance, and troubleshooting",
+      icon: <Users size={28} />,
+      features: [
+        "On-site assistance",
+        "Training programs",
+        "Technical documentation",
+        "Performance monitoring",
+      ],
+    },
+  ];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
-          }
-        });
-      },
-      {
-        threshold: 0.1, // Lower threshold
-        rootMargin: "0px 0px -100px 0px", // Adjust root margin
-      }
-    );
+  const certifications = [
+    "ISO 901:2015",
+    "ISO 1401:2015",
+    "AS9100D",
+    "IATF 16949",
+    "NADCAP",
+    "ASME Certified",
+    "API Q1",
+    "DNV GL Approved",
+  ];
 
-    // Set overview as visible immediately
-    setVisibleSections((prev) => ({ ...prev, overview: true }));
-
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    // Animate certification steps sequentially
-    const stepTimer = setTimeout(() => {
-      setAnimatedSteps([1]);
-    }, 1000);
-
-    const stepInterval = setInterval(() => {
-      setAnimatedSteps((prev) => {
-        if (prev.length < 6) {
-          return [...prev, prev.length + 1];
-        }
-        return prev;
-      });
-    }, 300);
-
-    return () => {
-      clearTimeout(stepTimer);
-      clearInterval(stepInterval);
-    };
-  }, []);
+  const statsData = [
+    {
+      id: "projects",
+      label: "Projects Completed",
+      icon: <Briefcase size={24} />,
+      suffix: "+",
+    },
+    {
+      id: "industries",
+      label: "Industries Served",
+      icon: <Globe size={24} />,
+      suffix: "+",
+    },
+    {
+      id: "experience",
+      label: "Years Experience",
+      icon: <Clock size={24} />,
+      suffix: "+",
+    },
+    {
+      id: "satisfaction",
+      label: "Client Satisfaction",
+      icon: <ThumbsUp size={24} />,
+      suffix: "%",
+    },
+  ];
 
   const ndtMethods = [
     {
@@ -874,103 +1044,167 @@ const Home = () => {
     },
   ];
 
-  // ============================================
-  // 📋 SPECIFICATIONS — FIXED (added `magnetic`)
-  // ============================================
-  const specifications = {
-    ultrasonic: [
-      { property: "Frequency Range", value: "0.5-25 MHz", icon: "📡" },
-      { property: "Penetration Depth", value: "Up to 10m", icon: "📏" },
-      { property: "Resolution", value: "0.1mm", icon: "🔍" },
-      { property: "Scan Speed", value: "1000 mm/s", icon: "⚡" },
-      { property: "Temperature Range", value: "-20°C to 500°C", icon: "🌡️" },
-      { property: "Certification", value: "ASNT Level III", icon: "🏅" },
-      { property: "Data Recording", value: "Full A-Scan", icon: "💾" },
-      { property: "Reporting", value: "Digital & PDF", icon: "📊" },
-    ],
-    magnetic: [
-      { property: "Magnetizing Current", value: "AC / DC / HWDC", icon: "🧲" },
-      { property: "Field Strength", value: "≥ 2400 A/m", icon: "⚡" },
-      { property: "Particle Type", value: "Dry / Wet / Fluorescent", icon: "✨" },
-      { property: "Sensitivity Level", value: "Level 3-4", icon: "🎯" },
-      { property: "UV Light Intensity", value: "1000 μW/cm²", icon: "🔦" },
-      { property: "Temperature Range", value: "10-52°C", icon: "🌡️" },
-      { property: "Equipment Type", value: "Yoke / Prod / Bench", icon: "🔧" },
-      { property: "Standards", value: "ASTM E709, ISO 9934", icon: "📋" },
-    ],
-    radiographic: [
-      { property: "Source Type", value: "X-ray/Gamma", icon: "☢️" },
-      { property: "Energy Range", value: "50-300 kV", icon: "⚡" },
-      { property: "Sensitivity", value: "2-1T", icon: "🎯" },
-      { property: "Film Types", value: "D7, D4, D2", icon: "🎞️" },
-      { property: "Digital DR", value: "Available", icon: "📱" },
-      { property: "Safety Class", value: "BSS Category", icon: "🛡️" },
-      { property: "Image Quality", value: "EN 462-1", icon: "⭐" },
-      { property: "Processing", value: "Auto & Manual", icon: "🔄" },
-    ],
-    penetrant: [
-      { property: "Sensitivity Level", value: "Level 4", icon: "🔬" },
-      { property: "Developer Type", value: "Dry/Non-aq/Aq", icon: "💧" },
-      { property: "Penetrant Type", value: "Fluorescent/Visible", icon: "🌈" },
-      { property: "Removal Method", value: "Water/Solvent", icon: "🚿" },
-      { property: "Dwell Time", value: "5-60 min", icon: "⏱️" },
-      { property: "Temperature Range", value: "10-52°C", icon: "🌡️" },
-      { property: "Light Intensity", value: "1000+ lux", icon: "💡" },
-      { property: "UV Light", value: "1000 μW/cm²", icon: "🔦" },
-    ],
-  };
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const targets = [
+              { id: "projects", target: 5000, duration: 2000 },
+              { id: "clients", target: 1200, duration: 2000 },
+              { id: "countries", target: 25, duration: 2000 },
+              { id: "experience", target: 15, duration: 2000 },
+            ];
 
-  const certificationProcess = [
-    {
-      step: 1,
-      title: "Client Consultation",
-      description: "Understanding testing requirements and specifications",
-      icon: "💬",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, #ff4d4d 100%)`,
-      duration: "1-2 Days",
-    },
-    {
-      step: 2,
-      title: "Method Selection",
-      description:
-        "Choosing appropriate NDT/DT methods based on material and defect type",
-      icon: "📋",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, #ff4d4d 100%)`,
-      duration: "1 Day",
-    },
-    {
-      step: 3,
-      title: "On-site Inspection",
-      description: "Deploying certified technicians with calibrated equipment",
-      icon: "🔍",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, #ff4d4d 100%)`,
-      duration: "Variable",
-    },
-    {
-      step: 4,
-      title: "Data Analysis",
-      description: "Expert analysis of test results using advanced software",
-      icon: "📊",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, #ff4d4d 100%)`,
-      duration: "2-3 Days",
-    },
-    {
-      step: 5,
-      title: "Report Generation",
-      description: "Comprehensive report with findings and recommendations",
-      icon: "📑",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, #ff4d4d 100%)`,
-      duration: "1-2 Days",
-    },
-    {
-      step: 6,
-      title: "Certification Issuance",
-      description: "Official certification and ongoing support",
-      icon: "🏆",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, #ff4d4d 100%)`,
-      duration: "1 Day",
-    },
-  ];
+            targets.forEach(({ id, target, duration }) => {
+              const steps = 60;
+              const increment = target / steps;
+              let current = 0;
+
+              const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                  current = target;
+                  clearInterval(timer);
+                }
+                setCounters((prev) => ({
+                  ...prev,
+                  [id]: Math.floor(current),
+                }));
+              }, duration / steps);
+            });
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (counterRef.current) {
+      observer.observe(counterRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const stepTimer = setTimeout(() => {
+      setAnimatedSteps([1]);
+    }, 1000);
+
+    const stepInterval = setInterval(() => {
+      setAnimatedSteps((prev) => {
+        if (prev.length < 6) {
+          return [...prev, prev.length + 1];
+        }
+        return prev;
+      });
+    }, 300);
+
+    return () => {
+      clearTimeout(stepTimer);
+      clearInterval(stepInterval);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (heroRef.current) {
+        const { left, top, width, height } =
+          heroRef.current.getBoundingClientRect();
+        const x = ((e.clientX - left) / width) * 100;
+        const y = ((e.clientY - top) / height) * 100;
+        setMousePosition({ x, y });
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => ({
+              ...prev,
+              [entry.target.dataset.section]: true,
+            }));
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "-30px" }
+    );
+
+    if (heroRef.current) {
+      heroRef.current.addEventListener("mousemove", handleMouseMove);
+    }
+
+    sectionRefs.current.forEach((section) => {
+      if (section) observer.observe(section);
+    });
+
+    return () => {
+      observer.disconnect();
+      if (heroRef.current) {
+        heroRef.current.removeEventListener("mousemove", handleMouseMove);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => ({
+              ...prev,
+              [entry.target.dataset.section]: true,
+            }));
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -100px 0px",
+      }
+    );
+
+    setVisibleSections((prev) => ({ ...prev, overview: true }));
+
+    sectionRefs.current.forEach((section) => {
+      if (section) observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const stepTimer = setTimeout(() => {
+      setAnimatedSteps([1]);
+    }, 1000);
+
+    const stepInterval = setInterval(() => {
+      setAnimatedSteps((prev) => {
+        if (prev.length < 6) {
+          return [...prev, prev.length + 1];
+        }
+        return prev;
+      });
+    }, 300);
+
+    return () => {
+      clearTimeout(stepTimer);
+      clearInterval(stepInterval);
+    };
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -1013,16 +1247,12 @@ const Home = () => {
     };
   }, []);
 
-  const addToRefs = (el, index) => {
-    sectionRefs.current[index] = el;
-  };
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            stats.forEach((stat, index) => {
+            statsData.forEach((stat, index) => {
               const duration = 2000;
               const steps = 60;
               const increment = stat.max / steps;
@@ -1077,260 +1307,6 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
-  const industries = [
-    {
-      id: 2,
-      name: "Oil & Gas",
-      icon: <Factory size={32} />,
-      color: "#e67e22",
-      gradient: "linear-gradient(135deg, #e67e22 0%, #d35400 100%)",
-      description:
-        "Durable materials for extreme conditions in exploration and processing",
-      applications: [
-        "Pipeline Systems",
-        "Pressure Vessels",
-        "Drilling Equipment",
-        "Refinery Components",
-        "Offshore Platforms",
-        "Storage Tanks",
-      ],
-      features: [
-        "Corrosion resistance",
-        "High pressure tolerance",
-        "Temperature stability",
-        "Longevity in harsh environments",
-      ],
-      materials: [
-        "Carbon Steel (API 5L)",
-        "Stainless Steel (316/317L)",
-        "Duplex/Super Duplex",
-        "Inconel 625/825",
-        "Titanium Alloys",
-        "High-Yield Steels",
-      ],
-    },
-    {
-      id: 3,
-      name: "Power Generation",
-      icon: <Zap size={32} />,
-      color: "#f1c40f",
-      gradient: "linear-gradient(135deg, #f1c40f 0%, #f39c12 100%)",
-      description: "Materials for conventional and renewable energy production",
-      applications: [
-        "Turbine Components",
-        "Nuclear Plant Parts",
-        "Solar Panel Frames",
-        "Wind Turbine Parts",
-        "Boiler Systems",
-        "Heat Exchangers",
-      ],
-      features: [
-        "Heat resistance",
-        "Structural integrity",
-        "Vibration damping",
-        "Environmental compatibility",
-      ],
-      materials: [
-        "Superalloys (Inconel 718)",
-        "Turbine-grade Steels",
-        "Aluminum Alloys",
-        "Copper Conductors",
-        "Ceramic Coatings",
-        "Composites (GFRP)",
-      ],
-    },
-    {
-      id: 4,
-      name: "Automotive",
-      icon: <Car size={32} />,
-      color: "#3498db",
-      gradient: "linear-gradient(135deg, #3498db 0%, #2980b9 100%)",
-      description:
-        "Lightweight and durable components for vehicle manufacturing",
-      applications: [
-        "Engine Blocks",
-        "Transmission Parts",
-        "Suspension Components",
-        "Brake Systems",
-        "Chassis Parts",
-        "Electrical Components",
-      ],
-      features: [
-        "Weight optimization",
-        "High strength-to-weight ratio",
-        "Corrosion protection",
-        "Precision manufacturing",
-      ],
-      materials: [
-        "Advanced High-Strength Steel",
-        "Aluminum 6061/7075",
-        "Magnesium Alloys",
-        "Carbon Fiber Composites",
-        "Titanium Grade 5",
-        "Engineering Plastics",
-      ],
-    },
-    {
-      id: 5,
-      name: "Marine & Shipbuilding",
-      icon: <Ship size={32} />,
-      color: "#1abc9c",
-      gradient: "linear-gradient(135deg, #1abc9c 0%, #16a085 100%)",
-      description: "Corrosion-resistant materials for marine environments",
-      applications: [
-        "Hull Components",
-        "Propeller Systems",
-        "Deck Equipment",
-        "Navigation Systems",
-        "Cargo Handling",
-        "Offshore Structures",
-      ],
-      features: [
-        "Saltwater corrosion resistance",
-        "High durability",
-        "Low maintenance",
-        "Impact resistance",
-      ],
-      materials: [
-        "Marine-grade Aluminum (5083)",
-        "Stainless Steel 316L",
-        "Bronze Alloys",
-        "Composite Materials",
-        "Zinc Anodes",
-        "Special Coatings",
-      ],
-    },
-    {
-      id: 6,
-      name: "Construction",
-      icon: <Building size={32} />,
-      color: "#9b59b6",
-      gradient: "linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)",
-      description:
-        "Structural materials for building and infrastructure projects",
-      applications: [
-        "Structural Steel",
-        "Reinforcement Bars",
-        "Precast Concrete",
-        "Bridge Components",
-        "Tunnel Linings",
-        "Architectural Elements",
-      ],
-      features: [
-        "Load-bearing capacity",
-        "Weather resistance",
-        "Fire retardancy",
-        "Long service life",
-      ],
-      materials: [
-        "Structural Steel (A36, A992)",
-        "Rebar (Grade 60)",
-        "Concrete Mixes",
-        "Weathering Steel",
-        "Glass Facades",
-        "Fireproof Materials",
-      ],
-    },
-    {
-      id: 7,
-      name: "Heavy Machinery",
-      icon: <Wrench size={32} />,
-      color: "#e74c3c",
-      gradient: "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)",
-      description: "Robust components for industrial machinery and equipment",
-      applications: [
-        "Mining Equipment",
-        "Excavator Parts",
-        "Conveyor Systems",
-        "Crusher Components",
-        "Material Handling",
-        "Industrial Gearboxes",
-      ],
-      features: [
-        "High wear resistance",
-        "Shock absorption",
-        "Heavy load capacity",
-        "Minimal deformation",
-      ],
-      materials: [
-        "Hardox Wear Plates",
-        "Forged Steel Components",
-        "Cast Iron Alloys",
-        "Bearing Steels",
-        "Hard-facing Alloys",
-        "Polyurethane Liners",
-      ],
-    },
-  ];
-
-  const industryServices = [
-    {
-      title: "Material Selection",
-      description: "Expert guidance in choosing the right materials",
-      icon: <Layers size={28} />,
-      features: [
-        "Material testing",
-        "Cost optimization",
-        "Performance evaluation",
-        "Compliance verification",
-      ],
-    },
-    {
-      title: "Quality Assurance",
-      description:
-        "Comprehensive testing and inspection to ensure product reliability",
-      icon: <Shield size={28} />,
-      features: [
-        "NDT testing services",
-        "Dimensional inspection",
-        "Chemical analysis",
-        "Mechanical testing",
-      ],
-    },
-    {
-      title: "Custom Solutions",
-      description:
-        "Tailored products designed to meet unique industry specifications",
-      icon: <Cog size={28} />,
-      features: [
-        "Custom alloy development",
-        "Specialized coatings",
-        "Unique geometries",
-        "Prototype development",
-      ],
-    },
-    {
-      title: "Technical Support",
-      description:
-        "24/7 expert support for installation, maintenance, and troubleshooting",
-      icon: <Users size={28} />,
-      features: [
-        "On-site assistance",
-        "Training programs",
-        "Technical documentation",
-        "Performance monitoring",
-      ],
-    },
-  ];
-
-  const certifications = [
-    "ISO 901:2015",
-    "ISO 1401:2015",
-    "AS9100D",
-    "IATF 16949",
-    "NADCAP",
-    "ASME Certified",
-    "API Q1",
-    "DNV GL Approved",
-  ];
-
-  const cardsRef = useRef([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const formRef = useRef(null);
-
-  // Enhanced intersection observer with staggered animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -1341,7 +1317,6 @@ const Home = () => {
               [entry.target.dataset.section]: true,
             }));
 
-            // Add different animation classes based on section type
             if (entry.target.classList.contains("tk-contact-card")) {
               setTimeout(() => {
                 entry.target.classList.add("tk-card-pop-in");
@@ -1374,85 +1349,32 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Form submission handler with animation
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const form = e.target;
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        form.reset();
-
-        setSuccessMessage("Message sent successfully!");
-
-        // 2 second pachi message hide
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 2000);
-      } else {
-        setSuccessMessage("Something went wrong! Try again.");
-
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 2000);
-      }
-    } catch (error) {
-      setSuccessMessage("Error sending message!");
-
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 2000);
-    }
-
-    setIsSubmitting(false);
-  };
-
-
-  const [is3DHover, setIs3DHover] = useState(false);
-
-
-  // 🔵 Primary Blue Colors
-  const primaryLightest = "#8FB8D9";
-
-  // ============================================
-  // 📊 COUNTER ANIMATION
-  // ============================================
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const targets = [
-              { id: 'projects', target: 5000, duration: 2500 },
-              { id: 'industries', target: 25, duration: 2000 },
-              { id: 'experience', target: 15, duration: 2000 },
-              { id: 'satisfaction', target: 98, duration: 2000 },
+              { id: "projects", target: 5000, duration: 2500 },
+              { id: "industries", target: 25, duration: 2000 },
+              { id: "experience", target: 15, duration: 2000 },
+              { id: "satisfaction", target: 98, duration: 2000 },
             ];
-            
+
             targets.forEach(({ id, target, duration }) => {
               const steps = 60;
               const increment = target / steps;
               let current = 0;
-              
+
               const timer = setInterval(() => {
                 current += increment;
                 if (current >= target) {
                   current = target;
                   clearInterval(timer);
                 }
-                setCounters(prev => ({
+                setCounters((prev) => ({
                   ...prev,
-                  [id]: Math.floor(current)
+                  [id]: Math.floor(current),
                 }));
               }, duration / steps);
             });
@@ -1469,13 +1391,11 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
-  // ============================================
-  // 📜 SCROLL PROGRESS
-  // ============================================
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const progress = (scrollTop / docHeight) * 100;
       setScrollProgress(progress);
     };
@@ -1483,13 +1403,11 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ============================================
-  // 🖱️ MOUSE PARALLAX FOR 3D EFFECT
-  // ============================================
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (heroRef.current) {
-        const { left, top, width, height } = heroRef.current.getBoundingClientRect();
+        const { left, top, width, height } =
+          heroRef.current.getBoundingClientRect();
         const x = ((e.clientX - left) / width) * 100;
         const y = ((e.clientY - top) / height) * 100;
         setMousePosition({ x, y });
@@ -1526,148 +1444,178 @@ const Home = () => {
     };
   }, []);
 
-  // ============================================
-  // 🏭 INDUSTRIES DATA (UPDATED WITH BLUE THEME)
-  // ============================================
- 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  // ============================================
-  // 🛠️ INDUSTRY SERVICES
-  // ============================================
- 
-
-  // ============================================
-  // 📊 STATS DATA
-  // ============================================
-  const statsData = [
-    { id: 'projects', label: 'Projects Completed', icon: <Briefcase size={24} />, suffix: '+' },
-    { id: 'industries', label: 'Industries Served', icon: <Globe size={24} />, suffix: '+' },
-    { id: 'experience', label: 'Years Experience', icon: <Clock size={24} />, suffix: '+' },
-    { id: 'satisfaction', label: 'Client Satisfaction', icon: <ThumbsUp size={24} />, suffix: '%' },
-  ];
-
-   
-  
-    // ============================================
-    // 📜 SCROLL PROGRESS
-    // ============================================
-    useEffect(() => {
-      const handleScroll = () => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = (scrollTop / docHeight) * 100;
-        setScrollProgress(progress);
-      };
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-  
-    // ============================================
-    // 🖱️ MOUSE PARALLAX FOR 3D EFFECT
-    // ============================================
-    useEffect(() => {
-      const handleMouseMove = (e) => {
-        if (heroRef.current) {
-          const { left, top, width, height } = heroRef.current.getBoundingClientRect();
-          const x = ((e.clientX - left) / width) * 100;
-          const y = ((e.clientY - top) / height) * 100;
-          setMousePosition({ x, y });
-        }
-      };
-  
+  useEffect(() => {
+    const handleMouseMove = (e) => {
       if (heroRef.current) {
-        heroRef.current.addEventListener("mousemove", handleMouseMove);
+        const { left, top, width, height } =
+          heroRef.current.getBoundingClientRect();
+        const x = ((e.clientX - left) / width) * 100;
+        const y = ((e.clientY - top) / height) * 100;
+        setMousePosition({ x, y });
       }
-  
-      return () => {
-        if (heroRef.current) {
-          heroRef.current.removeEventListener("mousemove", handleMouseMove);
-        }
-      };
-    }, []);
-  
-   
-    // Enhanced intersection observer with staggered animations
-    useEffect(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setVisibleSections((prev) => ({
-                ...prev,
-                [entry.target.dataset.section]: true,
-              }));
-  
-              if (entry.target.classList.contains("qc-contact-card")) {
-                setTimeout(() => {
-                  entry.target.classList.add("qc-card-pop-in");
-                }, entry.target.dataset.index * 200);
-              } else {
-                entry.target.classList.add("qc-fade-in-up");
-              }
-  
-              observer.unobserve(entry.target);
+    };
+
+    if (heroRef.current) {
+      heroRef.current.addEventListener("mousemove", handleMouseMove);
+    }
+
+    return () => {
+      if (heroRef.current) {
+        heroRef.current.removeEventListener("mousemove", handleMouseMove);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => ({
+              ...prev,
+              [entry.target.dataset.section]: true,
+            }));
+
+            if (entry.target.classList.contains("qc-contact-card")) {
+              setTimeout(() => {
+                entry.target.classList.add("qc-card-pop-in");
+              }, entry.target.dataset.index * 200);
+            } else {
+              entry.target.classList.add("qc-fade-in-up");
             }
-          });
-        },
-        {
-          threshold: 0.2,
-          rootMargin: "0px 0px -50px 0px",
-        }
-      );
-  
-      sectionRefs.current.forEach((section) => {
-        if (section) observer.observe(section);
-      });
-  
-      cardsRef.current.forEach((card, index) => {
-        if (card) {
-          card.dataset.index = index;
-          observer.observe(card);
-        }
-      });
-  
-      return () => observer.disconnect();
-    }, []);
-  
-    // Form submission handler with animation
-    const handleSubmit2 = async (e) => {
-      e.preventDefault();
-      setIsSubmitting(true);
-  
-      const form = e.target;
-      const formData = new FormData(form);
-  
-      try {
-        const response = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          body: formData,
+
+            observer.unobserve(entry.target);
+          }
         });
-  
-        const result = await response.json();
-  
-        if (result.success) {
-          form.reset();
-          setSuccessMessage("Message sent successfully!");
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 2000);
-        } else {
-          setSuccessMessage("Something went wrong! Try again.");
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 2000);
-        }
-      } catch (error) {
-        setSuccessMessage("Error sending message!");
+      },
+      {
+        threshold: 0.2,
+        rootMargin: "0px 0px -50px 0px",
+      }
+    );
+
+    sectionRefs.current.forEach((section) => {
+      if (section) observer.observe(section);
+    });
+
+    cardsRef.current.forEach((card, index) => {
+      if (card) {
+        card.dataset.index = index;
+        observer.observe(card);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const addToRefs = (el, index) => {
+    sectionRefs.current[index] = el;
+  };
+
+  const handleRequestService = (method) => {
+    setSelectedMethod(method);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedMethod(null), 300);
+  };
+
+  const handleSelectMethod = (method) => {
+    setSelectedMethod(method);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        form.reset();
+
+        setSuccessMessage("Message sent successfully!");
+
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 2000);
+      } else {
+        setSuccessMessage("Something went wrong! Try again.");
+
         setTimeout(() => {
           setSuccessMessage("");
         }, 2000);
       }
-  
-      setIsSubmitting(false);
-    };
-  
+    } catch (error) {
+      setSuccessMessage("Error sending message!");
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 2000);
+    }
+
+    setIsSubmitting(false);
+  };
+
+  const handleSubmit2 = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        form.reset();
+        setSuccessMessage("Message sent successfully!");
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 2000);
+      } else {
+        setSuccessMessage("Something went wrong! Try again.");
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 2000);
+      }
+    } catch (error) {
+      setSuccessMessage("Error sending message!");
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 2000);
+    }
+
+    setIsSubmitting(false);
+  };
+
   return (
     <div>
       <div id="home" className="header-container">
@@ -1675,7 +1623,6 @@ const Home = () => {
       </div>
 
       <div className="prod-page2" id="services">
-        {/* Overview Section */}
         <section
           className="prod-overview-section"
           ref={(el) => addToRefs(el, 1)}
@@ -1687,15 +1634,30 @@ const Home = () => {
                 className="prod-section-badge"
                 style={{ background: primaryColor }}
               >
-                Certified Testing
+                <Shield size={16} />
+                Our Services
               </div>
               <h2 className="prod-section-title">
-                Comprehensive Testing Solutions
+                Comprehensive Testing{" "}
+                <span style={{ color: primaryColor }}>Solutions</span>
               </h2>
               <div className="prod-section-divider">
-                <div className="prod-divider-line"></div>
-                <div className="prod-divider-dot prod-pulse-dot"></div>
-                <div className="prod-divider-line"></div>
+                <div
+                  className="prod-divider-line"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+                  }}
+                ></div>
+                <div
+                  className="prod-divider-dot prod-pulse-dot"
+                  style={{ background: primaryColor }}
+                ></div>
+                <div
+                  className="prod-divider-line"
+                  style={{
+                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+                  }}
+                ></div>
               </div>
               <p className="prod-section-description">
                 ASNT Level III certified testing services with advanced
@@ -1705,20 +1667,19 @@ const Home = () => {
 
             <div className="prod-overview-content">
               <div
-                className={`prod-overview-text ${
-                  visibleSections.overview ? "prod-animate-fade" : ""
-                }`}
+                className={`prod-overview-text ${visibleSections.overview ? "prod-animate-fade" : ""}`}
               >
                 <div className="prod-content-highlight prod-float-animation">
+                  <div className="prod-highlight-icon">
+                    <Star size={24} style={{ color: primaryColor }} />
+                  </div>
                   <p>
                     We provide complete{" "}
-                    <strong style={{ color: "#235781" }}>
+                    <strong
+                      className="prod-highlight-text"
+                      style={{ color: primaryColor }}
+                    >
                       Non-Destructive Testing (NDT)
-                    </strong>{" "}
-                    and
-                    <strong style={{ color: "#235781" }}>
-                      {" "}
-                      Destructive Testing (DT)
                     </strong>{" "}
                     services for quality assurance and structural integrity
                     evaluation. Our certified technicians use state-of-the-art
@@ -1757,17 +1718,13 @@ const Home = () => {
               </div>
 
               <div
-                className={`prod-features-grid ${
-                  visibleSections.overview ? "prod-animate-slide-right" : ""
-                }`}
+                className={`prod-features-grid ${visibleSections.overview ? "prod-animate-slide-right" : ""}`}
               >
                 {serviceFeatures.map((feature, index) => (
                   <div
                     key={index}
-                    className="prod-feature-card prod-hover-float"
+                    className="prod-feature-card prod-hover-float prod-card-glow"
                     style={{ animationDelay: `${index * 0.1}s` }}
-                    onMouseEnter={() => setHoveredCard(`feature-${index}`)}
-                    onMouseLeave={() => setHoveredCard(null)}
                   >
                     <div className="prod-feature-card-inner">
                       <div
@@ -1775,6 +1732,7 @@ const Home = () => {
                         style={{ background: feature.gradient }}
                       >
                         {feature.icon}
+                        <div className="prod-icon-ring"></div>
                       </div>
                       <h3 className="prod-feature-card-title">
                         {feature.title}
@@ -1782,7 +1740,7 @@ const Home = () => {
                       <p className="prod-feature-card-description">
                         {feature.description}
                       </p>
-                      <div className="prod-feature-card-hover"></div>
+                      <div className="prod-feature-card-shine"></div>
                     </div>
                   </div>
                 ))}
@@ -1791,9 +1749,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* ==========================================
-          🔬 TESTING METHODS SECTION (ONLY 9 METHODS)
-          ========================================== */}
         <section
           className="prod-methods-section"
           ref={(el) => addToRefs(el, 2)}
@@ -1836,12 +1791,11 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Industry Tags */}
             <div className="prod-industry-tags">
               {industries.map((industry, idx) => (
                 <span
                   key={idx}
-                  className="prod-industry-tag-hm"
+                  className="prod-industry-tag"
                   style={{ borderColor: industry.color }}
                 >
                   {industry.icon}
@@ -1854,9 +1808,7 @@ const Home = () => {
               {testingMethods.map((method, index) => (
                 <div
                   key={method.id}
-                  className={`prod-method-card ${
-                    visibleSections.methods ? "prod-animate-fade" : ""
-                  }`}
+                  className={`prod-method-card ${visibleSections.methods ? "prod-animate-fade" : ""}`}
                   style={{ animationDelay: `${index * 0.08}s` }}
                 >
                   <div
@@ -1886,7 +1838,7 @@ const Home = () => {
                         Applications:
                       </h4>
                       <div className="prod-applications-list">
-                        {(method.applications || []).map((app, i) => (
+                        {method.applications.map((app, i) => (
                           <span
                             key={i}
                             className="prod-application-tag prod-slide-animation"
@@ -1910,7 +1862,7 @@ const Home = () => {
                         Standards:
                       </h4>
                       <div className="prod-standards-list">
-                        {(method.standards || []).map((std, i) => (
+                        {method.standards.map((std, i) => (
                           <span
                             key={i}
                             className="prod-standard-badge prod-pop-animation"
@@ -1928,7 +1880,7 @@ const Home = () => {
                         Advantages:
                       </h4>
                       <ul className="prod-advantages-list">
-                        {(method.advantages || []).map((adv, i) => (
+                        {method.advantages.map((adv, i) => (
                           <li
                             key={i}
                             className="prod-slide-animation"
@@ -1948,7 +1900,7 @@ const Home = () => {
                       <button
                         className="prod-method-card-button"
                         style={{ background: method.gradient }}
-                        onClick={() => navigate("/contact")}
+                        onClick={() => handleRequestService(method)}
                       >
                         <span>Request Service</span>
                         <div className="prod-button-arrow">→</div>
@@ -1964,9 +1916,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* ==========================================
-          📋 TECHNICAL SPECIFICATIONS
-          ========================================== */}
         <section
           className="prod-tech-specs-section"
           ref={(el) => addToRefs(el, 4)}
@@ -2041,7 +1990,7 @@ const Home = () => {
                       <p>High-precision flaw detectors and thickness gauges</p>
                     </div>
                     <div className="tk-prod-specs-content-grid">
-                      {(specifications.ultrasonic || []).map((spec, index) => (
+                      {specifications.ultrasonic.map((spec, index) => (
                         <div
                           key={index}
                           className="tk-prod-spec-item tk-prod-hover-grow"
@@ -2072,7 +2021,7 @@ const Home = () => {
                       <p>High-sensitivity magnetic inspection equipment</p>
                     </div>
                     <div className="tk-prod-specs-content-grid">
-                      {(specifications.magnetic || []).map((spec, index) => (
+                      {specifications.magnetic.map((spec, index) => (
                         <div
                           key={index}
                           className="tk-prod-spec-item tk-prod-hover-grow"
@@ -2103,7 +2052,7 @@ const Home = () => {
                       <p>Sensitive penetrant systems for surface inspection</p>
                     </div>
                     <div className="tk-prod-specs-content-grid">
-                      {(specifications.penetrant || []).map((spec, index) => (
+                      {specifications.penetrant.map((spec, index) => (
                         <div
                           key={index}
                           className="tk-prod-spec-item tk-prod-hover-grow"
@@ -2131,9 +2080,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* ==========================================
-          🔄 CERTIFICATION PROCESS
-          ========================================== */}
         <section
           className="prod-certification-section"
           ref={(el) => addToRefs(el, 6)}
@@ -2149,7 +2095,8 @@ const Home = () => {
                 Our Process
               </div>
               <h2 className="prod-section-title">
-                Certification <span style={{ color: primaryColor }}>Process</span>
+                Certification{" "}
+                <span style={{ color: primaryColor }}>Process</span>
               </h2>
               <div className="prod-section-divider">
                 <div
@@ -2175,7 +2122,7 @@ const Home = () => {
             </div>
 
             <div className="prod-process-timeline">
-              {(certificationProcess || []).map((process, index) => (
+              {certificationProcess.map((process, index) => (
                 <div
                   key={index}
                   className={`prod-process-step ${
@@ -2188,7 +2135,7 @@ const Home = () => {
                   <div className="prod-process-step-indicator">
                     <div
                       className="prod-process-step-number prod-pulse-animation"
-                      style={{background:'#235781' }}
+                      style={{ background: process.gradient }}
                     >
                       {process.step}
                       <div className="prod-process-step-glow"></div>
@@ -2221,257 +2168,330 @@ const Home = () => {
             </div>
           </div>
         </section>
+
+        <ServiceDetailModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          method={selectedMethod}
+          allMethods={testingMethods}
+          onSelectMethod={handleSelectMethod}
+        />
       </div>
 
-
-<div className="industry-page" id="industry">
- {/* ==========================================
-          📊 STATS SECTION WITH COUNTER
-          ========================================== */}
-      <section
-        className="tk-stats-section"
-        ref={statsRef}
-        data-section="stats"
-      >
-        <div className="tk-container">
-          <div className="tk-stats-grid">
-            {statsData.map((stat, index) => (
-              <div
-                key={stat.id}
-                className="tk-stat-card tk-stat-3d"
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className="tk-stat-icon" style={{ color: primaryColor }}>
-                  {stat.icon}
-                </div>
-                <span className="tk-stat-number" style={{ color: primaryColor }}>
-                  {counters[stat.id] || 0}{stat.suffix}
-                </span>
-                <span className="tk-stat-label">{stat.label}</span>
-                <div className="tk-stat-glow" style={{ background: primaryColor }}></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          🏭 INDUSTRIES OVERVIEW SECTION
-          ========================================== */}
-      <section
-        className="tk-industries-overview"
-        ref={(el) => addToRefs(el, 1)}
-        data-section="overview"
-      >
-        <div className="tk-container">
-          <div className="tk-section-header">
-            <div className="tk-section-badge" style={{ background: primaryColor }}>
-              <Target size={16} />
-              Industries We Serve
-            </div>
-            <h2 className="tk-section-title-iws">
-              Powering <span style={{ color: primaryColor }}>Industrial</span> Excellence
-            </h2>
-            <div className="tk-section-divider">
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="tk-divider-dot tk-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
-            </div>
-            <p className="tk-section-subtitle">
-              Specialized solutions for diverse industrial sectors with unmatched quality and technical support
-            </p>
-          </div>
-
-          {/* Industry Navigation Tabs - 3D Style */}
-          <div className="tk-industries-nav tk-nav-3d">
-            {industries.map((industry, index) => (
-              <button
-                key={industry.id}
-                className={`tk-industry-tab ${activeIndustry === index ? "tk-active" : ""} tk-tab-3d`}
-                onClick={() => setActiveIndustry(index)}
-                style={
-                  activeIndustry === index
-                    ? { 
-                        borderColor: industry.color,
-                        boxShadow: `0 8px 30px ${industry.color}40`,
-                      }
-                    : {}
-                }
-              >
-                <div className="tk-tab-icon" style={{ color: industry.color }}>
-                  {industry.icon}
-                </div>
-                <span className="tk-tab-name">{industry.name}</span>
-                {activeIndustry === index && (
-                  <div className="tk-tab-active-indicator" style={{ background: industry.color }}></div>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Industry Detail - 3D Card */}
-          <div className="tk-industry-detail tk-detail-3d">
-            {industries[activeIndustry] && (
-              <div className="tk-detail-content">
-                <div className="tk-detail-header">
-                  <div
-                    className="tk-industry-icon-large tk-icon-3d"
-                    style={{ 
-                      color: industries[activeIndustry].color,
-                      background: `${industries[activeIndustry].color}15`,
-                      borderColor: industries[activeIndustry].color,
-                    }}
+      <div className="industry-page" id="industry">
+        <section
+          className="tk-stats-section"
+          ref={statsRef}
+          data-section="stats"
+        >
+          <div className="tk-container">
+            <div className="tk-stats-grid">
+              {statsData.map((stat, index) => (
+                <div
+                  key={stat.id}
+                  className="tk-stat-card tk-stat-3d"
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className="tk-stat-icon" style={{ color: primaryColor }}>
+                    {stat.icon}
+                  </div>
+                  <span
+                    className="tk-stat-number"
+                    style={{ color: primaryColor }}
                   >
-                    {industries[activeIndustry].icon}
+                    {counters[stat.id] || 0}
+                    {stat.suffix}
+                  </span>
+                  <span className="tk-stat-label">{stat.label}</span>
+                  <div
+                    className="tk-stat-glow"
+                    style={{ background: primaryColor }}
+                  ></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section
+          className="tk-industries-overview"
+          ref={(el) => addToRefs(el, 1)}
+          data-section="overview"
+        >
+          <div className="tk-container">
+            <div className="tk-section-header">
+              <div
+                className="tk-section-badge"
+                style={{ background: primaryColor }}
+              >
+                <Target size={16} />
+                Industries We Serve
+              </div>
+              <h2 className="tk-section-title-iws">
+                Powering{" "}
+                <span style={{ color: primaryColor }}>Industrial</span>{" "}
+                Excellence
+              </h2>
+              <div className="tk-section-divider">
+                <div
+                  className="tk-divider-line"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+                  }}
+                ></div>
+                <div
+                  className="tk-divider-dot tk-pulse-dot"
+                  style={{ background: primaryColor }}
+                ></div>
+                <div
+                  className="tk-divider-line"
+                  style={{
+                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+                  }}
+                ></div>
+              </div>
+              <p className="tk-section-subtitle">
+                Specialized solutions for diverse industrial sectors with
+                unmatched quality and technical support
+              </p>
+            </div>
+
+            <div className="tk-industries-nav tk-nav-3d">
+              {industries.map((industry, index) => (
+                <button
+                  key={industry.id}
+                  className={`tk-industry-tab ${activeIndustry === index ? "tk-active" : ""} tk-tab-3d`}
+                  onClick={() => setActiveIndustry(index)}
+                  style={
+                    activeIndustry === index
+                      ? {
+                          borderColor: industry.color,
+                          boxShadow: `0 8px 30px ${industry.color}40`,
+                        }
+                      : {}
+                  }
+                >
+                  <div className="tk-tab-icon" style={{ color: industry.color }}>
+                    {industry.icon}
                   </div>
-                  <div>
-                    <h3 className="tk-industry-name" style={{ color: industries[activeIndustry].color }}>
-                      {industries[activeIndustry].name}
-                    </h3>
-                    <p className="tk-industry-description">
-                      {industries[activeIndustry].description}
-                    </p>
+                  <span className="tk-tab-name">{industry.name}</span>
+                  {activeIndustry === index && (
+                    <div
+                      className="tk-tab-active-indicator"
+                      style={{ background: industry.color }}
+                    ></div>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="tk-industry-detail tk-detail-3d">
+              {industries[activeIndustry] && (
+                <div className="tk-detail-content">
+                  <div className="tk-detail-header">
+                    <div
+                      className="tk-industry-icon-large tk-icon-3d"
+                      style={{
+                        color: industries[activeIndustry].color,
+                        background: `${industries[activeIndustry].color}15`,
+                        borderColor: industries[activeIndustry].color,
+                      }}
+                    >
+                      {industries[activeIndustry].icon}
+                    </div>
+                    <div>
+                      <h3
+                        className="tk-industry-name"
+                        style={{ color: industries[activeIndustry].color }}
+                      >
+                        {industries[activeIndustry].name}
+                      </h3>
+                      <p className="tk-industry-description">
+                        {industries[activeIndustry].description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="tk-detail-grid">
+                    <div className="tk-detail-card tk-card-3d">
+                      <h4 className="tk-detail-card-title">
+                        <Box size={20} style={{ color: primaryColor }} />
+                        Applications
+                      </h4>
+                      <ul className="tk-applications-list">
+                        {industries[activeIndustry].applications.map(
+                          (app, idx) => (
+                            <div
+                              key={idx}
+                              className="tk-feature-item2 tk-feature-3d"
+                            >
+                              <CheckCircle
+                                size={16}
+                                style={{ color: primaryColor }}
+                              />
+                              {app}
+                            </div>
+                          )
+                        )}
+                      </ul>
+                    </div>
+
+                    <div className="tk-detail-card tk-card-3d">
+                      <h4 className="tk-detail-card-title">
+                        <Award size={20} style={{ color: primaryColor }} />
+                        Key Features
+                      </h4>
+                      <div className="tk-features-grid">
+                        {industries[activeIndustry].features.map(
+                          (feature, idx) => (
+                            <div
+                              key={idx}
+                              className="tk-feature-item tk-feature-3d"
+                            >
+                              <CheckCircle
+                                size={16}
+                                style={{ color: primaryColor }}
+                              />
+                              {feature}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="tk-detail-card tk-card-3d">
+                      <h4 className="tk-detail-card-title">
+                        <Shield size={20} style={{ color: primaryColor }} />
+                        Materials
+                      </h4>
+                      <div className="tk-features-grid">
+                        {industries[activeIndustry].materials.map(
+                          (materials, idx) => (
+                            <div
+                              key={idx}
+                              className="tk-feature-item tk-feature-3d"
+                            >
+                              <CheckCircle
+                                size={16}
+                                style={{ color: primaryColor }}
+                              />
+                              {materials}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
+              )}
+            </div>
+          </div>
+        </section>
 
-                <div className="tk-detail-grid">
-                  <div className="tk-detail-card tk-card-3d">
-                    <h4 className="tk-detail-card-title">
-                      <Box size={20} style={{ color: primaryColor }} />
-                      Applications
-                    </h4>
-                    <ul className="tk-applications-list">
-                      {industries[activeIndustry].applications.map((app, idx) => (
-                        <div key={idx} className="tk-feature-item2 tk-feature-3d">
-                          <CheckCircle size={16} style={{ color: primaryColor }} />
-                          {app}
-                        </div>
+        <section
+          className="tk-industry-services"
+          ref={(el) => addToRefs(el, 2)}
+          data-section="services"
+        >
+          <div className="tk-container">
+            <div className="tk-section-header">
+              <div
+                className="tk-section-badge"
+                style={{ background: primaryColor }}
+              >
+                <Briefcase size={16} />
+                Our Services
+              </div>
+              <h2 className="tk-section-title-iws">
+                Comprehensive{" "}
+                <span style={{ color: primaryColor }}>Industry</span> Solutions
+              </h2>
+              <div className="tk-section-divider">
+                <div
+                  className="tk-divider-line"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+                  }}
+                ></div>
+                <div
+                  className="tk-divider-dot tk-pulse-dot"
+                  style={{ background: primaryColor }}
+                ></div>
+                <div
+                  className="tk-divider-line"
+                  style={{
+                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+                  }}
+                ></div>
+              </div>
+              <p className="tk-section-subtitle">
+                End-to-end support from material selection to after-sales
+                service
+              </p>
+            </div>
+
+            <div className="tk-services-grid">
+              {industryServices.map((service, index) => (
+                <div
+                  key={index}
+                  className={`tk-service-card ${visibleSections.services ? "tk-animate-slide-up" : ""}`}
+                  style={{ animationDelay: `${index * 0.12}s` }}
+                  onMouseEnter={() => setHoveredCard(`service-${index}`)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                >
+                  <div className="tk-service-card-inner tk-card-3d">
+                    <div
+                      className="tk-service-icon tk-icon-float"
+                      style={{
+                        background: `linear-gradient(135deg, ${primaryColor}20, ${primaryColor}10)`,
+                        borderColor: primaryColor,
+                      }}
+                    >
+                      {service.icon}
+                    </div>
+                    <h3 className="tk-service-title">{service.title}</h3>
+                    <p className="tk-service-description">
+                      {service.description}
+                    </p>
+
+                    <ul className="tk-service-features">
+                      {service.features.map((feature, idx) => (
+                        <li key={idx} className="tk-feature-3d">
+                          <ChevronRight
+                            size={14}
+                            style={{ color: primaryColor }}
+                          />
+                          {feature}
+                        </li>
                       ))}
                     </ul>
-                  </div>
 
-                  <div className="tk-detail-card tk-card-3d">
-                    <h4 className="tk-detail-card-title">
-                      <Award size={20} style={{ color: primaryColor }} />
-                      Key Features
-                    </h4>
-                    <div className="tk-features-grid">
-                      {industries[activeIndustry].features.map((feature, idx) => (
-                        <div key={idx} className="tk-feature-item tk-feature-3d">
-                          <CheckCircle size={16} style={{ color: primaryColor }} />
-                          {feature}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="tk-detail-card tk-card-3d">
-                    <h4 className="tk-detail-card-title">
-                      <Shield size={20} style={{ color: primaryColor }} />
-                      Materials
-                    </h4>
-                    <div className="tk-features-grid">
-                      {industries[activeIndustry].materials.map((materials, idx) => (
-                        <div key={idx} className="tk-feature-item tk-feature-3d">
-                          <CheckCircle size={16} style={{ color: primaryColor }} />
-                          {materials}
-                        </div>
-                      ))}
-                    </div>
+                    <button
+                      className="tk-service-button tk-btn-3d"
+                      style={{
+                        borderColor: primaryColor,
+                        color: primaryColor,
+                      }}
+                      onClick={() => navigate("/contact")}
+                    >
+                      <span>Learn More</span>
+                      <ChevronRight size={16} />
+                    </button>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
-          🛠️ INDUSTRY SERVICES SECTION
-          ========================================== */}
-      <section
-        className="tk-industry-services"
-        ref={(el) => addToRefs(el, 2)}
-        data-section="services"
-      >
-        <div className="tk-container">
-          <div className="tk-section-header">
-            <div className="tk-section-badge" style={{ background: primaryColor }}>
-              <Briefcase size={16} />
-              Our Services
+              ))}
             </div>
-            <h2 className="tk-section-title-iws">
-              Comprehensive <span style={{ color: primaryColor }}>Industry</span> Solutions
-            </h2>
-            <div className="tk-section-divider">
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="tk-divider-dot tk-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
-            </div>
-            <p className="tk-section-subtitle">
-              End-to-end support from material selection to after-sales service
-            </p>
           </div>
+        </section>
+      </div>
 
-          <div className="tk-services-grid">
-            {industryServices.map((service, index) => (
-              <div
-                key={index}
-                className={`tk-service-card ${visibleSections.services ? "tk-animate-slide-up" : ""}`}
-                style={{ animationDelay: `${index * 0.12}s` }}
-                onMouseEnter={() => setHoveredCard(`service-${index}`)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
-                <div className="tk-service-card-inner tk-card-3d">
-                  <div
-                    className="tk-service-icon tk-icon-float"
-                    style={{
-                      background: `linear-gradient(135deg, ${primaryColor}20, ${primaryColor}10)`,
-                      borderColor: primaryColor,
-                    }}
-                  >
-                    {service.icon}
-                  </div>
-                  <h3 className="tk-service-title">{service.title}</h3>
-                  <p className="tk-service-description">{service.description}</p>
-
-                  <ul className="tk-service-features">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="tk-feature-3d">
-                        <ChevronRight size={14} style={{ color: primaryColor }} />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <button
-                    className="tk-service-button tk-btn-3d"
-                    style={{
-                      borderColor: primaryColor,
-                      color: primaryColor,
-                    }}
-                    onClick={() => navigate("/contact")}
-                  >
-                    <span>Learn More</span>
-                    <ChevronRight size={16} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-     
-</div>
-
-<div className="contact-page4" id="contact">
-  {/* ==========================================
-            📇 CONTACT CARDS WITH 3D EFFECT
-            ========================================== */}
+      <div className="contact-page4" id="contact">
         <div className="qc-contact-cards-wrapper">
           <div className="qc-section-header">
-            <div className="qc-section-badge" style={{ background: primaryColor }}>
+            <div
+              className="qc-section-badge"
+              style={{ background: primaryColor }}
+            >
               <Compass size={16} />
               Connect With Us
             </div>
@@ -2479,15 +2499,28 @@ const Home = () => {
               How to <span style={{ color: primaryColor }}>Reach Us</span>
             </h2>
             <div className="qc-section-divider">
-              <div className="qc-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="qc-divider-dot qc-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="qc-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
+              <div
+                className="qc-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+                }}
+              ></div>
+              <div
+                className="qc-divider-dot qc-pulse-dot"
+                style={{ background: primaryColor }}
+              ></div>
+              <div
+                className="qc-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+                }}
+              ></div>
             </div>
             <p className="qc-section-subtitle">
               We're here to help. Reach out to us through any of these channels
             </p>
           </div>
-  
+
           <div className="qc-contact-card-container">
             {contactData.map((item, index) => (
               <div
@@ -2498,24 +2531,35 @@ const Home = () => {
                 onMouseEnter={() => setHoveredCard(index)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
-                <div className="qc-card-glow" style={{ background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${primaryColor}20, transparent 70%)` }}></div>
+                <div
+                  className="qc-card-glow"
+                  style={{
+                    background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${primaryColor}20, transparent 70%)`,
+                  }}
+                ></div>
                 <div className="qc-contact-icon qc-icon-pulse">
                   {item.icon}
-                  <div className="qc-icon-ring" style={{ borderColor: primaryColor }}></div>
-                  {/* <div className="qc-icon-shine"></div> */}
+                  <div
+                    className="qc-icon-ring"
+                    style={{ borderColor: primaryColor }}
+                  ></div>
                 </div>
                 <h2 className="qc-contact-card-title">{item.title}</h2>
-                <p className="qc-contact-card-description">{item.description}</p>
-                <div className="qc-card-hover-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, ${primaryLight})` }}></div>
+                <p className="qc-contact-card-description">
+                  {item.description}
+                </p>
+                <div
+                  className="qc-card-hover-line"
+                  style={{
+                    background: `linear-gradient(90deg, ${primaryColor}, ${primaryLight})`,
+                  }}
+                ></div>
                 <div className="qc-card-number">0{index + 1}</div>
               </div>
             ))}
           </div>
         </div>
-  
-        {/* ==========================================
-            📝 CONTACT FORM SECTION
-            ========================================== */}
+
         <section
           className="qc-contact-form-section"
           id="contact-form"
@@ -2523,9 +2567,12 @@ const Home = () => {
           data-section="form"
         >
           <div className="qc-form-pattern"></div>
-  
+
           <div className="qc-section-header qc-form-header">
-            <div className="qc-section-badge" style={{ background: primaryColor }}>
+            <div
+              className="qc-section-badge"
+              style={{ background: primaryColor }}
+            >
               <MessageSquare size={16} />
               Send Message
             </div>
@@ -2533,23 +2580,40 @@ const Home = () => {
               Get in <span style={{ color: primaryColor }}>Touch</span>
             </h2>
             <div className="qc-section-divider">
-              <div className="qc-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="qc-divider-dot qc-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="qc-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
+              <div
+                className="qc-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+                }}
+              ></div>
+              <div
+                className="qc-divider-dot qc-pulse-dot"
+                style={{ background: primaryColor }}
+              ></div>
+              <div
+                className="qc-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+                }}
+              ></div>
             </div>
             <p className="qc-form-subheading">
               We'll get back to you within 24 hours
             </p>
           </div>
-  
+
           <div className="qc-form-container qc-form-3d">
             <div className="qc-form-content">
               <div className="qc-form-image-box qc-image-float">
                 <img draggable="false" src={contactImage} alt="Contact" />
-                <div className="qc-image-glow" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})` }}></div>
-                {/* <div className="qc-image-ring"></div> */}
+                <div
+                  className="qc-image-glow"
+                  style={{
+                    background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
+                  }}
+                ></div>
               </div>
-  
+
               <form
                 ref={formRef}
                 id="qc-contact-form"
@@ -2563,50 +2627,64 @@ const Home = () => {
                   name="access_key"
                   value="5162d798-f96f-4824-a967-12cdaad116e8"
                 />
-  
+
                 <div className="qc-form-group">
                   <div className="qc-form-field qc-input-float">
                     <input type="text" name="name" placeholder=" " required />
                     <label>Full Name</label>
                     <i className="fas fa-user"></i>
-                    <div className="qc-input-focus-line" style={{ background: primaryColor }}></div>
+                    <div
+                      className="qc-input-focus-line"
+                      style={{ background: primaryColor }}
+                    ></div>
                   </div>
-  
+
                   <div className="qc-form-field qc-input-float">
                     <input type="email" name="email" placeholder=" " required />
                     <label>Email Address</label>
                     <i className="fas fa-envelope"></i>
-                    <div className="qc-input-focus-line" style={{ background: primaryColor }}></div>
+                    <div
+                      className="qc-input-focus-line"
+                      style={{ background: primaryColor }}
+                    ></div>
                   </div>
-  
+
                   <div className="qc-form-field qc-input-float">
                     <input type="text" name="phone" placeholder=" " />
                     <label>Phone Number</label>
                     <i className="fas fa-phone-alt"></i>
-                    <div className="qc-input-focus-line" style={{ background: primaryColor }}></div>
+                    <div
+                      className="qc-input-focus-line"
+                      style={{ background: primaryColor }}
+                    ></div>
                   </div>
-  
+
                   <div className="qc-form-message qc-input-float">
                     <textarea name="message" placeholder=" " required />
                     <label>Your Message</label>
                     <i className="fas fa-comment-dots"></i>
-                    <div className="qc-input-focus-line" style={{ background: primaryColor }}></div>
+                    <div
+                      className="qc-input-focus-line"
+                      style={{ background: primaryColor }}
+                    ></div>
                   </div>
                 </div>
-  
+
                 <input
                   type="checkbox"
                   name="botcheck"
                   className="qc-hidden"
                   style={{ display: "none" }}
                 />
-  
+
                 <div className="qc-button-area">
                   <button
                     type="submit"
                     className={`qc-btn-magnetic qc-btn-3d ${isSubmitting ? "qc-btn-loading" : ""}`}
                     disabled={isSubmitting}
-                    style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})` }}
+                    style={{
+                      background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
+                    }}
                   >
                     <span className="qc-btn-text">
                       {isSubmitting ? "Sending..." : "Send Message"}
@@ -2618,15 +2696,14 @@ const Home = () => {
                     <span className="qc-btn-ripple"></span>
                   </button>
                 </div>
-  
+
                 {successMessage && (
                   <div className="qc-success-alert">{successMessage}</div>
                 )}
               </form>
             </div>
           </div>
-  
-          {/* Map Section */}
+
           <div className="qc-map-section">
             <div className="qc-map-container qc-map-float">
               <div className="qc-map-overlay">
@@ -2637,7 +2714,9 @@ const Home = () => {
                 <p>Shop no. 6, Somnath Complex, Rajpardi</p>
                 <button
                   className="qc-map-btn qc-btn-3d"
-                  style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})` }}
+                  style={{
+                    background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
+                  }}
                   onClick={() =>
                     window.open(
                       "https://www.google.com/maps/dir//Technoking+Test+Lab+Pvt.+Ltd.,+Shyam+Industrail+Park,+Bakrol+Bujrang,+Gujarat+382430/@22.1484557,70.7700749,5666m/data=!3m2!1e3!4b1!4m8!4m7!1m0!1m5!1m1!1s0x395e6300098d72db:0xe77e8e974e146640!2m2!1d72.7492243!2d22.9878418!5m1!1e1?entry=ttu&g_ep=EgoyMDI2MDEyOC4wIKXMDSoASAFQAw%3D%3D",
@@ -2650,18 +2729,20 @@ const Home = () => {
                   <span className="qc-map-arrow">→</span>
                 </button>
               </div>
-              <div className="qc-map-glow" style={{ background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)` }}></div>
+              <div
+                className="qc-map-glow"
+                style={{
+                  background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)`,
+                }}
+              ></div>
             </div>
           </div>
         </section>
-
-</div>
-
+      </div>
     </div>
   );
 };
 
-// Book Icon Component
 const BookIcon = () => (
   <svg
     width="20"
