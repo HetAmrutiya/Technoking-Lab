@@ -676,3 +676,26 @@ Home Main Container
   background-color: white !important;
   position: relative;
 }
+
+
+
+.prod-industry-tag-hm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--prod-spacing-sm) var(--prod-spacing-lg);
+  background: white;
+  border: 2px solid var(--prod-border-color);
+  border-radius: var(--prod-radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--prod-text-secondary);
+  transition: all var(--prod-transition-base);
+  cursor: default;
+}
+
+.prod-industry-tag-hm svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
