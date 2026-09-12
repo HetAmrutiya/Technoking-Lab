@@ -42,6 +42,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ServiceDetailModal from "../ServiceDetail/ServiceDetailModal";
 
 const Product = () => {
   const [activeTab, setActiveTab] = useState("ultrasonic");
@@ -51,6 +52,8 @@ const Product = () => {
   const [animatedSteps, setAnimatedSteps] = useState([]);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [counters, setCounters] = useState({});
+  const [selectedMethod, setSelectedMethod] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const sectionRefs = useRef([]);
   const heroRef = useRef(null);
   const navigate = useNavigate();
@@ -395,7 +398,7 @@ const Product = () => {
     },
     {
       id: 9,
-      method: "Thickness Measurement  ",
+      method: "Thickness Measurement",
       shortName: "Thickness",
       description:
         "Measures material thickness using ultrasonic or electromagnetic methods with exceptional accuracy.",
@@ -423,9 +426,6 @@ const Product = () => {
 
   // ============================================
   // 📋 SPECIFICATIONS
-  // ============================================
-  // ============================================
-  // 📋 SPECIFICATIONS - UPDATED WITH MORE DATA
   // ============================================
   const specifications = {
     ultrasonic: [
@@ -468,7 +468,7 @@ const Product = () => {
       { property: "Light Intensity", value: "1000+ lux", icon: "💡" },
       { property: "UV Light", value: "1000 μW/cm²", icon: "🔦" },
     ],
-  };  
+  };
 
   // ============================================
   // 🔄 CERTIFICATION PROCESS
@@ -598,6 +598,24 @@ const Product = () => {
     { id: "magnetic", label: "MPT", icon: "🧲" },
     { id: "penetrant", label: "DPT", icon: "🔬" },
   ];
+
+  // ============================================
+  // 🎯 HANDLE REQUEST SERVICE CLICK
+  // ============================================
+  const handleRequestService = (method) => {
+    setSelectedMethod(method);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedMethod(null), 300);
+  };
+
+  const handleSelectMethod = (method) => {
+    setSelectedMethod(method);
+    // Optionally scroll modal content to top
+  };
 
   return (
     <div className="prod-page" id="services">
@@ -930,7 +948,6 @@ const Product = () => {
                   <div className="prod-method-card-icon prod-icon-pulse">
                     {method.icon}
                   </div>
-                  {/* ✅ FIX: Method Title with proper wrapping */}
                   <h3 className="prod-method-card-title">{method.method}</h3>
                   <div className="prod-method-card-number">
                     #{String(index + 1).padStart(2, "0")}
@@ -1013,7 +1030,7 @@ const Product = () => {
                     <button
                       className="prod-method-card-button"
                       style={{ background: method.gradient }}
-                      onClick={() => navigate("/contact")}
+                      onClick={() => handleRequestService(method)}
                     >
                       <span>Request Service</span>
                       <div className="prod-button-arrow">→</div>
@@ -1199,124 +1216,105 @@ const Product = () => {
       {/* ==========================================
           🔄 CERTIFICATION PROCESS
           ========================================== */}
-     {/* ==========================================
-    🔄 CERTIFICATION PROCESS
-    ========================================== */}
-<section
-  className="prod-certification-section"
-  ref={(el) => addToRefs(el, 6)}
-  data-section="process"
->
-  <div className="prod-container-inner">
-    <div className="prod-section-header">
-      <div
-        className="prod-section-badge"
-        style={{ background: primaryColor }}
+      <section
+        className="prod-certification-section"
+        ref={(el) => addToRefs(el, 6)}
+        data-section="process"
       >
-        <Crown size={16} />
-        Our Process
-      </div>
-      <h2 className="prod-section-title">
-        Certification <span style={{ color: primaryColor }}>Process</span>
-      </h2>
-      <div className="prod-section-divider">
-        <div
-          className="prod-divider-line"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-          }}
-        ></div>
-        <div
-          className="prod-divider-dot prod-pulse-dot"
-          style={{ background: primaryColor }}
-        ></div>
-        <div
-          className="prod-divider-line"
-          style={{
-            background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-          }}
-        ></div>
-      </div>
-      <p className="prod-section-description">
-        Streamlined process from inspection to certification
-      </p>
-    </div>
-
-    <div className="prod-process-timeline">
-      {certificationProcess.map((process, index) => (
-        <div
-          key={index}
-          className={`prod-process-step ${
-            animatedSteps.includes(process.step)
-              ? "prod-animate-fade"
-              : ""
-          }`}
-          style={{ animationDelay: `${index * 0.2}s` }}
-        >
-          <div className="prod-process-step-indicator">
+        <div className="prod-container-inner">
+          <div className="prod-section-header">
             <div
-              className="prod-process-step-number prod-pulse-animation"
-              style={{ background: process.gradient }}
-            >
-              {process.step}
-              <div className="prod-process-step-glow"></div>
-            </div>
-            <div className="prod-process-step-icon">{process.icon}</div>
-          </div>
-          
-          <div className="prod-process-step-content prod-hover-float">
-            <h3 className="prod-process-step-title">{process.title}</h3>
-            <p className="prod-process-step-description">
-              {process.description}
-            </p>
-            <div className="prod-process-step-duration">
-              <span className="prod-duration-icon prod-pulse-animation">
-                ⏱️
-              </span>
-              {process.duration}
-            </div>
-            <div className="prod-process-step-hover"></div>
-          </div>
-          
-          {index < certificationProcess.length - 1 && (
-            <div
-              className="prod-process-step-connector prod-pulse-animation"
+              className="prod-section-badge"
               style={{ background: primaryColor }}
-            ></div>
-          )}
+            >
+              <Crown size={16} />
+              Our Process
+            </div>
+            <h2 className="prod-section-title">
+              Certification{" "}
+              <span style={{ color: primaryColor }}>Process</span>
+            </h2>
+            <div className="prod-section-divider">
+              <div
+                className="prod-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+                }}
+              ></div>
+              <div
+                className="prod-divider-dot prod-pulse-dot"
+                style={{ background: primaryColor }}
+              ></div>
+              <div
+                className="prod-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+                }}
+              ></div>
+            </div>
+            <p className="prod-section-description">
+              Streamlined process from inspection to certification
+            </p>
+          </div>
+
+          <div className="prod-process-timeline">
+            {certificationProcess.map((process, index) => (
+              <div
+                key={index}
+                className={`prod-process-step ${
+                  animatedSteps.includes(process.step)
+                    ? "prod-animate-fade"
+                    : ""
+                }`}
+                style={{ animationDelay: `${index * 0.2}s` }}
+              >
+                <div className="prod-process-step-indicator">
+                  <div
+                    className="prod-process-step-number prod-pulse-animation"
+                    style={{ background: process.gradient }}
+                  >
+                    {process.step}
+                    <div className="prod-process-step-glow"></div>
+                  </div>
+                  <div className="prod-process-step-icon">{process.icon}</div>
+                </div>
+
+                <div className="prod-process-step-content prod-hover-float">
+                  <h3 className="prod-process-step-title">{process.title}</h3>
+                  <p className="prod-process-step-description">
+                    {process.description}
+                  </p>
+                  <div className="prod-process-step-duration">
+                    <span className="prod-duration-icon prod-pulse-animation">
+                      ⏱️
+                    </span>
+                    {process.duration}
+                  </div>
+                  <div className="prod-process-step-hover"></div>
+                </div>
+
+                {index < certificationProcess.length - 1 && (
+                  <div
+                    className="prod-process-step-connector prod-pulse-animation"
+                    style={{ background: primaryColor }}
+                  ></div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* ==========================================
-          🎯 CTA BANNER
+          🎯 SERVICE DETAIL MODAL
           ========================================== */}
-      {/* <section className="prod-cta-banner" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryDark})` }}>
-        <div className="prod-cta-content">
-          <h2 className="prod-cta-title">Ready for <span>Reliable Testing</span>?</h2>
-          <p className="prod-cta-description">Contact us today for expert inspection and certification services</p>
-          <button className="prod-cta-button" onClick={() => navigate("/contact")}>
-            Get a Free Quote
-            <span className="prod-cta-arrow">→</span>
-          </button>
-        </div>
-        <div className="prod-cta-particles">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="prod-cta-particle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDuration: `${8 + Math.random() * 12}s`,
-                animationDelay: `${Math.random() * 4}s`,
-              }}
-            ></div>
-          ))}
-        </div>
-      </section> */}
+      <ServiceDetailModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        method={selectedMethod}
+        allMethods={testingMethods}
+        onSelectMethod={handleSelectMethod}
+      />
     </div>
   );
 };
