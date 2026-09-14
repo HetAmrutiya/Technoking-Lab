@@ -16,6 +16,7 @@ import AuthContainer from "./Pages/Login/AuthContainer";
 import SignUp from "./Pages/Login/SignUp";
 import Gallery from "./Pages/Gallery/Gallery";
 import Team from "./Pages/Team/Team";
+import Certificate from "./Pages/Certificate/Certificate";
 
 function App() {
   useEffect(() => {
@@ -61,6 +62,7 @@ function App() {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/AuthContainer" element={<AuthContainer />} />
               <Route path="/gallery" element={<Gallery />} />
+              <Route path="/certificate" element={<Certificate />} />
             </Routes>
             <Footer />
           </BrowserRouter>

@@ -1,0 +1,988 @@
+/* ============================================
+   🏆 CERTIFICATE PAGE - COMPLETE STYLES
+   PRIMARY COLOR: #235781
+   SAME HEADER + HERO AS CONTACT US
+   ============================================ */
+
+:root {
+  /* 🔵 Primary Blue Colors */
+  --p-color: #235781;
+  --p-dark: #16405F;
+  --p-light: #4A82A8;
+  --primary-lighter: #6BA0C9;
+  --primary-lightest: #8FB8D9;
+
+  --secondary-color: #0a1628;
+  --accent-color: #e8f4fd;
+  --text-primary: #1F2933;
+  --text-secondary: #52606D;
+  --text-light: #829AB1;
+  --card-bg: #ffffff;
+  --section-bg: #f4f8fb;
+  --border-color: #d5e2ea;
+  --white: #ffffff;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(35, 87, 129, 0.08);
+  --shadow-md: 0 4px 20px rgba(35, 87, 129, 0.1);
+  --shadow-lg: 0 8px 35px rgba(35, 87, 129, 0.12);
+  --shadow-xl: 0 16px 50px rgba(35, 87, 129, 0.15);
+  --shadow-xxl: 0 24px 64px rgba(35, 87, 129, 0.2);
+  --shadow-3d: 0 20px 60px rgba(35, 87, 129, 0.25);
+  --shadow-blue: rgba(35, 87, 129, 0.3);
+  --shadow-blue-light: rgba(35, 87, 129, 0.1);
+  --shadow-blue-dark: rgba(35, 87, 129, 0.5);
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-bounce: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  --font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --container-max-width: 1280px;
+  --container-padding: 20px;
+  --section-padding: 80px 0;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  line-height: 1.6;
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+.qc-certificate-container {
+  background: var(--section-bg);
+  position: relative;
+  width: 100%;
+  margin-top: 65px;
+  overflow: hidden;
+}
+
+/* ============================================
+   📊 SCROLL PROGRESS BAR
+   ============================================ */
+.qc-scroll-progress {
+  position: fixed;
+  top: 65px;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--p-color), var(--p-light));
+  z-index: 999;
+  transition: width 0.1s ease;
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 20px rgba(35, 87, 129, 0.3);
+}
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+.qc-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+/* ============================================
+   🎬 HERO SECTION (SAME AS CONTACT US)
+   ============================================ */
+.qc-contact-hero {
+  position: relative;
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-attachment: fixed;
+}
+
+.qc-hero-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.qc-hero-particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: qc-hero-particle-float linear infinite;
+  pointer-events: none;
+  opacity: 0;
+}
+
+@keyframes qc-hero-particle-float {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-150px) rotate(360deg) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.qc-hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  z-index: 2;
+}
+
+.qc-hero-content.qc-animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.qc-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.qc-badge-pulse {
+  animation: qc-badge-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes qc-badge-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  }
+}
+
+.qc-badge-dot {
+  width: 8px;
+  height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
+  animation: qc-dot-blink 1.5s ease-in-out infinite;
+}
+
+@keyframes qc-dot-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.qc-hero-title {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: white;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.qc-title-line {
+  display: inline-block;
+}
+
+.qc-hero-highlight {
+  background: linear-gradient(
+    135deg,
+    var(--p-light),
+    var(--primary-lighter),
+    var(--p-light)
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: qc-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes qc-shimmer {
+  0%,
+  100% {
+    background-position: -200% center;
+  }
+  50% {
+    background-position: 200% center;
+  }
+}
+
+.qc-hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 600px;
+  margin: 0 auto 32px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero Scroll Indicator */
+.qc-hero-scroll {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+  animation: qc-scrollFade 2.5s ease-in-out infinite;
+}
+
+.qc-scroll-3d {
+  perspective: 800px;
+}
+
+@keyframes qc-scrollFade {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(6px);
+  }
+}
+
+.qc-scroll-mouse {
+  width: 24px;
+  height: 38px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  position: relative;
+}
+
+.qc-scroll-wheel {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 8px;
+  background: white;
+  border-radius: 2px;
+  animation: qc-scroll-wheel 2s ease-in-out infinite;
+}
+
+@keyframes qc-scroll-wheel {
+  0% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(20px);
+    opacity: 0;
+  }
+}
+
+.qc-scroll-text {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* ============================================
+   SECTION HEADER (SAME AS CONTACT US)
+   ============================================ */
+.qc-section-header {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+  position: relative;
+  z-index: 2;
+}
+
+.qc-section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  background: var(--p-color);
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-lg);
+  margin-left: auto;
+  margin-right: auto;
+  animation: qc-pop-in 0.6s var(--transition-bounce) forwards;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+@keyframes qc-pop-in {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.qc-section-title {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-lg);
+  color: var(--secondary-color);
+}
+
+.qc-section-subtitle {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.qc-section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.qc-divider-line {
+  width: 80px;
+  height: 2px;
+  animation: qc-lineExpand 1s ease-out forwards;
+  transform-origin: center;
+}
+
+@keyframes qc-lineExpand {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.qc-divider-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--p-color);
+  margin: 0 20px;
+}
+
+.qc-pulse-dot {
+  animation: qc-dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes qc-dotPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.6;
+  }
+}
+
+/* ============================================
+   CERTIFICATES SECTION
+   ============================================ */
+.qc-certificates-section {
+  padding: var(--section-padding);
+  background: var(--section-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.qc-cert-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+      circle at 15% 50%,
+      rgba(35, 87, 129, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 85% 30%,
+      rgba(35, 87, 129, 0.05) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+}
+
+/* ============================================
+   CERTIFICATES GRID
+   ============================================ */
+.qc-cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   CERTIFICATE CARD
+   ============================================ */
+.qc-certificate-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-2xl);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-slow);
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+}
+
+.qc-cert-pop-in {
+  animation: qc-certPopIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes qc-certPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  70% {
+    transform: translateY(-8px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.qc-certificate-card:hover {
+  transform: translateY(-12px);
+  box-shadow: var(--shadow-3d);
+  border-color: rgba(35, 87, 129, 0.25);
+}
+
+.qc-cert-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+  pointer-events: none;
+  border-radius: var(--radius-2xl);
+}
+
+.qc-certificate-card:hover .qc-cert-glow {
+  opacity: 1;
+}
+
+/* ============================================
+   CERTIFICATE BADGE
+   ============================================ */
+.qc-cert-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 5px 12px;
+  background: rgba(35, 87, 129, 0.1);
+  color: var(--p-color);
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  z-index: 2;
+  transition: all var(--transition-slow);
+}
+
+.qc-certificate-card:hover .qc-cert-badge {
+  background: var(--p-color);
+  color: var(--white);
+  transform: scale(1.05);
+}
+
+/* ============================================
+   CERTIFICATE ICON
+   ============================================ */
+.qc-cert-icon {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(35, 87, 129, 0.1),
+    rgba(74, 130, 168, 0.1)
+  );
+  border: 2px solid rgba(35, 87, 129, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--p-color);
+  margin-bottom: 20px;
+  transition: all var(--transition-slow);
+  z-index: 2;
+}
+
+.qc-certificate-card:hover .qc-cert-icon {
+  background: linear-gradient(135deg, var(--p-color), var(--p-light));
+  color: var(--white);
+  border-color: transparent;
+  transform: translateY(-6px) scale(1.08) rotate(-4deg);
+  box-shadow: 0 15px 35px var(--shadow-blue);
+}
+
+.qc-cert-icon-ring {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border: 2px solid var(--p-color);
+  border-radius: 24px;
+  opacity: 0;
+  animation: qc-certRingExpand 2.5s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes qc-certRingExpand {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   CERTIFICATE TEXT
+   ============================================ */
+.qc-cert-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  transition: color var(--transition-slow);
+  z-index: 2;
+}
+
+.qc-certificate-card:hover .qc-cert-title {
+  color: var(--p-color);
+}
+
+.qc-cert-subtitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--p-color);
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
+  z-index: 2;
+}
+
+.qc-cert-description {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  z-index: 2;
+  flex-grow: 1;
+}
+
+/* ============================================
+   DOWNLOAD BUTTON
+   ============================================ */
+.qc-cert-download-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 32px;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--white);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 8px 25px var(--shadow-blue);
+  transition: all var(--transition-slow);
+  z-index: 2;
+  width: 100%;
+  max-width: 220px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.qc-cert-download-btn:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 15px 40px var(--shadow-blue-dark);
+}
+
+.qc-cert-download-btn:active:not(:disabled) {
+  transform: translateY(-2px) scale(1);
+}
+
+.qc-cert-download-btn:disabled {
+  cursor: wait;
+  opacity: 0.9;
+}
+
+.qc-cert-btn-text {
+  position: relative;
+  z-index: 2;
+}
+
+.qc-cert-btn-icon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  transition: transform var(--transition-fast);
+}
+
+.qc-cert-download-btn:hover:not(:disabled) .qc-cert-btn-icon {
+  transform: translateY(2px) scale(1.1);
+}
+
+.qc-cert-btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left var(--transition-slow);
+}
+
+.qc-cert-download-btn:hover:not(:disabled) .qc-cert-btn-glow {
+  left: 100%;
+}
+
+.qc-cert-downloading .qc-cert-btn-icon {
+  animation: qc-certSpin 1s linear infinite;
+}
+
+@keyframes qc-certSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   HOVER UNDERLINE
+   ============================================ */
+.qc-cert-hover-line {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 4px;
+  border-radius: 2px;
+  transition: width var(--transition-slow);
+}
+
+.qc-certificate-card:hover .qc-cert-hover-line {
+  width: 70%;
+}
+
+/* ============================================
+   FADE IN UP
+   ============================================ */
+.qc-fade-in-up {
+  animation: qc-fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes qc-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   RESPONSIVE - LARGE TABLET (max-width: 992px)
+   ============================================ */
+@media (max-width: 992px) {
+  :root {
+    --container-padding: 16px;
+    --section-padding: 60px 0;
+  }
+
+  .qc-cert-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 22px;
+  }
+
+  .qc-certificate-card {
+    padding: 28px 22px;
+  }
+
+  .qc-cert-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+  }
+
+  .qc-cert-title {
+    font-size: 1.15rem;
+  }
+}
+
+/* ============================================
+   RESPONSIVE - TABLET / MOBILE (max-width: 768px)
+   ============================================ */
+@media (max-width: 768px) {
+  :root {
+    --container-padding: 12px;
+    --section-padding: 50px 0;
+  }
+
+  .qc-contact-hero {
+    min-height: 50vh;
+    background-attachment: scroll !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-color: var(--p-dark) !important;
+  }
+
+  .qc-hero-title {
+    font-size: 2.5rem;
+  }
+
+  .qc-certificates-section {
+    padding: 50px 0;
+  }
+
+  .qc-section-header {
+    padding: 0 20px;
+    margin-bottom: 40px;
+  }
+
+  .qc-section-title {
+    font-size: 1.9rem;
+  }
+
+  .qc-section-subtitle {
+    font-size: 1rem;
+  }
+
+  .qc-cert-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .qc-certificate-card {
+    padding: 26px 22px;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .qc-cert-download-btn {
+    max-width: 100%;
+  }
+}
+
+/* ============================================
+   RESPONSIVE - SMALL MOBILE (max-width: 480px)
+   ============================================ */
+@media (max-width: 480px) {
+  :root {
+    --container-padding: 8px;
+    --section-padding: 40px 0;
+  }
+
+  .qc-contact-hero {
+    min-height: 40vh;
+    background-attachment: scroll !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-color: #0d3559 !important;
+  }
+
+  .qc-hero-title {
+    font-size: 2rem;
+  }
+
+  .qc-certificates-section {
+    padding: 40px 0;
+  }
+
+  .qc-section-header {
+    padding: 0 16px;
+    margin-bottom: 32px;
+  }
+
+  .qc-section-badge {
+    font-size: 0.75rem;
+    padding: 6px 18px;
+  }
+
+  .qc-section-title {
+    font-size: 1.6rem;
+  }
+
+  .qc-section-subtitle {
+    font-size: 0.92rem;
+  }
+
+  .qc-cert-grid {
+    padding: 0 12px;
+    gap: 16px;
+  }
+
+  .qc-certificate-card {
+    padding: 24px 18px;
+    border-radius: var(--radius-xl);
+  }
+
+  .qc-cert-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+  }
+
+  .qc-cert-title {
+    font-size: 1.05rem;
+  }
+
+  .qc-cert-subtitle {
+    font-size: 0.78rem;
+  }
+
+  .qc-cert-description {
+    font-size: 0.85rem;
+  }
+
+  .qc-cert-download-btn {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+
+  .qc-cert-badge {
+    top: 12px;
+    right: 12px;
+    font-size: 0.65rem;
+    padding: 4px 10px;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .qc-animate-in,
+  .qc-cert-pop-in,
+  .qc-fade-in-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .qc-certificate-card:hover {
+    transform: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  :root {
+    --p-color: #0a3a5a;
+    --text-primary: #000000;
+    --text-secondary: #222222;
+    --border-color: #000000;
+  }
+
+  .qc-certificate-card {
+    border: 2px solid var(--border-color);
+  }
+}

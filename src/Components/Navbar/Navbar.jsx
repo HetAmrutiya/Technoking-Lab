@@ -243,6 +243,18 @@ const Navbar = () => {
                 <div className="ne-navbar-menu-highlight"></div>
               </li>
 
+                <li
+                className={`ne-navbar-menu-item ${
+                  activeMenu === "certificate" ? "ne-navbar-menu-item-active" : ""
+                }`}
+                onClick={() => handleNavigation("/certificate", "certificate")}
+                style={{ "--item-index": 4 }}
+              >
+                <span className="ne-navbar-menu-text">Certificate</span>
+                <div className="ne-navbar-menu-highlight"></div>
+              </li>
+
+
               {/* Mobile Only Login/User Section */}
               <div className="ne-navbar-mobile-auth-section">
                 {isLoggedIn ? (

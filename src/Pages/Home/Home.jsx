@@ -109,27 +109,67 @@ import { HiOutlineMail } from "react-icons/hi";
 import { LuPhoneCall } from "react-icons/lu";
 import contactImage from "../../assets/contact1.png";
 
+/* ============================================================
+   📍 COMPANY / LOCATION DETAILS  —  EDIT ONLY HERE
+   Used by: contact cards, map text, and "View on Google Maps"
+   ============================================================ */
+const COMPANY = {
+  name: "Technoking Engineers Pvt. Ltd.",
+  addressLines: [
+    "Technoking Engineers Pvt. Ltd.,",
+    "Shapar Main Rd, near Mama Dev Temple,",
+    "Shapar, Gujarat 360024, India",
+  ],
+  email: "dhaval@ndttesting.co.in",
+  phone: "+91 76005 78888",
+};
+
+/* Google Maps URL built from the same address above */
+const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  "Technoking Engineers Pvt. Ltd., Shapar Main Rd, near Mama Dev Temple, Shapar, Gujarat 360024"
+)}`;
+
+/* Renders the address with proper line breaks */
+const AddressBlock = () => (
+  <>
+    {COMPANY.addressLines.map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        {index < COMPANY.addressLines.length - 1 && <br />}
+      </React.Fragment>
+    ))}
+  </>
+);
+
 const contactData = [
   {
     icon: <SlLocationPin style={{ fontSize: 30, color: "#D6BB6E" }} />,
     title: "Our Address",
-    description: (
-      <>
-        SH No. 309 Hillton Aristo,
-        <br />
-        Nr. Gol Trio Mavdi Kankot, Mavdi, Rajkot, Rajkot- 360004, Gujarat.
-      </>
-    ),
+    description: <AddressBlock />,
   },
   {
     icon: <HiOutlineMail style={{ fontSize: 30, color: "#D6BB6E" }} />,
     title: "Email Us",
-    description: "dhaval@ndttesting.co.in",
+    description: (
+      <a
+        href={`mailto:${COMPANY.email}`}
+        style={{ color: "inherit", textDecoration: "none" }}
+      >
+        {COMPANY.email}
+      </a>
+    ),
   },
   {
     icon: <LuPhoneCall style={{ fontSize: 30, color: "#D6BB6E" }} />,
     title: "Call Us",
-    description: "+91 76005 78888",
+    description: (
+      <a
+        href={`tel:${COMPANY.phone.replace(/\s+/g, "")}`}
+        style={{ color: "inherit", textDecoration: "none" }}
+      >
+        {COMPANY.phone}
+      </a>
+    ),
   },
 ];
 
@@ -188,10 +228,10 @@ const Home = () => {
       color: "#009688",
       gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
     },
-    {
+        {
       icon: <Award size={32} />,
-      title: "NADCAP Accredited",
-      description: "Industry-recognized accreditation for aerospace testing",
+      title: "NABL Accredited",
+      description: "NABL accredited for UT, MT and PT testing",
       color: "#8e44ad",
       gradient: "linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%)",
     },
@@ -569,7 +609,7 @@ const Home = () => {
         "Alloy Pipes",
       ],
     },
-      {
+    {
       id: 3,
       name: "Marine",
       icon: <Ship size={20} />,
@@ -609,7 +649,7 @@ const Home = () => {
         "Engine Components",
       ],
       features: [
-        "NADCAP Accredited",
+        "NABL Accredited (UT, MT, PT)",
         "AS9100D Compliance",
         "Composite Testing",
         "Fatigue Analysis",
@@ -621,7 +661,7 @@ const Home = () => {
         "Superalloys",
       ],
     },
-     {
+    {
       id: 4,
       name: "Construction",
       icon: <HardHat size={20} />,
@@ -673,8 +713,6 @@ const Home = () => {
         "Engineering Plastics",
       ],
     },
-  
-   
     {
       id: 5,
       name: "Power",
@@ -764,7 +802,7 @@ const Home = () => {
     "ISO 1401:2015",
     "AS9100D",
     "IATF 16949",
-    "NADCAP",
+    "NABL (UT, MT, PT)",
     "ASME Certified",
     "API Q1",
     "DNV GL Approved",
@@ -932,7 +970,7 @@ const Home = () => {
       icon: <CheckCircle size={28} />,
       color: "#795548",
       gradient: "linear-gradient(135deg, #795548 0%, #A1887F 100%)",
-      standards: ["ISO/IEC 17025", "ASTM E1316", "NADCAP"],
+      standards: ["ISO/IEC 17025", "ASTM E1316", "NABL"],
       advantages: [
         "Traceability",
         "Accuracy assurance",
@@ -1698,7 +1736,7 @@ const Home = () => {
                     style={{ animationDelay: "0.1s" }}
                   >
                     <CheckCircle color={primaryColor} size={24} />
-                    <span>NADCAP Accredited for Aerospace</span>
+                    <span>NABL Accredited for UT, MT and PT</span>
                   </div>
                   <div
                     className="prod-highlight-item prod-slide-animation"
@@ -2486,80 +2524,6 @@ const Home = () => {
       </div>
 
       <div className="contact-page4" id="contact">
-        <div className="qc-contact-cards-wrapper">
-          <div className="qc-section-header">
-            <div
-              className="qc-section-badge"
-              style={{ background: primaryColor }}
-            >
-              <Compass size={16} />
-              Connect With Us
-            </div>
-            <h2 className="qc-section-title">
-              How to <span style={{ color: primaryColor }}>Reach Us</span>
-            </h2>
-            <div className="qc-section-divider">
-              <div
-                className="qc-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                }}
-              ></div>
-              <div
-                className="qc-divider-dot qc-pulse-dot"
-                style={{ background: primaryColor }}
-              ></div>
-              <div
-                className="qc-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                }}
-              ></div>
-            </div>
-            <p className="qc-section-subtitle">
-              We're here to help. Reach out to us through any of these channels
-            </p>
-          </div>
-
-          <div className="qc-contact-card-container">
-            {contactData.map((item, index) => (
-              <div
-                key={index}
-                className="qc-contact-card"
-                ref={(el) => (cardsRef.current[index] = el)}
-                data-index={index}
-                onMouseEnter={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}
-              >
-                <div
-                  className="qc-card-glow"
-                  style={{
-                    background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${primaryColor}20, transparent 70%)`,
-                  }}
-                ></div>
-                <div className="qc-contact-icon qc-icon-pulse">
-                  {item.icon}
-                  <div
-                    className="qc-icon-ring"
-                    style={{ borderColor: primaryColor }}
-                  ></div>
-                </div>
-                <h2 className="qc-contact-card-title">{item.title}</h2>
-                <p className="qc-contact-card-description">
-                  {item.description}
-                </p>
-                <div
-                  className="qc-card-hover-line"
-                  style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, ${primaryLight})`,
-                  }}
-                ></div>
-                <div className="qc-card-number">0{index + 1}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <section
           className="qc-contact-form-section"
           id="contact-form"
@@ -2703,41 +2667,112 @@ const Home = () => {
               </form>
             </div>
           </div>
+        </section>
 
-          <div className="qc-map-section">
-            <div className="qc-map-container qc-map-float">
-              <div className="qc-map-overlay">
-                <div className="qc-map-icon">
-                  <SlLocationPin size={48} color="#4A82A8" />
-                </div>
-                <h3>Visit Our Location</h3>
-                <p>Shop no. 6, Somnath Complex, Rajpardi</p>
-                <button
-                  className="qc-map-btn qc-btn-3d"
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
-                  }}
-                  onClick={() =>
-                    window.open(
-                      "https://www.google.com/maps/dir//Technoking+Test+Lab+Pvt.+Ltd.,+Shyam+Industrail+Park,+Bakrol+Bujrang,+Gujarat+382430/@22.1484557,70.7700749,5666m/data=!3m2!1e3!4b1!4m8!4m7!1m0!1m5!1m1!1s0x395e6300098d72db:0xe77e8e974e146640!2m2!1d72.7492243!2d22.9878418!5m1!1e1?entry=ttu&g_ep=EgoyMDI2MDEyOC4wIKXMDSoASAFQAw%3D%3D",
-                      "_blank"
-                    )
-                  }
-                >
-                  <i className="fas fa-map-marker-alt"></i>
-                  View on Google Maps
-                  <span className="qc-map-arrow">→</span>
-                </button>
-              </div>
+        <div className="qc-contact-cards-wrapper">
+          <div className="qc-section-header">
+            <div
+              className="qc-section-badge"
+              style={{ background: primaryColor }}
+            >
+              <Compass size={16} />
+              Connect With Us
+            </div>
+            <h2 className="qc-section-title">
+              How to <span style={{ color: primaryColor }}>Reach Us</span>
+            </h2>
+            <div className="qc-section-divider">
               <div
-                className="qc-map-glow"
+                className="qc-divider-line"
                 style={{
-                  background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)`,
+                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+                }}
+              ></div>
+              <div
+                className="qc-divider-dot qc-pulse-dot"
+                style={{ background: primaryColor }}
+              ></div>
+              <div
+                className="qc-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
                 }}
               ></div>
             </div>
+            <p className="qc-section-subtitle">
+              We're here to help. Reach out to us through any of these channels
+            </p>
           </div>
-        </section>
+
+          <div className="qc-contact-card-container">
+            {contactData.map((item, index) => (
+              <div
+                key={index}
+                className="qc-contact-card"
+                ref={(el) => (cardsRef.current[index] = el)}
+                data-index={index}
+                onMouseEnter={() => setHoveredCard(index)}
+                onMouseLeave={() => setHoveredCard(null)}
+              >
+                <div
+                  className="qc-card-glow"
+                  style={{
+                    background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${primaryColor}20, transparent 70%)`,
+                  }}
+                ></div>
+                <div className="qc-contact-icon qc-icon-pulse">
+                  {item.icon}
+                  <div
+                    className="qc-icon-ring"
+                    style={{ borderColor: primaryColor }}
+                  ></div>
+                </div>
+                <h2 className="qc-contact-card-title">{item.title}</h2>
+                <p className="qc-contact-card-description">
+                  {item.description}
+                </p>
+                <div
+                  className="qc-card-hover-line"
+                  style={{
+                    background: `linear-gradient(90deg, ${primaryColor}, ${primaryLight})`,
+                  }}
+                ></div>
+                <div className="qc-card-number">0{index + 1}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="qc-map-section">
+          <div className="qc-map-container qc-map-float">
+            <div className="qc-map-overlay">
+              <div className="qc-map-icon">
+                <SlLocationPin size={48} color="#4A82A8" />
+              </div>
+              <h3>Visit Our Location</h3>
+              <p className="qc-map-address">
+                <AddressBlock />
+              </p>
+              <button
+                className="qc-map-btn qc-btn-3d"
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
+                }}
+                onClick={() => window.open(MAPS_URL, "_blank")}
+              >
+                <i className="fas fa-map-marker-alt"></i>
+                View on Google Maps
+                <span className="qc-map-arrow">→</span>
+              </button>
+            </div>
+            <div
+              className="qc-map-glow"
+              style={{
+                background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)`,
+              }}
+            ></div>
+          </div>
+        </div>
       </div>
     </div>
   );
