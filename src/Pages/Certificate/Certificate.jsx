@@ -26,7 +26,7 @@ const certificatesData = [
     description:
       "Certified for quality management systems covering all NDT service operations.",
     icon: <Award size={28} />,
-    file: "/certificates/iso-9001.pdf",
+    file: "/certificates/nabl.pdf",
     badge: "ISO",
   },
   {
@@ -36,7 +36,7 @@ const certificatesData = [
     description:
       "American Society for Nondestructive Testing certified inspectors for all major NDT methods.",
     icon: <FileText size={28} />,
-    file: "/certificates/asnt.pdf",
+    file: "/certificates/nabl.pdf",
     badge: "ASNT",
   },
   {
@@ -46,7 +46,7 @@ const certificatesData = [
     description:
       "ASME certified for pressure vessel and boiler inspection services.",
     icon: <Award size={28} />,
-    file: "/certificates/asme.pdf",
+    file: "/certificates/nabl.pdf",
     badge: "ASME",
   },
 ];
