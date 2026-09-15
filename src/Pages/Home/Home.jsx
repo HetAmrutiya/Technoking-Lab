@@ -98,12 +98,17 @@ import {
 } from "lucide-react";
 import ServiceDetailModal from "../ServiceDetail/ServiceDetailModal";
 import { useNavigate } from "react-router-dom";
-import admin1 from "../../assets/ut.jpg";
-import admin2 from "../../assets/ut.jpg";
-import admin3 from "../../assets/ut.jpg";
-import admin4 from "../../assets/ut.jpg";
-import admin5 from "../../assets/ut.jpg";
-import admin6 from "../../assets/ut.jpg";
+import ajk from "../../assets/ajk.png";
+import amcon from "../../assets/amcon.jpeg";
+import balkrishna from "../../assets/balkrishna.jpg";
+import bmw from "../../assets/bmw.jpeg";
+import captain from "../../assets/captain.jpg";
+import delta from "../../assets/delta.jpg";
+import gn from "../../assets/gn.jpg";
+import ghanshyam from "../../assets/ghanshyam.png";
+import gail from "../../assets/gail.png";
+import epp from "../../assets/epp.png";
+import kanungo from "../../assets/kanungo.png";
 import { SlLocationPin } from "react-icons/sl";
 import { HiOutlineMail } from "react-icons/hi";
 import { LuPhoneCall } from "react-icons/lu";
@@ -111,7 +116,6 @@ import contactImage from "../../assets/contact1.png";
 
 /* ============================================================
    📍 COMPANY / LOCATION DETAILS  —  EDIT ONLY HERE
-   Used by: contact cards, map text, and "View on Google Maps"
    ============================================================ */
 const COMPANY = {
   name: "Technoking Engineers Pvt. Ltd.",
@@ -124,12 +128,10 @@ const COMPANY = {
   phone: "+91 76005 78888",
 };
 
-/* Google Maps URL built from the same address above */
 const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
   "Technoking Engineers Pvt. Ltd., Shapar Main Rd, near Mama Dev Temple, Shapar, Gujarat 360024"
 )}`;
 
-/* Renders the address with proper line breaks */
 const AddressBlock = () => (
   <>
     {COMPANY.addressLines.map((line, index) => (
@@ -171,6 +173,26 @@ const contactData = [
       </a>
     ),
   },
+];
+
+/* ============================================================
+   🏢 OUR CLIENTS — EDIT ONLY HERE
+   Replace the `logo` values with your actual client logo imports
+   e.g. import client1 from "../../assets/clients/client1.png";
+   ============================================================ */
+const clientsData = [
+  { id: 1, name: "AJK FORGE PVT LTD", logo: ajk },
+  { id: 2, name: "AMCON CASTING PVT LTD", logo: amcon },
+  { id: 3, name: "BALKRISHNA STEEL FORGE PRIVATE LIMITED", logo: balkrishna },
+  { id: 4, name: "BMW GEARS", logo: bmw },
+  { id: 5, name: "CAPTAIN TRACTORS PVT LTD", logo: captain },
+  { id: 6, name: "DELTA TECHNOCAST PVT LTD", logo: delta },
+  { id: 7, name: "GN ALTECH PRIVATE LIMITED", logo: gn },
+  { id: 8, name: "GHANSHYAM VALVES PVT LTD (GVPL)", logo: ghanshyam },
+  { id: 9, name: "GAIL INDIA LTD", logo: gail },
+  { id: 10, name: "EPP COMPOSITES PVT LTD", logo: epp },
+  { id: 11, name: "KANUNGO FERROMET PVT LTD", logo: kanungo },
+  
 ];
 
 const Home = () => {
@@ -228,7 +250,7 @@ const Home = () => {
       color: "#009688",
       gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
     },
-        {
+    {
       icon: <Award size={32} />,
       title: "NABL Accredited",
       description: "NABL accredited for UT, MT and PT testing",
@@ -1955,170 +1977,6 @@ const Home = () => {
         </section>
 
         <section
-          className="prod-tech-specs-section"
-          ref={(el) => addToRefs(el, 4)}
-          data-section="specs"
-        >
-          <div className="prod-container-inner">
-            <div className="prod-section-header">
-              <div
-                className="prod-section-badge"
-                style={{ background: primaryColor }}
-              >
-                <Gauge size={16} />
-                Equipment Specs
-              </div>
-              <h2 className="prod-section-title">
-                Technical{" "}
-                <span style={{ color: primaryColor }}>Specifications</span>
-              </h2>
-              <div className="prod-section-divider">
-                <div
-                  className="prod-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                  }}
-                ></div>
-                <div
-                  className="prod-divider-dot prod-pulse-dot"
-                  style={{ background: primaryColor }}
-                ></div>
-                <div
-                  className="prod-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                  }}
-                ></div>
-              </div>
-              <p className="prod-section-description">
-                Advanced equipment with precise measurement capabilities
-              </p>
-            </div>
-
-            <div className="prod-specs-tabs-container">
-              <div className="prod-specs-tabs-header">
-                {specTabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    className={`prod-specs-tab-button prod-hover-grow ${
-                      activeTab === tab.id ? "prod-specs-tab-button-active" : ""
-                    }`}
-                    onClick={() => setActiveTab(tab.id)}
-                    style={
-                      activeTab === tab.id
-                        ? { borderColor: primaryColor, color: primaryColor }
-                        : {}
-                    }
-                  >
-                    <span className="prod-tab-icon">{tab.icon}</span>
-                    {tab.label}
-                    <div
-                      className="prod-specs-tab-underline"
-                      style={{ background: primaryColor }}
-                    ></div>
-                  </button>
-                ))}
-              </div>
-
-              <div className="tk-prod-specs-tabs-content">
-                {activeTab === "ultrasonic" && (
-                  <div className="tk-prod-specs-content">
-                    <div className="tk-prod-specs-content-header">
-                      <h3>Ultrasonic Testing (UT) Specifications</h3>
-                      <p>High-precision flaw detectors and thickness gauges</p>
-                    </div>
-                    <div className="tk-prod-specs-content-grid">
-                      {specifications.ultrasonic.map((spec, index) => (
-                        <div
-                          key={index}
-                          className="tk-prod-spec-item tk-prod-hover-grow"
-                        >
-                          <div className="tk-prod-spec-item-icon tk-prod-pulse-animation">
-                            {spec.icon}
-                          </div>
-                          <div className="tk-prod-spec-item-property2">
-                            {spec.property}
-                          </div>
-                          <span
-                            className="tk-prod-spec-item-value"
-                            style={{ color: primaryColor }}
-                          >
-                            {spec.value}
-                          </span>
-                          <div className="tk-prod-spec-item-glow"></div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "magnetic" && (
-                  <div className="tk-prod-specs-content">
-                    <div className="tk-prod-specs-content-header">
-                      <h3>Magnetic Particle Testing (MPT) Specifications</h3>
-                      <p>High-sensitivity magnetic inspection equipment</p>
-                    </div>
-                    <div className="tk-prod-specs-content-grid">
-                      {specifications.magnetic.map((spec, index) => (
-                        <div
-                          key={index}
-                          className="tk-prod-spec-item tk-prod-hover-grow"
-                        >
-                          <div className="tk-prod-spec-item-icon tk-prod-pulse-animation">
-                            {spec.icon}
-                          </div>
-                          <div className="tk-prod-spec-item-property2">
-                            {spec.property}
-                          </div>
-                          <span
-                            className="tk-prod-spec-item-value"
-                            style={{ color: primaryColor }}
-                          >
-                            {spec.value}
-                          </span>
-                          <div className="tk-prod-spec-item-glow"></div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "penetrant" && (
-                  <div className="tk-prod-specs-content">
-                    <div className="tk-prod-specs-content-header">
-                      <h3>Dye Penetrant Testing (DPT) Specifications</h3>
-                      <p>Sensitive penetrant systems for surface inspection</p>
-                    </div>
-                    <div className="tk-prod-specs-content-grid">
-                      {specifications.penetrant.map((spec, index) => (
-                        <div
-                          key={index}
-                          className="tk-prod-spec-item tk-prod-hover-grow"
-                        >
-                          <div className="tk-prod-spec-item-icon tk-prod-pulse-animation">
-                            {spec.icon}
-                          </div>
-                          <div className="tk-prod-spec-item-property2">
-                            {spec.property}
-                          </div>
-                          <span
-                            className="tk-prod-spec-item-value"
-                            style={{ color: primaryColor }}
-                          >
-                            {spec.value}
-                          </span>
-                          <div className="tk-prod-spec-item-glow"></div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section
           className="prod-certification-section"
           ref={(el) => addToRefs(el, 6)}
           data-section="process"
@@ -2774,6 +2632,87 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+     {/* ============================================================
+    🏢 OUR CLIENTS — HORIZONTAL AUTO-SCROLLING LOGO MARQUEE
+    Logos always shown in full colour
+    Hover only adds shadow + lift (no colour change)
+    ============================================================ */}
+<section className="tk-clients-section" id="clients">
+  <div className="tk-container">
+    <div className="tk-section-header">
+      <div
+        className="tk-section-badge"
+        style={{ background: primaryColor }}
+      >
+        <Users size={16} />
+        Our Clients
+      </div>
+      <h2 className="tk-section-title-iws">
+        Trusted by{" "}
+        <span style={{ color: primaryColor }}>Industry Leaders</span>
+      </h2>
+      <div className="tk-section-divider">
+        <div
+          className="tk-divider-line"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+          }}
+        ></div>
+        <div
+          className="tk-divider-dot tk-pulse-dot"
+          style={{ background: primaryColor }}
+        ></div>
+        <div
+          className="tk-divider-line"
+          style={{
+            background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+          }}
+        ></div>
+      </div>
+      <p className="tk-section-subtitle">
+        We proudly serve leading companies across diverse industries
+      </p>
+    </div>
+
+    <div className="tk-clients-marquee">
+      <div className="tk-clients-track">
+        {clientsData.map((client) => (
+          <div
+            key={`client-a-${client.id}`}
+            className="tk-client-logo-card"
+            title={client.name}
+          >
+            <img
+              src={client.logo}
+              alt={client.name}
+              draggable="false"
+              loading="lazy"
+            />
+            <span className="tk-client-name">{client.name}</span>
+          </div>
+        ))}
+        {/* Duplicate set for seamless infinite loop */}
+        {clientsData.map((client) => (
+          <div
+            key={`client-b-${client.id}`}
+            className="tk-client-logo-card"
+            title={client.name}
+            aria-hidden="true"
+          >
+            <img
+              src={client.logo}
+              alt={client.name}
+              draggable="false"
+              loading="lazy"
+            />
+            <span className="tk-client-name">{client.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
     </div>
   );
 };
