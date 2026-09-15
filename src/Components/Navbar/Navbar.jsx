@@ -14,11 +14,25 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
+
+  // Inquiry form state
+  const [inquiryData, setInquiryData] = useState({
+    name: "",
+    email: "",
+    designation: "",
+    description: "",
+    phoneNumber: "",
+  });
+  const [inquiryErrors, setInquiryErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const userMenuRef = useRef(null);
   const mobileMenuRef = useRef(null);
+  const inquiryCardRef = useRef(null);
 
   const handleNavigation = (path, name) => {
     setActiveMenu(name);
@@ -36,6 +50,11 @@ const Navbar = () => {
 
   const handleLoginClick = () => {
     setIsAuthModalOpen(true);
+    closeMobileMenu();
+  };
+
+  const handleInquiryClick = () => {
+    setIsInquiryModalOpen(true);
     closeMobileMenu();
   };
 
@@ -61,6 +80,86 @@ const Navbar = () => {
     document.body.style.position = "static";
     document.body.style.width = "auto";
   }, []);
+
+  // ===== INQUIRY FORM HANDLERS =====
+  const handleInquiryChange = (e) => {
+    const { name, value } = e.target;
+    setInquiryData((prev) => ({ ...prev, [name]: value }));
+    if (inquiryErrors[name]) {
+      setInquiryErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const validateInquiryForm = () => {
+    const errors = {};
+    if (!inquiryData.name.trim()) errors.name = "Name is required";
+    if (!inquiryData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inquiryData.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+    if (!inquiryData.designation.trim())
+      errors.designation = "Designation is required";
+    if (!inquiryData.description.trim())
+      errors.description = "Description is required";
+    if (!inquiryData.phoneNumber.trim()) {
+      errors.phoneNumber = "Phone number is required";
+    } else if (!/^[0-9+\-\s()]{7,15}$/.test(inquiryData.phoneNumber)) {
+      errors.phoneNumber = "Please enter a valid phone number";
+    }
+    return errors;
+  };
+
+  const handleInquirySubmit = async (e) => {
+    e.preventDefault();
+    const errors = validateInquiryForm();
+    if (Object.keys(errors).length > 0) {
+      setInquiryErrors(errors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Replace with your actual API endpoint
+      // const response = await fetch("/api/inquiry", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(inquiryData),
+      // });
+      // if (!response.ok) throw new Error("Submission failed");
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("Inquiry submitted:", inquiryData);
+
+      setSubmitSuccess(true);
+      setInquiryData({
+        name: "",
+        email: "",
+        designation: "",
+        description: "",
+        phoneNumber: "",
+      });
+      setInquiryErrors({});
+
+      setTimeout(() => {
+        setSubmitSuccess(false);
+        setIsInquiryModalOpen(false);
+      }, 2500);
+    } catch (error) {
+      console.error("Error submitting inquiry:", error);
+      setInquiryErrors({ submit: "Something went wrong. Please try again." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const closeInquiryModal = () => {
+    if (isSubmitting) return;
+    setIsInquiryModalOpen(false);
+    setInquiryErrors({});
+    setSubmitSuccess(false);
+  };
 
   // Check login status on mount
   useEffect(() => {
@@ -113,7 +212,7 @@ const Navbar = () => {
     }
   }, [location.pathname]);
 
-  // Handle click outside for user menu and mobile menu
+  // Handle click outside
   const handleClickOutside = useCallback(
     (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
@@ -130,7 +229,6 @@ const Navbar = () => {
     [closeMobileMenu]
   );
 
-  // Set up scroll and click listeners
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     document.addEventListener("mousedown", handleClickOutside);
@@ -151,6 +249,45 @@ const Navbar = () => {
       document.body.style.width = "auto";
     };
   }, []);
+
+  // ===== LOCK BODY SCROLL WHEN INQUIRY MODAL IS OPEN =====
+  useEffect(() => {
+    if (isInquiryModalOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = "auto";
+      document.body.style.position = "static";
+      document.body.style.top = "";
+      document.body.style.width = "auto";
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
+      }
+    }
+  }, [isInquiryModalOpen]);
+
+  // ===== RESET SCROLL POSITION WHEN MODAL OPENS =====
+  useEffect(() => {
+    if (isInquiryModalOpen && inquiryCardRef.current) {
+      inquiryCardRef.current.scrollTop = 0;
+    }
+  }, [isInquiryModalOpen]);
+
+  // ===== ESC KEY CLOSES INQUIRY MODAL =====
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && isInquiryModalOpen) {
+        closeInquiryModal();
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInquiryModalOpen, isSubmitting]);
 
   const toggleMobileMenu = () => {
     if (!isSidebarOpen) {
@@ -180,14 +317,12 @@ const Navbar = () => {
           </div>
 
           <div className="ne-navbar-right-section">
-            {/* Desktop Menu */}
             <ul
               className={`ne-navbar-menu ${
                 isSidebarOpen ? "ne-navbar-menu-open" : ""
               }`}
               ref={mobileMenuRef}
             >
-              {/* Close Button Inside Mobile Menu */}
               {isSidebarOpen && (
                 <button
                   className="ne-navbar-mobile-close-inside"
@@ -198,7 +333,6 @@ const Navbar = () => {
                 </button>
               )}
 
-              {/* Menu Items */}
               <li
                 className={`ne-navbar-menu-item ${
                   activeMenu === "home" ? "ne-navbar-menu-item-active" : ""
@@ -243,19 +377,20 @@ const Navbar = () => {
                 <div className="ne-navbar-menu-highlight"></div>
               </li>
 
-                <li
+              <li
                 className={`ne-navbar-menu-item ${
-                  activeMenu === "certificate" ? "ne-navbar-menu-item-active" : ""
+                  activeMenu === "certificate"
+                    ? "ne-navbar-menu-item-active"
+                    : ""
                 }`}
                 onClick={() => handleNavigation("/certificate", "certificate")}
-                style={{ "--item-index": 4 }}
+                style={{ "--item-index": 5 }}
               >
                 <span className="ne-navbar-menu-text">Certificate</span>
                 <div className="ne-navbar-menu-highlight"></div>
               </li>
 
-
-              {/* Mobile Only Login/User Section */}
+              {/* Mobile Only Auth Section */}
               <div className="ne-navbar-mobile-auth-section">
                 {isLoggedIn ? (
                   <div className="ne-navbar-mobile-user-info">
@@ -274,16 +409,15 @@ const Navbar = () => {
                 ) : (
                   <button
                     className="ne-navbar-mobile-login-btn"
-                    onClick={handleLoginClick}
+                    onClick={handleInquiryClick}
                   >
-                    <span>Login</span>
+                    <span>Inquiry Form</span>
                     <i className="fas fa-sign-in-alt"></i>
                   </button>
                 )}
               </div>
             </ul>
 
-            {/* User Menu or Login Button - Desktop Only */}
             {isLoggedIn ? (
               <div
                 className="ne-navbar-user-dropdown-container"
@@ -308,7 +442,6 @@ const Navbar = () => {
                   ></i>
                 </button>
 
-                {/* User Dropdown Menu */}
                 <div
                   className={`ne-navbar-user-menu ${
                     isUserMenuOpen ? "ne-navbar-user-menu-open" : ""
@@ -385,16 +518,15 @@ const Navbar = () => {
             ) : (
               <button
                 className="ne-navbar-login-button"
-                onClick={handleLoginClick}
-                aria-label="Login"
+                onClick={handleInquiryClick}
+                aria-label="Inquiry Form"
               >
-                <span>Login</span>
+                <span>Inquiry Form</span>
                 <div className="ne-navbar-button-effect"></div>
                 <i className="fas fa-sign-in-alt"></i>
               </button>
             )}
 
-            {/* Mobile Menu Toggle Button (Hamburger) */}
             <button
               className={`ne-navbar-mobile-toggle ${
                 isSidebarOpen ? "ne-navbar-mobile-toggle-active" : ""
@@ -408,7 +540,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Overlay */}
         <div
           className={`ne-navbar-mobile-overlay ${
             isSidebarOpen ? "ne-navbar-mobile-overlay-active" : ""
@@ -424,6 +555,250 @@ const Navbar = () => {
         onClose={() => setIsAuthModalOpen(false)}
         onLoginSuccess={handleLoginSuccess}
       />
+
+      {/* ============ INQUIRY MODAL ============ */}
+      {isInquiryModalOpen && (
+        <div
+          className="tk-auth-modal-overlay tk-inquiry-overlay-scroll"
+          onClick={closeInquiryModal}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="inquiry-modal-title"
+        >
+          <div
+            className="tk-auth-container tk-inquiry-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Animated Background */}
+            <div className="tk-auth-background">
+              <div className="tk-auth-floating-shapes">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`tk-auth-shape shape-${i % 4}`}
+                    style={{
+                      "--delay": `${i * 0.5}s`,
+                      "--duration": `${20 + i * 3}s`,
+                      left: `${Math.random() * 100}%`,
+                      animationDelay: `-${i * 2}s`,
+                    }}
+                  ></div>
+                ))}
+              </div>
+              <div className="tk-auth-gradient-overlay"></div>
+            </div>
+
+            {/* Inquiry Card — scrollable */}
+            <div
+              className="tk-auth-card tk-inquiry-card tk-inquiry-card-scroll"
+              ref={inquiryCardRef}
+            >
+              <div className="tk-auth-card-glow"></div>
+
+              {/* Close Button */}
+              <button
+                className="tk-auth-close-btn tk-inquiry-close-sticky"
+                onClick={closeInquiryModal}
+                disabled={isSubmitting}
+                aria-label="Close inquiry form"
+              >
+                <span></span>
+                <span></span>
+              </button>
+
+              {submitSuccess ? (
+                /* ===== SUCCESS STATE ===== */
+                <div className="tk-inquiry-success">
+                  <div className="tk-inquiry-success-icon">
+                    <i className="fas fa-check-circle"></i>
+                  </div>
+                  <h3 className="tk-auth-title tk-text-shimmer-white">
+                    Thank You!
+                  </h3>
+                  <p className="tk-auth-subtitle">
+                    Your inquiry has been submitted successfully.
+                    <br />
+                    We'll get back to you soon.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* Header */}
+                  <div className="tk-auth-header">
+                    <div className="tk-auth-logo">
+                      <div className="tk-auth-logo-icon">
+                        <i className="fas fa-envelope-open-text"></i>
+                      </div>
+                      Technoking Engineers Pvt Ltd
+                    </div>
+                    <h2
+                      id="inquiry-modal-title"
+                      className="tk-auth-title tk-text-shimmer-white"
+                    >
+                      Inquiry Form
+                    </h2>
+                    <p className="tk-auth-subtitle">
+                      Fill out the form below and we'll get back to you.
+                    </p>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="tk-auth-divider">
+                    <span>please share your details</span>
+                  </div>
+
+                  {/* Form */}
+                  <form
+                    className="tk-auth-form"
+                    onSubmit={handleInquirySubmit}
+                    noValidate
+                  >
+                    <div className="tk-auth-input-group">
+                      {/* Name */}
+                      <div className="tk-auth-input-wrapper">
+                        <i className="fas fa-user tk-auth-input-icon"></i>
+                        <input
+                          id="inquiry-name"
+                          type="text"
+                          name="name"
+                          placeholder=" "
+                          value={inquiryData.name}
+                          onChange={handleInquiryChange}
+                          className={`tk-auth-input ${
+                            inquiryErrors.name ? "tk-input-error" : ""
+                          }`}
+                        />
+                        <label className="tk-auth-label">Name</label>
+                        <div className="tk-auth-input-focus-line"></div>
+                        {inquiryErrors.name && (
+                          <span className="tk-inquiry-error">
+                            {inquiryErrors.name}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Email */}
+                      <div className="tk-auth-input-wrapper">
+                        <i className="fas fa-envelope tk-auth-input-icon"></i>
+                        <input
+                          id="inquiry-email"
+                          type="email"
+                          name="email"
+                          placeholder=" "
+                          value={inquiryData.email}
+                          onChange={handleInquiryChange}
+                          className={`tk-auth-input ${
+                            inquiryErrors.email ? "tk-input-error" : ""
+                          }`}
+                        />
+                        <label className="tk-auth-label">Email ID</label>
+                        <div className="tk-auth-input-focus-line"></div>
+                        {inquiryErrors.email && (
+                          <span className="tk-inquiry-error">
+                            {inquiryErrors.email}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Designation */}
+                      <div className="tk-auth-input-wrapper">
+                        <i className="fas fa-briefcase tk-auth-input-icon"></i>
+                        <input
+                          id="inquiry-designation"
+                          type="text"
+                          name="designation"
+                          placeholder=" "
+                          value={inquiryData.designation}
+                          onChange={handleInquiryChange}
+                          className={`tk-auth-input ${
+                            inquiryErrors.designation ? "tk-input-error" : ""
+                          }`}
+                        />
+                        <label className="tk-auth-label">Designation</label>
+                        <div className="tk-auth-input-focus-line"></div>
+                        {inquiryErrors.designation && (
+                          <span className="tk-inquiry-error">
+                            {inquiryErrors.designation}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Phone Number */}
+                      <div className="tk-auth-input-wrapper">
+                        <i className="fas fa-phone-alt tk-auth-input-icon"></i>
+                        <input
+                          id="inquiry-phone"
+                          type="tel"
+                          name="phoneNumber"
+                          placeholder=" "
+                          value={inquiryData.phoneNumber}
+                          onChange={handleInquiryChange}
+                          className={`tk-auth-input ${
+                            inquiryErrors.phoneNumber ? "tk-input-error" : ""
+                          }`}
+                        />
+                        <label className="tk-auth-label">Phone Number</label>
+                        <div className="tk-auth-input-focus-line"></div>
+                        {inquiryErrors.phoneNumber && (
+                          <span className="tk-inquiry-error">
+                            {inquiryErrors.phoneNumber}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Description */}
+                      <div className="tk-auth-input-wrapper">
+                        <i className="fas fa-comment-dots tk-auth-input-icon tk-textarea-icon"></i>
+                        <textarea
+                          id="inquiry-description"
+                          name="description"
+                          placeholder=" "
+                          rows="4"
+                          value={inquiryData.description}
+                          onChange={handleInquiryChange}
+                          className={`tk-auth-input tk-auth-textarea ${
+                            inquiryErrors.description ? "tk-input-error" : ""
+                          }`}
+                        />
+                        <label className="tk-auth-label">Description</label>
+                        <div className="tk-auth-input-focus-line"></div>
+                        {inquiryErrors.description && (
+                          <span className="tk-inquiry-error">
+                            {inquiryErrors.description}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {inquiryErrors.submit && (
+                      <div className="tk-inquiry-submit-error">
+                        {inquiryErrors.submit}
+                      </div>
+                    )}
+
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      className={`tk-auth-submit-btn ${
+                        isSubmitting ? "tk-btn-loading" : ""
+                      }`}
+                      disabled={isSubmitting}
+                    >
+                      <span className="tk-auth-btn-text">
+                        {isSubmitting ? "Submitting..." : "Submit Inquiry"}
+                      </span>
+                      <div className="tk-auth-btn-loader">
+                        <div className="tk-auth-btn-spinner"></div>
+                      </div>
+                      <div className="tk-auth-btn-glow"></div>
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
