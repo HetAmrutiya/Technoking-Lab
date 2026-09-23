@@ -97,6 +97,150 @@
   padding: 0 var(--prod-container-padding);
 }
 
+/* ============================================
+   🔬 NDT / DT GROUP TABS
+   ============================================ */
+.prod-testing-group-tabs {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.prod-group-tab {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 28px;
+  background: white;
+  border: 2px solid var(--prod-border-color, #d5e2ea);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: inherit;
+  min-width: 220px;
+  box-shadow: 0 4px 15px rgba(35, 87, 129, 0.06);
+}
+
+.prod-group-tab:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(35, 87, 129, 0.15);
+}
+
+.prod-group-tab-active {
+  transform: translateY(-4px);
+}
+
+.prod-group-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.prod-group-tab-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 2px;
+}
+
+.prod-group-tab-text strong {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1F2933;
+  line-height: 1.2;
+}
+
+.prod-group-tab-text small {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #52606D;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.prod-group-tab-active .prod-group-tab-text strong {
+  color: inherit;
+}
+
+/* ============================================
+   🔬 ACTIVE GROUP DESCRIPTION
+   ============================================ */
+.prod-active-group-info {
+  max-width: 800px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.prod-active-group-desc {
+  font-size: 1.05rem;
+  color: #52606D;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.prod-active-group-meta {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.prod-group-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+}
+
+/* ============================================
+   📱 RESPONSIVE — GROUP TABS
+   ============================================ */
+@media (max-width: 768px) {
+  .prod-testing-group-tabs {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .prod-group-tab {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    padding: 14px 20px;
+  }
+
+  .prod-group-tab-text {
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .prod-group-tab {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .prod-group-tab-text strong {
+    font-size: 0.9rem;
+  }
+
+  .prod-group-tab-text small {
+    font-size: 0.7rem;
+  }
+
+  .prod-active-group-desc {
+    font-size: 0.95rem;
+  }
+}
+
 .prod-container-inner {
   width: 100%;
   max-width: var(--prod-container-max);

@@ -7,6 +7,19 @@
   margin-top: 40px;
 }
 
+/* ============================================
+   HIGHLIGHT FOR NDT / DT SECTION HEADERS
+   ============================================ */
+.typed-text.typed-header {
+  color: #cc1616;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(204, 22, 22, 0.4);
+}
+
+/* If your site uses blue theme, replace #cc1616 with #235781 */
+
 /* Animated Background Layers */
 .background-layers {
   position: absolute;
@@ -397,7 +410,9 @@
   }
 }
 
-/* Service Indicator */
+/* ============================================
+   SERVICE INDICATOR — ONLY 7 DOTS VISIBLE
+   ============================================ */
 .service-indicator {
   display: flex;
   align-items: center;
@@ -409,7 +424,8 @@
 
 .service-progress {
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  align-items: center;
 }
 
 .service-dot {
@@ -420,6 +436,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  flex-shrink: 0;
 }
 
 .service-dot:hover {
@@ -735,5 +752,10 @@
 
   .cta-wrapper {
     gap: 15px;
+  }
+
+  .service-dot {
+    width: 10px;
+    height: 10px;
   }
 }

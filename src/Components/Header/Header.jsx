@@ -8,16 +8,30 @@ import mineral3 from "../../assets/ut3.jpg";
 const sliderImages = [mineral1, mineral2, mineral3];
 
 const Header = () => {
+  // ============================================
+  // 🔬 NDT & DT SERVICES LIST
+  // ============================================
   const services = [
     "Ultrasonic Testing (UT)",
     "Magnetic Particle Testing (MPT)",
     "Dye Penetrant Testing (DPT)",
     "Phase Array Ultrasonic Testing (PAUT)",
-    "Eddy Current Testing(ET)",
-    "Portable Spectro Testing()",
+    "Eddy Current Testing (ET)",
+    "Portable Spectro Testing (PST)",
     "Positive Material Identification (PMI)",
-    "Thickness Gauging & Corrosion Mapping (TT)",
-    "Hardness Testing & Metallography(HT)",
+    "Tensile Testing",
+    "Compression Testing",
+    "Bend Testing",
+    "Re-bend Testing",
+    "Impact Testing",
+    "Hardness Testing",
+    "Shear Testing",
+    "Fastener Testing",
+    "Paint & Surface Coating Testing",
+    "Metallurgical Testing",
+    "Chemical & Corrosion Testing",
+    "Geological Survey & Consultancy",
+    "Water & Geotextile Testing",
   ];
 
   const [text, setText] = useState("");
@@ -91,6 +105,8 @@ const Header = () => {
     }
   }, []);
 
+  const navigate = useNavigate();
+
   const handleExplore = () => {
     if (window.location.pathname === "/") {
       const element = document.getElementById("products");
@@ -110,7 +126,16 @@ const Header = () => {
     navigate("/contact");
   };
 
-  const navigate = useNavigate();
+  // ============================================
+  // 🎯 ONLY 7 DOTS — PAGINATED WINDOW
+  // ============================================
+  const DOTS_PER_PAGE = 7;
+  const totalPages = Math.ceil(services.length / DOTS_PER_PAGE);
+  const currentPage = Math.floor(activeService / DOTS_PER_PAGE);
+  const startIndex = currentPage * DOTS_PER_PAGE;
+  const visibleDots = services
+    .slice(startIndex, startIndex + DOTS_PER_PAGE)
+    .map((_, i) => startIndex + i);
 
   return (
     <div className="header-container2" id="home">
@@ -157,7 +182,7 @@ const Header = () => {
         <div className="title-wrapper">
           <h1 className="main-title" ref={titleRef}>
             <span className="title-word title-word-1">Technoking</span>
-            <span className="title-word title-word-2">Engineers Pvt Ltd</span>
+            <span className="title-word title-word-2">Testlab Pvt Ltd</span>
           </h1>
           <div className="title-underline-animated"></div>
         </div>
@@ -167,26 +192,36 @@ const Header = () => {
           <h2 className="main-subtitle">
             <span className="subtitle-prefix">Leading Provider of </span>
             <span className="typing-container">
-              <span className="typed-text">{text}</span>
+              <span
+                className={`typed-text ${
+                  text === "NDT Testing" || text === "DT Testing"
+                    ? "typed-header"
+                    : ""
+                }`}
+              >
+                {text}
+              </span>
               <span className="typing-cursor">|</span>
             </span>
           </h2>
         </div>
 
-        {/* Service Progress Indicator */}
+        {/* ============================================
+            SERVICE PROGRESS INDICATOR — ONLY 7 DOTS
+           ============================================ */}
         <div className="service-indicator">
           <div className="service-progress">
-            {services.map((_, idx) => (
+            {visibleDots.map((globalIndex) => (
               <div
-                key={idx}
+                key={globalIndex}
                 className={`service-dot ${
-                  idx === activeService ? "active" : ""
+                  globalIndex === activeService ? "active" : ""
                 }`}
                 onClick={() => {
-                  setIndex(idx);
+                  setIndex(globalIndex);
                   setSubIndex(0);
                   setDeleting(false);
-                  setActiveService(idx);
+                  setActiveService(globalIndex);
                 }}
               />
             ))}

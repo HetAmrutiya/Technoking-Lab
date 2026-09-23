@@ -25,7 +25,6 @@ const Footer = () => {
       setIsVisible(true);
     }, 500);
 
-    // Set active link based on current route
     const path = location.pathname;
     if (path === "/") setActiveLink("Home");
     else if (path === "/about") setActiveLink("About Us");
@@ -48,8 +47,6 @@ const Footer = () => {
   const handleNavigation = (path, linkName) => {
     setActiveLink(linkName);
     navigate(path);
-
-    // Scroll to top when navigating
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -61,38 +58,28 @@ const Footer = () => {
     { name: "Contact Us", path: "/contact" },
   ];
 
-  const products = ["UT", "MPT", "DPT", "PAUT","ET","PST","PMI"];
+  // ============================================
+  // 🔬 SERVICES — NDT + DT
+  // ============================================
+  const services = [
+    // ---------- NDT ----------
+    { name: "NDT & DT Testing" },
+    { name: "Metallurgical Testing" },
+    { name: "Chemical & Corrosion Testing" },
+    { name: "Geological Survey & Consultancy" },
+    { name: "Water & Geotextile Testing" },
+  ];
 
   const socialLinks = [
-    {
-      icon: FaFacebook,
-      color: "#1877F2",
-      name: "Facebook",
-      url: "https://facebook.com",
-    },
-    {
-      icon: FaInstagram,
-      color: "#E4405F",
-      name: "Instagram",
-      url: "https://instagram.com",
-    },
-    {
-      icon: FaLinkedin,
-      color: "#0A66C2",
-      name: "LinkedIn",
-      url: "https://linkedin.com",
-    },
-    {
-      icon: FaTwitter,
-      color: "#1DA1F2",
-      name: "Twitter",
-      url: "https://twitter.com",
-    },
+    { icon: FaFacebook, color: "#1877F2", name: "Facebook", url: "https://facebook.com" },
+    { icon: FaInstagram, color: "#E4405F", name: "Instagram", url: "https://instagram.com" },
+    { icon: FaLinkedin, color: "#0A66C2", name: "LinkedIn", url: "https://linkedin.com" },
+    { icon: FaTwitter, color: "#1DA1F2", name: "Twitter", url: "https://twitter.com" },
   ];
 
   return (
     <footer className={`footer ${isVisible ? "footer--visible" : ""}`}>
-      {/* Animated Background Elements */}
+      {/* Animated Background */}
       <div className="footer__bg">
         <div className="footer__particle footer__particle--1"></div>
         <div className="footer__particle footer__particle--2"></div>
@@ -115,15 +102,16 @@ const Footer = () => {
                   onClick={() => handleNavigation("/", "Home")}
                   style={{ cursor: "pointer" }}
                 >
-                  Technoking Engineers Pvt Ltd
+                  Technoking Testlab Pvt Ltd
                 </h2>
               </div>
               <div className="footer__logo-glow"></div>
             </div>
 
             <p className="footer__description">
-             Expert in Non-Destructive Testing (NDT), providing certified inspection, testing, analysis, and quality assurance solutions for industrial components and equipment.
-
+              Expert in Non-Destructive Testing (NDT) & Destructive Testing (DT),
+              providing certified inspection, testing, analysis, and quality
+              assurance solutions for industrial components and equipment.
             </p>
 
             {/* Contact Info */}
@@ -134,7 +122,7 @@ const Footer = () => {
                 style={{ cursor: "pointer" }}
               >
                 <FaPhone className="contact-item__icon" />
-                <span className="contact-item__text">+91 76005 78888</span>
+                <span className="contact-item__text">+91 95124 00501</span>
               </div>
               <div
                 className="contact-item"
@@ -143,12 +131,14 @@ const Footer = () => {
               >
                 <FaEnvelope className="contact-item__icon" />
                 <span className="contact-item__text">
-                  dhaval@ndttesting.co.in
+                  info@technokingtestlab.com
                 </span>
               </div>
               <div className="contact-item">
                 <FaMapMarkerAlt className="contact-item__icon" />
-                <span className="contact-item__text">Gujarat, India</span>
+                <span className="contact-item__text">
+                  Bakrol Bujrang, Gujarat 382430
+                </span>
               </div>
             </div>
           </div>
@@ -177,23 +167,44 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Products Column */}
+          {/* Our Services Column — NDT + DT */}
           <div className="footer__column">
             <h3 className="footer__title">
               <span className="footer__title-text">Our Services</span>
               <div className="footer__title-underline"></div>
             </h3>
             <ul className="footer__links">
-              {products.map((product, index) => (
+              {services.map((service, index) => (
                 <li key={index} className="footer__link-item">
-                  <div
-                    className="footer__link"
-                    onClick={() => handleNavigation("/product", "Products")}
-                  >
-                    <span className="footer__link-icon">⚙️</span>
-                    <span className="footer__link-text">{product}</span>
-                    <div className="footer__link-hover"></div>
-                  </div>
+                  {service.isHeader ? (
+                    <div
+                      className="footer__link footer__link--section"
+                      style={{
+                        fontWeight: 700,
+                        color: "var(--prod-primary-color)",
+                        paddingTop: index === 0 ? "0" : "12px",
+                        paddingBottom: "6px",
+                        cursor: "default",
+                      }}
+                    >
+                      <span
+                        className="footer__link-icon"
+                        style={{ color: "var(--prod-primary-color)" }}
+                      >
+                        {service.name === "NDT Testing" ? "🔬" : "🔨"}
+                      </span>
+                      <span className="footer__link-text">{service.name}</span>
+                    </div>
+                  ) : (
+                    <div
+                      className="footer__link"
+                      onClick={() => handleNavigation("/product", "Products")}
+                    >
+                      <span className="footer__link-icon">⚙️</span>
+                      <span className="footer__link-text">{service.name}</span>
+                      <div className="footer__link-hover"></div>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -238,7 +249,7 @@ const Footer = () => {
                 <FaHeadset className="support__icon" />
                 <div className="support__info">
                   <div className="support__title">24/7 Support</div>
-                  <div className="support__number">+91 76005 78888</div>
+                  <div className="support__number">+91 95124 00501</div>
                 </div>
               </div>
             </div>
@@ -246,10 +257,9 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Footer Bottom Section */}
+      {/* Footer Bottom */}
       <div className="footer__bottom">
         <div className="footer__bottom-container">
-          {/* Social Links */}
           <div className="footer__socials">
             {socialLinks.map((social, index) => (
               <a
@@ -270,7 +280,6 @@ const Footer = () => {
             ))}
           </div>
 
-          {/* Copyright */}
           <div className="footer__copyright">
             <p className="copyright__text">
               © 2025{" "}
@@ -279,13 +288,12 @@ const Footer = () => {
                 onClick={() => handleNavigation("/", "Home")}
                 style={{ cursor: "pointer" }}
               >
-                Technoking Engineers Pvt Ltd
+                Technoking Testlab Pvt Ltd
               </span>{" "}
               • All Rights Reserved • Crafted with Excellence
             </p>
           </div>
 
-          {/* Additional Links */}
           <div className="footer__legal">
             <div
               className="legal-link"

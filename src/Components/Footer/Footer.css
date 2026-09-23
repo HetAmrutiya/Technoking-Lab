@@ -1028,3 +1028,27 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--prod-primary-dark);
 }
+
+/* Section Header Links (NDT Testing / DT Testing) */
+.footer__link--section {
+  pointer-events: none;
+  background: rgba(204, 22, 22, 0.06);
+  border-left: 3px solid var(--prod-primary-color);
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.footer__link--section .footer__link-text {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85rem;
+}
+
+.footer__link--section .footer__link-icon {
+  font-size: 1rem;
+}
+
+/* Sub-service links get a slight indent */
+.footer__link:not(.footer__link--section) {
+  padding-left: 22px;
+}

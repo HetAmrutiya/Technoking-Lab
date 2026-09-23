@@ -14,6 +14,7 @@ import {
   Atom,
   Radio,
   Diamond,
+  Cog,
   Ruler,
   CheckCircle,
   Target,
@@ -40,12 +41,16 @@ import {
   Code,
   Palette,
   ShieldCheck,
+  Activity,
+  BarChart3,
+  Cpu,
+  Wrench,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ServiceDetailModal from "../ServiceDetail/ServiceDetailModal";
 
 const Product = () => {
-  const [activeTab, setActiveTab] = useState("ultrasonic");
+  const [activeTab, setActiveTab] = useState("ndt");
   const [visibleSections, setVisibleSections] = useState({});
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -177,7 +182,7 @@ const Product = () => {
     },
     {
       icon: <Award size={32} />,
-      title: "NADCAP Accredited",
+      title: "NABL Accredited",
       description: "Industry-recognized accreditation for aerospace testing",
       color: "#8e44ad",
       gradient: "linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%)",
@@ -185,242 +190,411 @@ const Product = () => {
   ];
 
   // ============================================
-  // 🔬 TESTING METHODS (ONLY 9 METHODS - NO NDT, DT, RT)
+  // 🔬 TESTING SERVICE GROUPS — NDT & DT
   // ============================================
-  const testingMethods = [
+  const testingGroups = [
     {
-      id: 1,
-      method: "Ultrasonic Testing",
-      shortName: "UT",
-      description:
-        "High-frequency sound waves detect internal flaws and measure thickness with exceptional precision.",
-      icon: <Waves size={28} />,
+      id: "ndt",
+      name: "NDT Testing",
+      fullName: "Non-Destructive Testing",
+      icon: <Activity size={28} />,
       color: primaryColor,
       gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      applications: [
-        "Weld Inspection",
-        "Corrosion Mapping",
-        "Bond Testing",
-        "Thickness Measurement",
-        "Composite Inspection",
+      description:
+        "Non-Destructive Testing services for flaw detection and material integrity without damaging the component",
+      methods: [
+        {
+          id: 1,
+          method: "Ultrasonic Testing",
+          shortName: "UT",
+          description:
+            "High-frequency sound waves detect internal flaws and measure thickness with exceptional precision.",
+          icon: <Waves size={28} />,
+          color: primaryColor,
+          gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+          applications: [
+            "Weld Inspection",
+            "Corrosion Mapping",
+            "Bond Testing",
+            "Thickness Measurement",
+            "Composite Inspection",
+          ],
+          standards: ["ASTM E317", "ISO 17640", "ASME Section V", "AWS D1.1"],
+          advantages: [
+            "Deep penetration",
+            "High sensitivity",
+            "Digital imaging",
+            "Real-time results",
+            "Portable equipment",
+          ],
+          image: "📡",
+        },
+        {
+          id: 2,
+          method: "Magnetic Particle Testing",
+          shortName: "MPT",
+          description:
+            "Magnetic fields detect surface and near-surface flaws in ferromagnetic materials with high reliability.",
+          icon: <Magnet size={28} />,
+          color: "#009688",
+          gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
+          applications: [
+            "Ferrous Materials",
+            "Automotive Parts",
+            "Structural Steel",
+            "Railway Components",
+            "Forgings",
+          ],
+          standards: [
+            "ASTM E709",
+            "ISO 9934",
+            "ASME Section V",
+            "ASTM E1444",
+          ],
+          advantages: [
+            "Immediate results",
+            "Surface & subsurface",
+            "Easy interpretation",
+            "Cost-effective",
+            "Portable",
+          ],
+          image: "🧲",
+        },
+        {
+          id: 3,
+          method: "Dye Penetrant Testing",
+          shortName: "DPT",
+          description:
+            "Liquid penetrant reveals surface-breaking defects with exceptional sensitivity and clarity.",
+          icon: <Droplets size={28} />,
+          color: "#0066cc",
+          gradient: "linear-gradient(135deg, #0066cc 0%, #3399ff 100%)",
+          applications: [
+            "Non-porous Materials",
+            "Surface Cracks",
+            "Forgings",
+            "Machined Parts",
+            "Castings",
+          ],
+          standards: ["ASTM E165", "ISO 3452", "ASME 2782", "ASTM E1417"],
+          advantages: [
+            "Portable equipment",
+            "High sensitivity",
+            "Low cost",
+            "Quick results",
+            "Easy to use",
+          ],
+          image: "💧",
+        },
+        {
+          id: 4,
+          method: "Eddy Current Testing",
+          shortName: "ECT",
+          description:
+            "Electromagnetic induction detects surface and sub-surface flaws in conductive materials with precision.",
+          icon: <Zap size={28} />,
+          color: "#7B1FA2",
+          gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
+          applications: [
+            "Heat Exchanger Tubes",
+            "Aircraft Structures",
+            "Conductive Materials",
+            "Coating Thickness",
+            "Crack Detection",
+          ],
+          standards: ["ASTM E426", "ISO 15548", "ASME Section V", "ASTM E243"],
+          advantages: [
+            "No couplant needed",
+            "High speed",
+            "Automated inspection",
+            "Good for tubes",
+            "Portable",
+          ],
+          image: "⚡",
+        },
+        {
+          id: 5,
+          method: "Phased Array UT",
+          shortName: "PAUT",
+          description:
+            "Advanced ultrasonic technique with multiple elements for detailed imaging and comprehensive inspection.",
+          icon: <Scan size={28} />,
+          color: "#E65100",
+          gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
+          applications: [
+            "Weld Inspection",
+            "Corrosion Mapping",
+            "Composite Materials",
+            "Thick Sections",
+            "Complex Geometries",
+          ],
+          standards: [
+            "ASME Section V",
+            "ISO 13588",
+            "ASTM E2491",
+            "AWS D1.1",
+          ],
+          advantages: [
+            "3D imaging",
+            "High resolution",
+            "Multiple angles",
+            "Fast scanning",
+            "Better defect sizing",
+          ],
+          image: "🔍",
+        },
+        {
+          id: 6,
+          method: "Positive Material Identification",
+          shortName: "PMI",
+          description:
+            "Verifies material composition and alloy grade using XRF or OES analysis with high accuracy.",
+          icon: <Atom size={28} />,
+          color: "#9C27B0",
+          gradient: "linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%)",
+          applications: [
+            "Alloy Verification",
+            "Material Certification",
+            "Scrap Sorting",
+            "Quality Control",
+            "Grade Confirmation",
+          ],
+          standards: [
+            "ASTM E1476",
+            "ISO 9001",
+            "ASME Section II",
+            "ASTM E1257",
+          ],
+          advantages: [
+            "Non-destructive",
+            "Quick results",
+            "Portable (XRF)",
+            "High accuracy",
+            "Real-time analysis",
+          ],
+          image: "⚛️",
+        },
       ],
-      standards: ["ASTM E317", "ISO 17640", "ASME Section V", "AWS D1.1"],
-      advantages: [
-        "Deep penetration",
-        "High sensitivity",
-        "Digital imaging",
-        "Real-time results",
-        "Portable equipment",
-      ],
-      image: "📡",
     },
     {
-      id: 2,
-      method: "Magnetic Particle Testing",
-      shortName: "MPT",
-      description:
-        "Magnetic fields detect surface and near-surface flaws in ferromagnetic materials with high reliability.",
-      icon: <Magnet size={28} />,
+      id: "dt",
+      name: "DT Testing",
+      fullName: "Destructive Testing",
+      icon: <BarChart3 size={28} />,
       color: "#009688",
       gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
-      applications: [
-        "Ferrous Materials",
-        "Automotive Parts",
-        "Structural Steel",
-        "Railway Components",
-        "Forgings",
-      ],
-      standards: ["ASTM E709", "ISO 9934", "ASME Section V", "ASTM E1444"],
-      advantages: [
-        "Immediate results",
-        "Surface & subsurface",
-        "Easy interpretation",
-        "Cost-effective",
-        "Portable",
-      ],
-      image: "🧲",
-    },
-    {
-      id: 3,
-      method: "Dye Penetrant Testing",
-      shortName: "DPT",
       description:
-        "Liquid penetrant reveals surface-breaking defects with exceptional sensitivity and clarity.",
-      icon: <Droplets size={28} />,
-      color: "#0066cc",
-      gradient: "linear-gradient(135deg, #0066cc 0%, #3399ff 100%)",
-      applications: [
-        "Non-porous Materials",
-        "Surface Cracks",
-        "Forgings",
-        "Machined Parts",
-        "Castings",
+        "Destructive Testing services to evaluate mechanical properties and material performance under stress",
+      methods: [
+        {
+          id: 7,
+          method: "Tensile Testing",
+          shortName: "Tensile",
+          description:
+            "Measures material strength, ductility, and elasticity by pulling a specimen until failure.",
+          icon: <TrendingUp size={28} />,
+          color: "#009688",
+          gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
+          applications: [
+            "Weld Qualification",
+            "Material Certification",
+            "Quality Control",
+            "Research & Development",
+            "Failure Analysis",
+          ],
+          standards: ["ASTM E8", "ISO 6892", "ASME Section IX", "ASTM A370"],
+          advantages: [
+            "Accurate strength data",
+            "Ductility measurement",
+            "Standard-compliant",
+            "Wide material range",
+            "Detailed stress-strain curves",
+          ],
+          image: "📈",
+        },
+        {
+          id: 8,
+          method: "Compression Testing",
+          shortName: "Compression",
+          description:
+            "Determines compressive strength, yield behavior, and deformation characteristics of materials.",
+          icon: <Layers size={28} />,
+          color: "#2196f3",
+          gradient: "linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)",
+          applications: [
+            "Concrete Testing",
+            "Composite Materials",
+            "Foam & Polymers",
+            "Ceramics",
+            "Structural Components",
+          ],
+          standards: ["ASTM E9", "ISO 604", "ASTM D695", "ASTM C39"],
+          advantages: [
+            "Accurate load data",
+            "Deformation analysis",
+            "Material behavior insight",
+            "Standard procedures",
+            "Detailed reporting",
+          ],
+          image: "🔽",
+        },
+        {
+          id: 9,
+          method: "Bend Testing",
+          shortName: "Bend",
+          description:
+            "Evaluates ductility and soundness of welds and materials by bending to a specified angle.",
+          icon: <GitBranch size={28} />,
+          color: "#7B1FA2",
+          gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
+          applications: [
+            "Weld Qualification",
+            "Plate & Sheet Testing",
+            "Pipe Testing",
+            "Structural Steel",
+            "Quality Assurance",
+          ],
+          standards: ["ASTM E190", "ISO 7438", "ASME Section IX", "AWS D1.1"],
+          advantages: [
+            "Weld ductility check",
+            "Simple procedure",
+            "Quick results",
+            "Standard-compliant",
+            "Cost-effective",
+          ],
+          image: "↩️",
+        },
+        {
+          id: 10,
+          method: "Re-bend Testing",
+          shortName: "Re-bend",
+          description:
+            "Bends a specimen in the opposite direction after initial bend to reveal internal defects.",
+          icon: <GitBranch size={28} />,
+          color: "#E65100",
+          gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
+          applications: [
+            "Weld Qualification",
+            "Rebar Testing",
+            "Wire Testing",
+            "Sheet Metal",
+            "Quality Control",
+          ],
+          standards: ["ASTM E190", "ISO 7438", "BS 4449", "ASTM A615"],
+          advantages: [
+            "Detects internal flaws",
+            "More severe than bend test",
+            "Standard procedure",
+            "Quick results",
+            "Simple interpretation",
+          ],
+          image: "🔄",
+        },
+        {
+          id: 11,
+          method: "Impact Testing",
+          shortName: "Impact",
+          description:
+            "Measures material toughness and resistance to sudden loading using Charpy or Izod methods.",
+          icon: <ZapIcon size={28} />,
+          color: "#FF6F00",
+          gradient: "linear-gradient(135deg, #FF6F00 0%, #FFA726 100%)",
+          applications: [
+            "Weld Qualification",
+            "Pressure Vessels",
+            "Piping Systems",
+            "Structural Steel",
+            "Low-Temperature Service",
+          ],
+          standards: ["ASTM E23", "ISO 148", "ASME Section VIII", "ASTM A370"],
+          advantages: [
+            "Toughness measurement",
+            "Transition temperature data",
+            "Standard-compliant",
+            "Wide temperature range",
+            "Detailed energy data",
+          ],
+          image: "💥",
+        },
+        {
+          id: 12,
+          method: "Hardness Testing",
+          shortName: "Hardness",
+          description:
+            "Measures material hardness using Brinell, Rockwell, Vickers, or Leeb methods.",
+          icon: <Diamond size={28} />,
+          color: "#607D8B",
+          gradient: "linear-gradient(135deg, #607D8B 0%, #90A4AE 100%)",
+          applications: [
+            "Heat Affected Zones",
+            "Large Components",
+            "In-service Inspection",
+            "Weld Hardness",
+            "Coating Hardness",
+          ],
+          standards: ["ASTM E10", "ASTM E18", "ASTM E92", "ISO 6506"],
+          advantages: [
+            "Multiple scales",
+            "Portable options",
+            "Quick results",
+            "Minimal surface damage",
+            "Wide material range",
+          ],
+          image: "💎",
+        },
+        {
+          id: 13,
+          method: "Shear Testing",
+          shortName: "Shear",
+          description:
+            "Determines shear strength of materials by applying force parallel to the material surface.",
+          icon: <Wrench size={28} />,
+          color: "#4CAF50",
+          gradient: "linear-gradient(135deg, #4CAF50 0%, #81C784 100%)",
+          applications: [
+            "Fasteners",
+            "Adhesive Joints",
+            "Composite Materials",
+            "Sheet Metals",
+            "Weld Testing",
+          ],
+          standards: ["ASTM B831", "ISO 7961", "ASTM D1002", "ASTM D3165"],
+          advantages: [
+            "Accurate shear data",
+            "Fastener evaluation",
+            "Bond strength measurement",
+            "Standard procedures",
+            "Quick results",
+          ],
+          image: "✂️",
+        },
+        {
+          id: 14,
+          method: "Fastener Testing",
+          shortName: "Fastener",
+          description:
+            "Comprehensive testing of bolts, nuts, screws, and studs for mechanical properties and quality.",
+          icon: <Cog size={28} />,
+          color: "#9C27B0",
+          gradient: "linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%)",
+          applications: [
+            "Bolts & Nuts",
+            "Screws & Studs",
+            "Anchors",
+            "Rivets",
+            "Special Fasteners",
+          ],
+          standards: ["ASTM F606", "ISO 898", "ASTM A490", "ASTM A325"],
+          advantages: [
+            "Complete fastener testing",
+            "Proof load data",
+            "Hardness measurement",
+            "Tensile strength",
+            "Standard-compliant",
+          ],
+          image: "🔩",
+        },
       ],
-      standards: ["ASTM E165", "ISO 3452", "ASME 2782", "ASTM E1417"],
-      advantages: [
-        "Portable equipment",
-        "High sensitivity",
-        "Low cost",
-        "Quick results",
-        "Easy to use",
-      ],
-      image: "💧",
-    },
-    {
-      id: 4,
-      method: "Eddy Current Testing",
-      shortName: "ECT",
-      description:
-        "Electromagnetic induction detects surface and sub-surface flaws in conductive materials with precision.",
-      icon: <Zap size={28} />,
-      color: "#7B1FA2",
-      gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
-      applications: [
-        "Heat Exchanger Tubes",
-        "Aircraft Structures",
-        "Conductive Materials",
-        "Coating Thickness",
-        "Crack Detection",
-      ],
-      standards: ["ASTM E426", "ISO 15548", "ASME Section V", "ASTM E243"],
-      advantages: [
-        "No couplant needed",
-        "High speed",
-        "Automated inspection",
-        "Good for tubes",
-        "Portable",
-      ],
-      image: "⚡",
-    },
-    {
-      id: 5,
-      method: "Phased Array UT",
-      shortName: "PAUT",
-      description:
-        "Advanced ultrasonic technique with multiple elements for detailed imaging and comprehensive inspection.",
-      icon: <Scan size={28} />,
-      color: "#E65100",
-      gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
-      applications: [
-        "Weld Inspection",
-        "Corrosion Mapping",
-        "Composite Materials",
-        "Thick Sections",
-        "Complex Geometries",
-      ],
-      standards: ["ASME Section V", "ISO 13588", "ASTM E2491", "AWS D1.1"],
-      advantages: [
-        "3D imaging",
-        "High resolution",
-        "Multiple angles",
-        "Fast scanning",
-        "Better defect sizing",
-      ],
-      image: "🔍",
-    },
-    {
-      id: 6,
-      method: "Positive Material Identification",
-      shortName: "PMI",
-      description:
-        "Verifies material composition and alloy grade using XRF or OES analysis with high accuracy.",
-      icon: <Atom size={28} />,
-      color: "#9C27B0",
-      gradient: "linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%)",
-      applications: [
-        "Alloy Verification",
-        "Material Certification",
-        "Scrap Sorting",
-        "Quality Control",
-        "Grade Confirmation",
-      ],
-      standards: ["ASTM E1476", "ISO 9001", "ASME Section II", "ASTM E1257"],
-      advantages: [
-        "Non-destructive",
-        "Quick results",
-        "Portable (XRF)",
-        "High accuracy",
-        "Real-time analysis",
-      ],
-      image: "⚛️",
-    },
-    {
-      id: 7,
-      method: "Portable Spectrometer",
-      shortName: "Spectro",
-      description:
-        "Handheld analysis of chemical composition using optical emission or X-ray fluorescence technology.",
-      icon: <Radio size={28} />,
-      color: "#FF6F00",
-      gradient: "linear-gradient(135deg, #FF6F00 0%, #FFA726 100%)",
-      applications: [
-        "Metal Sorting",
-        "Alloy Analysis",
-        "Quality Control",
-        "Scrap Recycling",
-        "Field Inspection",
-      ],
-      standards: ["ASTM E415", "ISO 17025", "ASTM E1257", "ASTM E322"],
-      advantages: [
-        "Handheld",
-        "Fast results",
-        "Multi-element",
-        "Non-destructive",
-        "Field deployable",
-      ],
-      image: "🌈",
-    },
-    {
-      id: 8,
-      method: "Hardness Testing",
-      shortName: "Hardness",
-      description:
-        "Measures material hardness without indentation using ultrasonic or rebound methods with precision.",
-      icon: <Diamond size={28} />,
-      color: "#607D8B",
-      gradient: "linear-gradient(135deg, #607D8B 0%, #90A4AE 100%)",
-      applications: [
-        "Heat Affected Zones",
-        "Large Components",
-        "In-service Inspection",
-        "Weld Hardness",
-        "Coating Hardness",
-      ],
-      standards: ["ASTM A1038", "ISO 16859", "ASTM E110", "ASTM E956"],
-      advantages: [
-        "No surface damage",
-        "Portable",
-        "Quick results",
-        "Large area coverage",
-        "Multiple scales",
-      ],
-      image: "💎",
-    },
-    {
-      id: 9,
-      method: "Thickness Measurement",
-      shortName: "Thickness",
-      description:
-        "Measures material thickness using ultrasonic or electromagnetic methods with exceptional accuracy.",
-      icon: <Ruler size={28} />,
-      color: "#4CAF50",
-      gradient: "linear-gradient(135deg, #4CAF50 0%, #81C784 100%)",
-      applications: [
-        "Corrosion Monitoring",
-        "Tank Inspection",
-        "Pipeline Assessment",
-        "Pressure Vessels",
-        "Ship Hulls",
-      ],
-      standards: ["ASTM E797", "ISO 16809", "ASME Section V", "ASTM E1930"],
-      advantages: [
-        "Non-invasive",
-        "Accurate",
-        "Portable",
-        "Real-time data",
-        "Multiple materials",
-      ],
-      image: "📏",
     },
   ];
 
@@ -441,27 +615,25 @@ const Product = () => {
     magnetic: [
       { property: "Magnetizing Current", value: "AC / DC / HWDC", icon: "🧲" },
       { property: "Field Strength", value: "≥ 2400 A/m", icon: "⚡" },
-      { property: "Particle Type", value: "Dry / Wet / Fluorescent", icon: "✨" },
+      {
+        property: "Particle Type",
+        value: "Dry / Wet / Fluorescent",
+        icon: "✨",
+      },
       { property: "Sensitivity Level", value: "Level 3-4", icon: "🎯" },
       { property: "UV Light Intensity", value: "1000 μW/cm²", icon: "🔦" },
       { property: "Temperature Range", value: "10-52°C", icon: "🌡️" },
       { property: "Equipment Type", value: "Yoke / Prod / Bench", icon: "🔧" },
       { property: "Standards", value: "ASTM E709, ISO 9934", icon: "📋" },
     ],
-    radiographic: [
-      { property: "Source Type", value: "X-ray/Gamma", icon: "☢️" },
-      { property: "Energy Range", value: "50-300 kV", icon: "⚡" },
-      { property: "Sensitivity", value: "2-1T", icon: "🎯" },
-      { property: "Film Types", value: "D7, D4, D2", icon: "🎞️" },
-      { property: "Digital DR", value: "Available", icon: "📱" },
-      { property: "Safety Class", value: "BSS Category", icon: "🛡️" },
-      { property: "Image Quality", value: "EN 462-1", icon: "⭐" },
-      { property: "Processing", value: "Auto & Manual", icon: "🔄" },
-    ],
     penetrant: [
       { property: "Sensitivity Level", value: "Level 4", icon: "🔬" },
       { property: "Developer Type", value: "Dry/Non-aq/Aq", icon: "💧" },
-      { property: "Penetrant Type", value: "Fluorescent/Visible", icon: "🌈" },
+      {
+        property: "Penetrant Type",
+        value: "Fluorescent/Visible",
+        icon: "🌈",
+      },
       { property: "Removal Method", value: "Water/Solvent", icon: "🚿" },
       { property: "Dwell Time", value: "5-60 min", icon: "⏱️" },
       { property: "Temperature Range", value: "10-52°C", icon: "🌡️" },
@@ -614,8 +786,10 @@ const Product = () => {
 
   const handleSelectMethod = (method) => {
     setSelectedMethod(method);
-    // Optionally scroll modal content to top
   };
+
+  // Flatten all methods for the modal
+  const allTestingMethods = testingGroups.flatMap((group) => group.methods);
 
   return (
     <div className="prod-page" id="services">
@@ -664,17 +838,17 @@ const Product = () => {
           <div className="prod-hero-content">
             <div className="prod-hero-badge prod-badge-pulse">
               <span className="prod-badge-dot"></span>
-              Advanced Testing Solutions
+              NDT &amp; DT Testing Solutions
             </div>
 
             <h1 className="prod-hero-title">
-              NDT <span className="prod-hero-highlight">Testing</span> &amp;
-              Inspection
+              NDT &amp; DT{" "}
+              <span className="prod-hero-highlight">Testing</span> Services
             </h1>
 
             <p className="prod-hero-subtitle">
-              ASNT Level III certified testing services with advanced equipment
-              and expert analysis
+              ASNT Level III certified NDT and DT testing services with advanced
+              equipment and expert analysis
             </p>
 
             <div className="prod-hero-buttons">
@@ -766,8 +940,8 @@ const Product = () => {
               Our Services
             </div>
             <h2 className="prod-section-title">
-              Comprehensive Testing{" "}
-              <span style={{ color: primaryColor }}>Solutions</span>
+              Comprehensive{" "}
+              <span style={{ color: primaryColor }}>Testing Solutions</span>
             </h2>
             <div className="prod-section-divider">
               <div
@@ -788,8 +962,8 @@ const Product = () => {
               ></div>
             </div>
             <p className="prod-section-description">
-              ASNT Level III certified testing services with advanced equipment
-              and expert analysis
+              ASNT Level III certified NDT and DT testing services with advanced
+              equipment and expert analysis
             </p>
           </div>
 
@@ -807,7 +981,7 @@ const Product = () => {
                     className="prod-highlight-text"
                     style={{ color: primaryColor }}
                   >
-                    Non-Destructive Testing (NDT)
+                    NDT &amp; DT Testing
                   </strong>{" "}
                   services for quality assurance and structural integrity
                   evaluation. Our certified technicians use state-of-the-art
@@ -819,14 +993,14 @@ const Product = () => {
               <div className="prod-service-highlights">
                 <div className="prod-highlight-item prod-slide-animation">
                   <CheckCircle color={primaryColor} size={24} />
-                  <span>ISO 9712 & ASNT SNT-TC-1A Certified</span>
+                  <span>ISO 9712 &amp; ASNT SNT-TC-1A Certified</span>
                 </div>
                 <div
                   className="prod-highlight-item prod-slide-animation"
                   style={{ animationDelay: "0.1s" }}
                 >
                   <CheckCircle color={primaryColor} size={24} />
-                  <span>NADCAP Accredited for Aerospace</span>
+                  <span>NABL Accredited for Aerospace</span>
                 </div>
                 <div
                   className="prod-highlight-item prod-slide-animation"
@@ -876,7 +1050,7 @@ const Product = () => {
       </section>
 
       {/* ==========================================
-          🔬 TESTING METHODS SECTION (ONLY 9 METHODS)
+          🔬 TESTING METHODS SECTION — NDT & DT TABS
           ========================================== */}
       <section
         className="prod-methods-section"
@@ -890,7 +1064,7 @@ const Product = () => {
               style={{ background: primaryColor }}
             >
               <Microscope size={16} />
-              Testing Methods
+              Testing Services
             </div>
             <h2 className="prod-section-title">
               Our Testing{" "}
@@ -915,8 +1089,8 @@ const Product = () => {
               ></div>
             </div>
             <p className="prod-section-description">
-              Advanced testing techniques for accurate results and quality
-              assurance
+              Advanced NDT and DT testing techniques for accurate results and
+              quality assurance
             </p>
           </div>
 
@@ -934,118 +1108,180 @@ const Product = () => {
             ))}
           </div>
 
-          <div className="prod-methods-grid">
-            {testingMethods.map((method, index) => (
-              <div
-                key={method.id}
-                className={`prod-method-card ${visibleSections.methods ? "prod-animate-fade" : ""}`}
-                style={{ animationDelay: `${index * 0.08}s` }}
+          {/* ==========================================
+              🔬 NDT / DT GROUP TABS
+              ========================================== */}
+          <div className="prod-testing-group-tabs">
+            {testingGroups.map((group) => (
+              <button
+                key={group.id}
+                className={`prod-group-tab ${
+                  activeTab === group.id ? "prod-group-tab-active" : ""
+                }`}
+                onClick={() => setActiveTab(group.id)}
+                style={
+                  activeTab === group.id
+                    ? {
+                        borderColor: group.color,
+                        background: `${group.color}12`,
+                        color: group.color,
+                        boxShadow: `0 8px 25px ${group.color}30`,
+                      }
+                    : {}
+                }
               >
-                <div
-                  className="prod-method-card-header"
-                  style={{ background: method.gradient }}
-                >
-                  <div className="prod-method-card-icon prod-icon-pulse">
-                    {method.icon}
-                  </div>
-                  <h3 className="prod-method-card-title">{method.method}</h3>
-                  <div className="prod-method-card-number">
-                    #{String(index + 1).padStart(2, "0")}
-                  </div>
-                  <div className="prod-method-card-short">
-                    {method.shortName}
-                  </div>
+                <span className="prod-group-tab-icon">{group.icon}</span>
+                <span className="prod-group-tab-text">
+                  <strong>{group.name}</strong>
+                  <small>{group.fullName}</small>
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* ==========================================
+              🔬 ACTIVE GROUP DESCRIPTION
+              ========================================== */}
+          {testingGroups
+            .filter((g) => g.id === activeTab)
+            .map((group) => (
+              <div key={group.id} className="prod-active-group-info">
+                <p className="prod-active-group-desc">{group.description}</p>
+                <div className="prod-active-group-meta">
+                  <span
+                    className="prod-group-count"
+                    style={{
+                      background: `${group.color}15`,
+                      color: group.color,
+                      borderColor: `${group.color}30`,
+                    }}
+                  >
+                    {group.methods.length} Testing Methods
+                  </span>
                 </div>
-
-                <div className="prod-method-card-content">
-                  <p className="prod-method-card-description">
-                    {method.description}
-                  </p>
-
-                  <div className="prod-method-card-section">
-                    <h4 className="prod-method-card-subtitle">
-                      <Target size={16} />
-                      Applications:
-                    </h4>
-                    <div className="prod-applications-list">
-                      {method.applications.map((app, i) => (
-                        <span
-                          key={i}
-                          className="prod-application-tag prod-slide-animation"
-                          style={{
-                            background: method.color + "15",
-                            color: method.color,
-                            borderColor: method.color + "30",
-                            animationDelay: `${i * 0.05}s`,
-                          }}
-                        >
-                          <CheckCircle size={12} />
-                          {app}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="prod-method-card-section">
-                    <h4 className="prod-method-card-subtitle">
-                      <BookOpen size={16} />
-                      Standards:
-                    </h4>
-                    <div className="prod-standards-list">
-                      {method.standards.map((std, i) => (
-                        <span
-                          key={i}
-                          className="prod-standard-badge prod-pop-animation"
-                          style={{ animationDelay: `${i * 0.1}s` }}
-                        >
-                          {std}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="prod-method-card-section">
-                    <h4 className="prod-method-card-subtitle">
-                      <Rocket size={16} />
-                      Advantages:
-                    </h4>
-                    <ul className="prod-advantages-list">
-                      {method.advantages.map((adv, i) => (
-                        <li
-                          key={i}
-                          className="prod-slide-animation"
-                          style={{ animationDelay: `${i * 0.1}s` }}
-                        >
-                          <div
-                            className="prod-advantage-dot prod-pulse-dot"
-                            style={{ background: method.color }}
-                          ></div>
-                          <span className="prod-advantage-text">{adv}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="prod-button-container">
-                    <button
-                      className="prod-method-card-button"
-                      style={{ background: method.gradient }}
-                      onClick={() => handleRequestService(method)}
-                    >
-                      <span>Request Service</span>
-                      <div className="prod-button-arrow">→</div>
-                      <div className="prod-btn-ripple"></div>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="prod-method-card-hover-effect"></div>
               </div>
             ))}
+
+          {/* ==========================================
+              🔬 METHODS GRID FOR ACTIVE GROUP
+              ========================================== */}
+          <div className="prod-methods-grid">
+            {testingGroups
+              .filter((g) => g.id === activeTab)
+              .flatMap((group) =>
+                group.methods.map((method, index) => (
+                  <div
+                    key={method.id}
+                    className={`prod-method-card ${visibleSections.methods ? "prod-animate-fade" : ""}`}
+                    style={{ animationDelay: `${index * 0.08}s` }}
+                  >
+                    <div
+                      className="prod-method-card-header"
+                      style={{ background: method.gradient }}
+                    >
+                      <div className="prod-method-card-icon prod-icon-pulse">
+                        {method.icon}
+                      </div>
+                      <h3 className="prod-method-card-title">
+                        {method.method}
+                      </h3>
+                      <div className="prod-method-card-number">
+                        #{String(index + 1).padStart(2, "0")}
+                      </div>
+                      <div className="prod-method-card-short">
+                        {method.shortName}
+                      </div>
+                    </div>
+
+                    <div className="prod-method-card-content">
+                      <p className="prod-method-card-description">
+                        {method.description}
+                      </p>
+
+                      <div className="prod-method-card-section">
+                        <h4 className="prod-method-card-subtitle">
+                          <Target size={16} />
+                          Applications:
+                        </h4>
+                        <div className="prod-applications-list">
+                          {method.applications.map((app, i) => (
+                            <span
+                              key={i}
+                              className="prod-application-tag prod-slide-animation"
+                              style={{
+                                background: method.color + "15",
+                                color: method.color,
+                                borderColor: method.color + "30",
+                                animationDelay: `${i * 0.05}s`,
+                              }}
+                            >
+                              <CheckCircle size={12} />
+                              {app}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="prod-method-card-section">
+                        <h4 className="prod-method-card-subtitle">
+                          <BookOpen size={16} />
+                          Standards:
+                        </h4>
+                        <div className="prod-standards-list">
+                          {method.standards.map((std, i) => (
+                            <span
+                              key={i}
+                              className="prod-standard-badge prod-pop-animation"
+                              style={{ animationDelay: `${i * 0.1}s` }}
+                            >
+                              {std}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="prod-method-card-section">
+                        <h4 className="prod-method-card-subtitle">
+                          <Rocket size={16} />
+                          Advantages:
+                        </h4>
+                        <ul className="prod-advantages-list">
+                          {method.advantages.map((adv, i) => (
+                            <li
+                              key={i}
+                              className="prod-slide-animation"
+                              style={{ animationDelay: `${i * 0.1}s` }}
+                            >
+                              <div
+                                className="prod-advantage-dot prod-pulse-dot"
+                                style={{ background: method.color }}
+                              ></div>
+                              <span className="prod-advantage-text">{adv}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="prod-button-container">
+                        <button
+                          className="prod-method-card-button"
+                          style={{ background: method.gradient }}
+                          onClick={() => handleRequestService(method)}
+                        >
+                          <span>Request Service</span>
+                          <div className="prod-button-arrow">→</div>
+                          <div className="prod-btn-ripple"></div>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="prod-method-card-hover-effect"></div>
+                  </div>
+                ))
+              )}
           </div>
         </div>
       </section>
-
 
       {/* ==========================================
           🔄 CERTIFICATION PROCESS
@@ -1146,7 +1382,7 @@ const Product = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         method={selectedMethod}
-        allMethods={testingMethods}
+        allMethods={allTestingMethods}
         onSelectMethod={handleSelectMethod}
       />
     </div>

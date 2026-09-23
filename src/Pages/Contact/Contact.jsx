@@ -5,31 +5,23 @@ import { HiOutlineMail } from "react-icons/hi";
 import { LuPhoneCall } from "react-icons/lu";
 import contactImage from "../../assets/contact1.png";
 import mineralsBackground from "../../assets/ut.jpg";
-import Footer from "../../Components/Footer/Footer";
-import { Compass } from "lucide-react";
+import { Compass, Activity, BarChart3, Layers, Cpu, Wrench } from "lucide-react";
 
-/* ============================================================
-   📍 COMPANY / LOCATION DETAILS  —  EDIT ONLY HERE
-   Every place on the page (cards + map + Google Maps button)
-   reads from this single object, so nothing can ever mismatch.
-   ============================================================ */
 /* ============================================================
    📍 COMPANY / LOCATION DETAILS  —  EDIT ONLY HERE
    ============================================================ */
 const COMPANY = {
-  name: "Technoking Engineers Pvt. Ltd.",
+  name: "Technoking Testlab Pvt. Ltd.",
   addressLines: [
-    // "Technoking Engineers Pvt. Ltd.,",
-    "Shapar Main Rd, near Mama Dev Temple,",
-    "Shapar, Gujarat 360024, India",
+    "Plot No. 2, Shyam Industrial Area,",
+    "Bakrol Bujrang, Ahm, Guj 382430",
   ],
-  email: "dhaval@ndttesting.co.in",
-  phone: "+91 76005 78888",
+  email: "info@technokingtestlab.com",
+  phone: "+91 95124 00501",
 };
 
-/* Google Maps link built from the SAME address above */
 const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  "Technoking Engineers Pvt. Ltd., Shapar Main Rd, near Mama Dev Temple, Shapar, Gujarat 360024"
+  "Technoking Testlab Pvt. Ltd., Plot No. 2, Shyam Industrial Area, Bakrol Bujrang, Ahmedabad, Gujarat 382430"
 )}`;
 
 /* Small helper that renders the address with proper line breaks */
@@ -44,37 +36,111 @@ const AddressBlock = () => (
   </>
 );
 
+/* ============================================================
+   🔬 NDT & DT TESTING TYPES — used in the form selector
+   ============================================================ */
+const testingTypes = [
+  {
+    id: "ndt",
+    name: "NDT Testing",
+    icon: <Activity size={16} />,
+    services: [
+      "Ultrasonic Testing (UT)",
+      "Magnetic Particle Testing (MPT)",
+      "Dye Penetrant Testing (DPT)",
+      "Phase Array Ultrasonic Testing (PAUT)",
+      "Eddy Current Testing (ET)",
+      "Portable Spectro Testing (PST)",
+    ],
+  },
+  {
+    id: "dt",
+    name: "DT Testing",
+    icon: <BarChart3 size={16} />,
+    services: [
+      "Tensile Testing",
+      "Compression Testing",
+      "Bend Testing",
+      "Re-bend Testing",
+      "Impact Testing",
+      "Hardness Testing",
+    ],
+  },
+  {
+    id: "material",
+    name: "Material Testing",
+    icon: <Layers size={16} />,
+    services: [
+      "Chemical & Corrosion Testing",
+      "Metallurgical Testing",
+      "Paint & Surface Coating Testing",
+      "Positive Material Identification (PMI)",
+      "Geological Survey & Consultancy",
+      "Water & Geotextile Testing",
+    ],
+  },
+  {
+    id: "advanced",
+    name: "Advanced NDT",
+    icon: <Cpu size={16} />,
+    services: [
+      "Phased Array UT",
+      "Time of Flight Diffraction",
+      "Guided Wave Testing",
+      "Acoustic Emission Testing",
+      "Digital Radiography",
+      "Computed Tomography",
+    ],
+  },
+  {
+    id: "mechanical",
+    name: "Mechanical Testing",
+    icon: <Wrench size={16} />,
+    services: [
+      "Tensile Testing",
+      "Compression Testing",
+      "Bend Testing",
+      "Impact Testing",
+      "Hardness Testing",
+      "Shear Testing",
+    ],
+  },
+];
+
+/* ============================================================
+   📇 CONTACT CARDS — each card is fully clickable
+   href  →  what opens on click
+   external  →  true = opens in a new tab (Google Maps)
+   ============================================================ */
 const contactData = [
   {
     icon: <SlLocationPin style={{ fontSize: 30, color: "#235781" }} />,
     title: "Our Address",
     description: <AddressBlock />,
+    href: MAPS_URL,
+    external: true,
+    actionLabel: "Open in Google Maps",
   },
   {
     icon: <HiOutlineMail style={{ fontSize: 30, color: "#235781" }} />,
     title: "Email Us",
-    description: (
-      <a
-        href={`mailto:${COMPANY.email}`}
-        style={{ color: "inherit", textDecoration: "none" }}
-      >
-        {COMPANY.email}
-      </a>
-    ),
+    description: COMPANY.email,
+    href: `mailto:${COMPANY.email}`,
+    external: false,
+    actionLabel: "Send an Email",
   },
   {
     icon: <LuPhoneCall style={{ fontSize: 30, color: "#235781" }} />,
     title: "Call Us",
-    description: (
-      <a
-        href={`tel:${COMPANY.phone.replace(/\s+/g, "")}`}
-        style={{ color: "inherit", textDecoration: "none" }}
-      >
-        {COMPANY.phone}
-      </a>
-    ),
+    description: COMPANY.phone,
+    href: `tel:${COMPANY.phone.replace(/\s+/g, "")}`,
+    external: false,
+    actionLabel: "Call Now",
   },
 ];
+
+/* Helper: builds the default auto-filled message for a given type */
+const buildDefaultMessage = (typeName) => `Testing Type: ${typeName}`;
 
 const Contact = () => {
   const cardsRef = useRef([]);
@@ -84,12 +150,28 @@ const Contact = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);
 
+  // 🎯 Testing type + selected service
+  const [activeTestingType, setActiveTestingType] = useState(0);
+  const [selectedService, setSelectedService] = useState("");
+
+  // 📝 Controlled message — auto updates with the active testing type
+  const [messageText, setMessageText] = useState(
+    buildDefaultMessage(testingTypes[0].name)
+  );
+
   const formRef = useRef(null);
   const heroRef = useRef(null);
 
   // 🔵 Primary Blue Colors
   const primaryColor = "#235781";
   const primaryLight = "#4A82A8";
+
+  // ============================================
+  // 📝 KEEP "Your Message" IN SYNC WITH TESTING TYPE
+  // ============================================
+  useEffect(() => {
+    setMessageText(buildDefaultMessage(testingTypes[activeTestingType].name));
+  }, [activeTestingType]);
 
   // ============================================
   // 📜 SCROLL PROGRESS
@@ -108,7 +190,6 @@ const Contact = () => {
 
   // ============================================
   // 🖱️ MOUSE PARALLAX FOR 3D EFFECT
-  // (writes CSS variables directly – no re-renders)
   // ============================================
   useEffect(() => {
     const hero = heroRef.current;
@@ -173,13 +254,16 @@ const Contact = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Form submission handler with animation
+  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     const form = e.target;
     const formData = new FormData(form);
+
+    formData.append("testing_type", testingTypes[activeTestingType].name);
+    formData.append("service_selected", selectedService);
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -191,7 +275,9 @@ const Contact = () => {
 
       if (result.success) {
         form.reset();
+        setSelectedService("");
         setSuccessMessage("Message sent successfully!");
+        setMessageText(buildDefaultMessage(testingTypes[activeTestingType].name));
       } else {
         setSuccessMessage("Something went wrong! Try again.");
       }
@@ -216,6 +302,8 @@ const Contact = () => {
       `${((e.clientY - rect.top) / rect.height) * 100}%`
     );
   };
+
+  const currentTestingType = testingTypes[activeTestingType];
 
   return (
     <div className="qc-contact-container">
@@ -244,7 +332,6 @@ const Contact = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        {/* 3D Floating Particles */}
         <div className="qc-hero-particles">
           {[...Array(30)].map((_, i) => (
             <div
@@ -271,24 +358,17 @@ const Contact = () => {
           >
             <div className="qc-hero-badge qc-badge-pulse">
               <span className="qc-badge-dot"></span>
-              Get In Touch
+              NDT & DT Services
             </div>
 
-            {/* <h1 className="qc-hero-title">
-              <span className="qc-title-line">
-                Contact <span className="qc-hero-highlight">Us</span>
-              </span>
-            </h1> */}
-
             <p className="qc-hero-subtitle">
-              Let&apos;s discuss your testing and inspection needs.
+              Let&apos;s discuss your NDT & DT testing and inspection needs.
               <br />
-              Reliable NDT solutions for quality and safety.
+              Reliable testing solutions for quality and safety.
             </p>
           </div>
         </div>
 
-        {/* 3D Scroll Indicator */}
         <div className="qc-hero-scroll qc-scroll-3d">
           <div className="qc-scroll-mouse">
             <div className="qc-scroll-wheel"></div>
@@ -311,10 +391,10 @@ const Contact = () => {
         <div className="qc-section-header qc-form-header">
           <div className="qc-section-badge" style={{ background: primaryColor }}>
             <MessageSquare size={16} />
-            Send Message
+            Send Enquiry
           </div>
           <h2 className="qc-form-heading qc-text-shimmer">
-            Get in <span style={{ color: primaryColor }}>Touch</span>
+            Request a <span style={{ color: primaryColor }}>Test Quote</span>
           </h2>
           <div className="qc-section-divider">
             <div
@@ -335,7 +415,7 @@ const Contact = () => {
             ></div>
           </div>
           <p className="qc-form-subheading">
-            We&apos;ll get back to you within 24 hours
+            Select your testing type and we&apos;ll get back within 24 hours
           </p>
         </div>
 
@@ -364,6 +444,59 @@ const Contact = () => {
                 name="access_key"
                 value="5162d798-f96f-4824-a967-12cdaad116e8"
               />
+
+              {/* ==========================================
+                  🔬 TESTING TYPE SELECTOR (COMPACT TABS)
+                  ========================================== */}
+              <div className="qc-testing-type-selector">
+                {testingTypes.map((type, index) => (
+                  <button
+                    key={type.id}
+                    type="button"
+                    className={`qc-testing-tab ${
+                      activeTestingType === index ? "qc-testing-tab-active" : ""
+                    }`}
+                    onClick={() => {
+                      setActiveTestingType(index);
+                      setSelectedService("");
+                    }}
+                    style={
+                      activeTestingType === index
+                        ? {
+                            borderColor: primaryColor,
+                            color: primaryColor,
+                            background: `${primaryColor}10`,
+                            boxShadow: `0 6px 18px ${primaryColor}25`,
+                          }
+                        : {}
+                    }
+                    title={type.name}
+                  >
+                    <span className="qc-tab-icon-wrap">{type.icon}</span>
+                    <span className="qc-tab-label">{type.name}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* ==========================================
+                  🔬 SERVICE DROPDOWN FOR SELECTED TYPE
+                  ========================================== */}
+              <div className="qc-service-select">
+                <label className="qc-service-label">Testing Service</label>
+                <select
+                  name="service"
+                  value={selectedService}
+                  onChange={(e) => setSelectedService(e.target.value)}
+                  required
+                >
+                  <option value="">Select a test / service</option>
+                  {currentTestingType.services.map((service, idx) => (
+                    <option key={idx} value={service}>
+                      {service}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div className="qc-form-group">
                 <div className="qc-form-field qc-input-float">
@@ -396,8 +529,17 @@ const Contact = () => {
                   ></div>
                 </div>
 
+                {/* ==========================================
+                    📝 YOUR MESSAGE — controlled + auto-filled
+                    ========================================== */}
                 <div className="qc-form-message qc-input-float">
-                  <textarea name="message" placeholder=" " required />
+                  <textarea
+                    name="message"
+                    placeholder=" "
+                    required
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                  />
                   <label>Your Message</label>
                   <i className="fas fa-comment-dots"></i>
                   <div
@@ -426,7 +568,7 @@ const Contact = () => {
                   }}
                 >
                   <span className="qc-btn-text">
-                    {isSubmitting ? "Sending..." : "Send Message"}
+                    {isSubmitting ? "Sending..." : "Send Enquiry"}
                   </span>
                   <span className="qc-btn-icon">
                     <i className="fa fa-paper-plane"></i>
@@ -442,12 +584,10 @@ const Contact = () => {
             </form>
           </div>
         </div>
-
-     
       </section>
 
       {/* ==========================================
-          📇 CONTACT CARDS WITH 3D EFFECT
+          📇 CONTACT CARDS — entire card is clickable
           ========================================== */}
       <div className="qc-contact-cards-wrapper">
         <div className="qc-section-header">
@@ -478,18 +618,22 @@ const Contact = () => {
           </div>
           <p className="qc-section-subtitle">
             We&apos;re here to help. Reach out to us through any of these
-            channels
+            channels — just tap a card
           </p>
         </div>
 
         <div className="qc-contact-card-container">
           {contactData.map((item, index) => (
-            <div
+            <a
               key={index}
-              className="qc-contact-card"
+              href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+              className="qc-contact-card qc-contact-card-link"
               ref={(el) => (cardsRef.current[index] = el)}
               data-index={index}
               onMouseMove={handleCardMouseMove}
+              aria-label={item.actionLabel}
             >
               <div
                 className="qc-card-glow"
@@ -506,6 +650,12 @@ const Contact = () => {
               </div>
               <h2 className="qc-contact-card-title">{item.title}</h2>
               <p className="qc-contact-card-description">{item.description}</p>
+
+              {/* Small "action" hint that appears on hover */}
+              <span className="qc-contact-card-cta">
+                {item.actionLabel} <span className="qc-cta-arrow">→</span>
+              </span>
+
               <div
                 className="qc-card-hover-line"
                 style={{
@@ -513,49 +663,44 @@ const Contact = () => {
                 }}
               ></div>
               <div className="qc-card-number">0{index + 1}</div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
 
       {/* ==========================================
-          🔻 FOOTER
+          🗺️ MAP SECTION — uses the SAME address
           ========================================== */}
-
-             {/* ==========================================
-            🗺️ MAP SECTION — uses the SAME address
-            ========================================== */}
-        <div className="qc-map-section">
-          <div className="qc-map-container qc-map-float">
-            <div className="qc-map-overlay">
-              <div className="qc-map-icon">
-                <SlLocationPin size={48} color="#4A82A8" />
-              </div>
-              <h3>Visit Our Location</h3>
-              <p className="qc-map-address">
-                <AddressBlock />
-              </p>
-              <button
-                className="qc-map-btn qc-btn-3d"
-                style={{
-                  background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
-                }}
-                onClick={() => window.open(MAPS_URL, "_blank")}
-              >
-                <i className="fas fa-map-marker-alt"></i>
-                View on Google Maps
-                <span className="qc-map-arrow">→</span>
-              </button>
+      <div className="qc-map-section">
+        <div className="qc-map-container qc-map-float">
+          <div className="qc-map-overlay">
+            <div className="qc-map-icon">
+              <SlLocationPin size={48} color="#4A82A8" />
             </div>
-            <div
-              className="qc-map-glow"
+            <h3>Visit Our Location</h3>
+            <p className="qc-map-address">
+              <AddressBlock />
+            </p>
+            <button
+              className="qc-map-btn qc-btn-3d"
               style={{
-                background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)`,
+                background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
               }}
-            ></div>
+              onClick={() => window.open(MAPS_URL, "_blank")}
+            >
+              <i className="fas fa-map-marker-alt"></i>
+              View on Google Maps
+              <span className="qc-map-arrow">→</span>
+            </button>
           </div>
+          <div
+            className="qc-map-glow"
+            style={{
+              background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)`,
+            }}
+          ></div>
         </div>
-     
+      </div>
     </div>
   );
 };

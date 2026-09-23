@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FiMenu } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../../assets/logo.jpeg";
+import logoDesktop from "../../assets/logo-ls.png";
+import logoMobile from "../../assets/logo.png";
 import AuthContainer from "../../Pages/Login/AuthContainer";
 import "./Navbar.css";
 
@@ -120,15 +121,6 @@ const Navbar = () => {
 
     setIsSubmitting(true);
     try {
-      // Replace with your actual API endpoint
-      // const response = await fetch("/api/inquiry", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(inquiryData),
-      // });
-      // if (!response.ok) throw new Error("Submission failed");
-
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
       console.log("Inquiry submitted:", inquiryData);
 
@@ -313,7 +305,18 @@ const Navbar = () => {
             onClick={() => handleNavigation("/", "home")}
             style={{ cursor: "pointer" }}
           >
-            <img src={logo} alt="Logo" className="ne-navbar-logo-image" />
+            {/* Desktop Logo — shown on laptop/desktop */}
+            <img
+              src={logoDesktop}
+              alt="Logo"
+              className="ne-navbar-logo-image ne-navbar-logo-desktop"
+            />
+            {/* Mobile Logo — shown on mobile/tablet */}
+            <img
+              src={logoMobile}
+              alt="Logo"
+              className="ne-navbar-logo-image ne-navbar-logo-mobile"
+            />
           </div>
 
           <div className="ne-navbar-right-section">
@@ -629,7 +632,7 @@ const Navbar = () => {
                       <div className="tk-auth-logo-icon">
                         <i className="fas fa-envelope-open-text"></i>
                       </div>
-                      Technoking Engineers Pvt Ltd
+                      Technoking Testlab Pvt Ltd
                     </div>
                     <h2
                       id="inquiry-modal-title"

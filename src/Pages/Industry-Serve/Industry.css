@@ -605,12 +605,47 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+/* ============================================
+   🏭 INDUSTRY TAB ICON — SMALLER SIZE
+   ============================================ */
 .tk-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
   transition: transform var(--transition-base);
+}
+
+.tk-tab-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
 }
 
 .tk-industry-tab.tk-active .tk-tab-icon {
   transform: scale(1.1);
+}
+
+/* ============================================
+   🏭 LARGE DETAIL ICON — SMALLER SIZE
+   ============================================ */
+.tk-industry-icon-large {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+  border: 2px solid;
+  transition: all 0.4s ease;
+}
+
+.tk-industry-icon-large svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2;
 }
 
 .tk-tab-active-indicator {

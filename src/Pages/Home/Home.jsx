@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Home.css";
 import Header from "../../Components/Header/Header";
 import "../Product/Product.css";
+import "../Contact/Contact.css";
+import "../Industry-Serve/Industry.css";
 import testingBackground from "../../assets/ut.jpg";
 import mineralsBackground from "../../assets/ut.jpg";
 import teamBg from "../../assets/ut.jpg";
@@ -109,6 +111,16 @@ import ghanshyam from "../../assets/ghanshyam.png";
 import gail from "../../assets/gail.png";
 import epp from "../../assets/epp.png";
 import kanungo from "../../assets/kanungo.png";
+import indianoil from "../../assets/indianoil.jpg";
+import flowjet from "../../assets/flowjet.png";
+import gmvalve from "../../assets/gmvalve.jpg";
+import grasim from "../../assets/grasim.png";
+import gpcl from "../../assets/gpcl.jpg";
+import heben from "../../assets/heben.jpg";
+import iceburg from "../../assets/iceburg.jpg";
+import jyoti from "../../assets/jyoti.png";
+import kanex from "../../assets/kanex.jpg";
+import lt from "../../assets/l&t.jpg";
 import { SlLocationPin } from "react-icons/sl";
 import { HiOutlineMail } from "react-icons/hi";
 import { LuPhoneCall } from "react-icons/lu";
@@ -118,18 +130,17 @@ import contactImage from "../../assets/contact1.png";
    📍 COMPANY / LOCATION DETAILS  —  EDIT ONLY HERE
    ============================================================ */
 const COMPANY = {
-  name: "Technoking Engineers Pvt. Ltd.",
+  name: "Technoking Testlab Pvt. Ltd.",
   addressLines: [
-    "Technoking Engineers Pvt. Ltd.,",
-    "Shapar Main Rd, near Mama Dev Temple,",
-    "Shapar, Gujarat 360024, India",
+    "Plot No. 2, Shyam Industrial Area,",
+    "Bakrol Bujrang, Ahm, Guj 382430",
   ],
-  email: "dhaval@ndttesting.co.in",
-  phone: "+91 76005 78888",
+  email: "info@technokingtestlab.com",
+  phone: "+91 95124 00501",
 };
 
 const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  "Technoking Engineers Pvt. Ltd., Shapar Main Rd, near Mama Dev Temple, Shapar, Gujarat 360024"
+  "Technoking Testlab Pvt. Ltd., Plot No. 2, Shyam Industrial Area, Bakrol Bujrang, Ahmedabad, Gujarat 382430"
 )}`;
 
 const AddressBlock = () => (
@@ -143,42 +154,43 @@ const AddressBlock = () => (
   </>
 );
 
+/* ============================================================
+   📇 CONTACT CARDS — each card is fully clickable
+   href  →  what opens on click
+   external  →  true = opens in a new tab (Google Maps)
+   ============================================================ */
 const contactData = [
   {
     icon: <SlLocationPin style={{ fontSize: 30, color: "#D6BB6E" }} />,
     title: "Our Address",
     description: <AddressBlock />,
+    href: MAPS_URL,
+    external: true,
+    actionLabel: "Open in Google Maps",
   },
   {
     icon: <HiOutlineMail style={{ fontSize: 30, color: "#D6BB6E" }} />,
     title: "Email Us",
-    description: (
-      <a
-        href={`mailto:${COMPANY.email}`}
-        style={{ color: "inherit", textDecoration: "none" }}
-      >
-        {COMPANY.email}
-      </a>
-    ),
+    description: COMPANY.email,
+    href: `mailto:${COMPANY.email}`,
+    external: false,
+    actionLabel: "Send an Email",
   },
   {
     icon: <LuPhoneCall style={{ fontSize: 30, color: "#D6BB6E" }} />,
     title: "Call Us",
-    description: (
-      <a
-        href={`tel:${COMPANY.phone.replace(/\s+/g, "")}`}
-        style={{ color: "inherit", textDecoration: "none" }}
-      >
-        {COMPANY.phone}
-      </a>
-    ),
+    description: COMPANY.phone,
+    href: `tel:${COMPANY.phone.replace(/\s+/g, "")}`,
+    external: false,
+    actionLabel: "Call Now",
   },
 ];
 
+/* Helper: builds the default auto-filled message for a given type */
+const buildDefaultMessage = (typeName) => `Testing Type: ${typeName}`;
+
 /* ============================================================
    🏢 OUR CLIENTS — EDIT ONLY HERE
-   Replace the `logo` values with your actual client logo imports
-   e.g. import client1 from "../../assets/clients/client1.png";
    ============================================================ */
 const clientsData = [
   { id: 1, name: "AJK FORGE PVT LTD", logo: ajk },
@@ -192,11 +204,102 @@ const clientsData = [
   { id: 9, name: "GAIL INDIA LTD", logo: gail },
   { id: 10, name: "EPP COMPOSITES PVT LTD", logo: epp },
   { id: 11, name: "KANUNGO FERROMET PVT LTD", logo: kanungo },
-  
+  { id: 12, name: "INDIAN OIL CORPORATION LIMITED", logo: indianoil },
+  { id: 13, name: "FLOWJET VALVES PVT LTD", logo: flowjet },
+  { id: 14, name: "G M VALVE PVT LTD", logo: gmvalve },
+  { id: 15, name: "GRASIM INDUSTRIES LTD", logo: grasim },
+  { id: 16, name: "GUJARAT PRECISION CAST PVT LTD", logo: gpcl },
+  { id: 17, name: "HEBEN CRAIN PVT LTD", logo: heben },
+  { id: 18, name: "ICEBURG TECHNOCAST PVT LTD", logo: iceburg },
+  { id: 19, name: "JYOTI CNC AUTOMATION LTD", logo: jyoti },
+  { id: 20, name: "KANEX FIRE SOLUTIONS LTD", logo: kanex },
+  { id: 21, name: "L&T VALVES LIMITED", logo: lt },
 ];
 
+/* ============================================================
+   🔬 NDT & DT TESTING TYPES — used in the home contact form
+   ============================================================ */
+const testingTypes = [
+  {
+    id: "ndt",
+    name: "NDT Testing",
+    icon: <Activity size={16} />,
+    services: [
+      "Ultrasonic Testing (UT)",
+      "Magnetic Particle Testing (MPT)",
+      "Dye Penetrant Testing (DPT)",
+      "Phase Array Ultrasonic Testing (PAUT)",
+      "Eddy Current Testing (ET)",
+      "Portable Spectro Testing (PST)",
+    ],
+  },
+  {
+    id: "dt",
+    name: "DT Testing",
+    icon: <BarChart3 size={16} />,
+    services: [
+      "Tensile Testing",
+      "Compression Testing",
+      "Bend Testing",
+      "Re-bend Testing",
+      "Impact Testing",
+      "Hardness Testing",
+    ],
+  },
+  {
+    id: "material",
+    name: "Material Testing",
+    icon: <Layers size={16} />,
+    services: [
+      "Chemical & Corrosion Testing",
+      "Metallurgical Testing",
+      "Paint & Surface Coating Testing",
+      "Positive Material Identification (PMI)",
+      "Geological Survey & Consultancy",
+      "Water & Geotextile Testing",
+    ],
+  },
+  {
+    id: "advanced",
+    name: "Advanced NDT",
+    icon: <Cpu size={16} />,
+    services: [
+      "Phased Array UT",
+      "Time of Flight Diffraction",
+      "Guided Wave Testing",
+      "Acoustic Emission Testing",
+      "Digital Radiography",
+      "Computed Tomography",
+    ],
+  },
+  {
+    id: "mechanical",
+    name: "Mechanical Testing",
+    icon: <Wrench size={16} />,
+    services: [
+      "Tensile Testing",
+      "Compression Testing",
+      "Bend Testing",
+      "Impact Testing",
+      "Hardness Testing",
+      "Shear Testing",
+    ],
+  },
+];
+
+/* ============================================================
+   🔢 STAT COUNTER CONFIG — EDIT NUMBERS HERE
+   ids MUST match the `id` values inside `statsData`
+   ============================================================ */
+const COUNTER_CONFIG = {
+  projects: { target: 5000, duration: 2000 },
+  industries: { target: 1200, duration: 2000 },
+  experience: { target: 15, duration: 2000 },
+  satisfaction: { target: 99, duration: 2000 },
+};
+
 const Home = () => {
-  const [activeTab, setActiveTab] = useState("ultrasonic");
+  const [activeTab, setActiveTab] = useState("ndt");
   const [visibleSections, setVisibleSections] = useState({});
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -210,10 +313,18 @@ const Home = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [is3DHover, setIs3DHover] = useState(false);
 
+  // 🎯 Home contact form — testing type + selected service
+  const [activeTestingType, setActiveTestingType] = useState(0);
+  const [selectedService, setSelectedService] = useState("");
+
+  // 📝 Controlled message — auto updates with the active testing type
+  const [messageText, setMessageText] = useState(
+    buildDefaultMessage(testingTypes[0].name)
+  );
+
   const sectionRefs = useRef([]);
   const heroRef = useRef(null);
   const navigate = useNavigate();
-  const counterRef = useRef(null);
   const statsRef = useRef(null);
   const cardsRef = useRef([]);
   const formRef = useRef(null);
@@ -259,240 +370,412 @@ const Home = () => {
     },
   ];
 
-  const testingMethods = [
+  // ============================================
+  // 🔬 TESTING SERVICE GROUPS — NDT & DT
+  // ============================================
+  const testingGroups = [
     {
-      id: 1,
-      method: "Ultrasonic Testing",
-      shortName: "UT",
-      description:
-        "High-frequency sound waves detect internal flaws and measure thickness with exceptional precision.",
-      icon: <Waves size={28} />,
+      id: "ndt",
+      name: "NDT Testing",
+      fullName: "Non-Destructive Testing",
+      icon: <Activity size={28} />,
       color: primaryColor,
       gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      applications: [
-        "Weld Inspection",
-        "Corrosion Mapping",
-        "Bond Testing",
-        "Thickness Measurement",
-        "Composite Inspection",
+      description:
+        "Non-Destructive Testing services for flaw detection and material integrity without damaging the component",
+      methods: [
+        {
+          id: 1,
+          method: "Ultrasonic Testing",
+          shortName: "UT",
+          description:
+            "High-frequency sound waves detect internal flaws and measure thickness with exceptional precision.",
+          icon: <Waves size={28} />,
+          color: primaryColor,
+          gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+          applications: [
+            "Weld Inspection",
+            "Corrosion Mapping",
+            "Bond Testing",
+            "Thickness Measurement",
+            "Composite Inspection",
+          ],
+          standards: ["ASTM E317", "ISO 17640", "ASME Section V", "AWS D1.1"],
+          advantages: [
+            "Deep penetration",
+            "High sensitivity",
+            "Digital imaging",
+            "Real-time results",
+            "Portable equipment",
+          ],
+          image: "📡",
+        },
+        {
+          id: 2,
+          method: "Magnetic Particle Testing",
+          shortName: "MPT",
+          description:
+            "Magnetic fields detect surface and near-surface flaws in ferromagnetic materials with high reliability.",
+          icon: <Magnet size={28} />,
+          color: "#009688",
+          gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
+          applications: [
+            "Ferrous Materials",
+            "Automotive Parts",
+            "Structural Steel",
+            "Railway Components",
+            "Forgings",
+          ],
+          standards: [
+            "ASTM E709",
+            "ISO 9934",
+            "ASME Section V",
+            "ASTM E1444",
+          ],
+          advantages: [
+            "Immediate results",
+            "Surface & subsurface",
+            "Easy interpretation",
+            "Cost-effective",
+            "Portable",
+          ],
+          image: "🧲",
+        },
+        {
+          id: 3,
+          method: "Dye Penetrant Testing",
+          shortName: "DPT",
+          description:
+            "Liquid penetrant reveals surface-breaking defects with exceptional sensitivity and clarity.",
+          icon: <Droplets size={28} />,
+          color: "#0066cc",
+          gradient: "linear-gradient(135deg, #0066cc 0%, #3399ff 100%)",
+          applications: [
+            "Non-porous Materials",
+            "Surface Cracks",
+            "Forgings",
+            "Machined Parts",
+            "Castings",
+          ],
+          standards: ["ASTM E165", "ISO 3452", "ASME 2782", "ASTM E1417"],
+          advantages: [
+            "Portable equipment",
+            "High sensitivity",
+            "Low cost",
+            "Quick results",
+            "Easy to use",
+          ],
+          image: "💧",
+        },
+        {
+          id: 4,
+          method: "Eddy Current Testing",
+          shortName: "ECT",
+          description:
+            "Electromagnetic induction detects surface and sub-surface flaws in conductive materials with precision.",
+          icon: <Zap size={28} />,
+          color: "#7B1FA2",
+          gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
+          applications: [
+            "Heat Exchanger Tubes",
+            "Aircraft Structures",
+            "Conductive Materials",
+            "Coating Thickness",
+            "Crack Detection",
+          ],
+          standards: ["ASTM E426", "ISO 15548", "ASME Section V", "ASTM E243"],
+          advantages: [
+            "No couplant needed",
+            "High speed",
+            "Automated inspection",
+            "Good for tubes",
+            "Portable",
+          ],
+          image: "⚡",
+        },
+        {
+          id: 5,
+          method: "Phased Array UT",
+          shortName: "PAUT",
+          description:
+            "Advanced ultrasonic technique with multiple elements for detailed imaging and comprehensive inspection.",
+          icon: <Scan size={28} />,
+          color: "#E65100",
+          gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
+          applications: [
+            "Weld Inspection",
+            "Corrosion Mapping",
+            "Composite Materials",
+            "Thick Sections",
+            "Complex Geometries",
+          ],
+          standards: [
+            "ASME Section V",
+            "ISO 13588",
+            "ASTM E2491",
+            "AWS D1.1",
+          ],
+          advantages: [
+            "3D imaging",
+            "High resolution",
+            "Multiple angles",
+            "Fast scanning",
+            "Better defect sizing",
+          ],
+          image: "🔍",
+        },
+        {
+          id: 6,
+          method: "Positive Material Identification",
+          shortName: "PMI",
+          description:
+            "Verifies material composition and alloy grade using XRF or OES analysis with high accuracy.",
+          icon: <Atom size={28} />,
+          color: "#9C27B0",
+          gradient: "linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%)",
+          applications: [
+            "Alloy Verification",
+            "Material Certification",
+            "Scrap Sorting",
+            "Quality Control",
+            "Grade Confirmation",
+          ],
+          standards: [
+            "ASTM E1476",
+            "ISO 9001",
+            "ASME Section II",
+            "ASTM E1257",
+          ],
+          advantages: [
+            "Non-destructive",
+            "Quick results",
+            "Portable (XRF)",
+            "High accuracy",
+            "Real-time analysis",
+          ],
+          image: "⚛️",
+        },
       ],
-      standards: ["ASTM E317", "ISO 17640", "ASME Section V", "AWS D1.1"],
-      advantages: [
-        "Deep penetration",
-        "High sensitivity",
-        "Digital imaging",
-        "Real-time results",
-        "Portable equipment",
-      ],
-      image: "📡",
     },
     {
-      id: 2,
-      method: "Magnetic Particle Testing",
-      shortName: "MPT",
-      description:
-        "Magnetic fields detect surface and near-surface flaws in ferromagnetic materials with high reliability.",
-      icon: <Magnet size={28} />,
+      id: "dt",
+      name: "DT Testing",
+      fullName: "Destructive Testing",
+      icon: <BarChart3 size={28} />,
       color: "#009688",
       gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
-      applications: [
-        "Ferrous Materials",
-        "Automotive Parts",
-        "Structural Steel",
-        "Railway Components",
-        "Forgings",
-      ],
-      standards: ["ASTM E709", "ISO 9934", "ASME Section V", "ASTM E1444"],
-      advantages: [
-        "Immediate results",
-        "Surface & subsurface",
-        "Easy interpretation",
-        "Cost-effective",
-        "Portable",
-      ],
-      image: "🧲",
-    },
-    {
-      id: 3,
-      method: "Dye Penetrant Testing",
-      shortName: "DPT",
       description:
-        "Liquid penetrant reveals surface-breaking defects with exceptional sensitivity and clarity.",
-      icon: <Droplets size={28} />,
-      color: "#0066cc",
-      gradient: "linear-gradient(135deg, #0066cc 0%, #3399ff 100%)",
-      applications: [
-        "Non-porous Materials",
-        "Surface Cracks",
-        "Forgings",
-        "Machined Parts",
-        "Castings",
+        "Destructive Testing services to evaluate mechanical properties and material performance under stress",
+      methods: [
+        {
+          id: 7,
+          method: "Tensile Testing",
+          shortName: "Tensile",
+          description:
+            "Measures material strength, ductility, and elasticity by pulling a specimen until failure.",
+          icon: <TrendingUp size={28} />,
+          color: "#009688",
+          gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
+          applications: [
+            "Weld Qualification",
+            "Material Certification",
+            "Quality Control",
+            "Research & Development",
+            "Failure Analysis",
+          ],
+          standards: ["ASTM E8", "ISO 6892", "ASME Section IX", "ASTM A370"],
+          advantages: [
+            "Accurate strength data",
+            "Ductility measurement",
+            "Standard-compliant",
+            "Wide material range",
+            "Detailed stress-strain curves",
+          ],
+          image: "📈",
+        },
+        {
+          id: 8,
+          method: "Compression Testing",
+          shortName: "Compression",
+          description:
+            "Determines compressive strength, yield behavior, and deformation characteristics of materials.",
+          icon: <Layers size={28} />,
+          color: "#2196f3",
+          gradient: "linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)",
+          applications: [
+            "Concrete Testing",
+            "Composite Materials",
+            "Foam & Polymers",
+            "Ceramics",
+            "Structural Components",
+          ],
+          standards: ["ASTM E9", "ISO 604", "ASTM D695", "ASTM C39"],
+          advantages: [
+            "Accurate load data",
+            "Deformation analysis",
+            "Material behavior insight",
+            "Standard procedures",
+            "Detailed reporting",
+          ],
+          image: "🔽",
+        },
+        {
+          id: 9,
+          method: "Bend Testing",
+          shortName: "Bend",
+          description:
+            "Evaluates ductility and soundness of welds and materials by bending to a specified angle.",
+          icon: <GitBranch size={28} />,
+          color: "#7B1FA2",
+          gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
+          applications: [
+            "Weld Qualification",
+            "Plate & Sheet Testing",
+            "Pipe Testing",
+            "Structural Steel",
+            "Quality Assurance",
+          ],
+          standards: ["ASTM E190", "ISO 7438", "ASME Section IX", "AWS D1.1"],
+          advantages: [
+            "Weld ductility check",
+            "Simple procedure",
+            "Quick results",
+            "Standard-compliant",
+            "Cost-effective",
+          ],
+          image: "↩️",
+        },
+        {
+          id: 10,
+          method: "Re-bend Testing",
+          shortName: "Re-bend",
+          description:
+            "Bends a specimen in the opposite direction after initial bend to reveal internal defects.",
+          icon: <GitBranch size={28} />,
+          color: "#E65100",
+          gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
+          applications: [
+            "Weld Qualification",
+            "Rebar Testing",
+            "Wire Testing",
+            "Sheet Metal",
+            "Quality Control",
+          ],
+          standards: ["ASTM E190", "ISO 7438", "BS 4449", "ASTM A615"],
+          advantages: [
+            "Detects internal flaws",
+            "More severe than bend test",
+            "Standard procedure",
+            "Quick results",
+            "Simple interpretation",
+          ],
+          image: "🔄",
+        },
+        {
+          id: 11,
+          method: "Impact Testing",
+          shortName: "Impact",
+          description:
+            "Measures material toughness and resistance to sudden loading using Charpy or Izod methods.",
+          icon: <ZapIcon size={28} />,
+          color: "#FF6F00",
+          gradient: "linear-gradient(135deg, #FF6F00 0%, #FFA726 100%)",
+          applications: [
+            "Weld Qualification",
+            "Pressure Vessels",
+            "Piping Systems",
+            "Structural Steel",
+            "Low-Temperature Service",
+          ],
+          standards: ["ASTM E23", "ISO 148", "ASME Section VIII", "ASTM A370"],
+          advantages: [
+            "Toughness measurement",
+            "Transition temperature data",
+            "Standard-compliant",
+            "Wide temperature range",
+            "Detailed energy data",
+          ],
+          image: "💥",
+        },
+        {
+          id: 12,
+          method: "Hardness Testing",
+          shortName: "Hardness",
+          description:
+            "Measures material hardness using Brinell, Rockwell, Vickers, or Leeb methods.",
+          icon: <Diamond size={28} />,
+          color: "#607D8B",
+          gradient: "linear-gradient(135deg, #607D8B 0%, #90A4AE 100%)",
+          applications: [
+            "Heat Affected Zones",
+            "Large Components",
+            "In-service Inspection",
+            "Weld Hardness",
+            "Coating Hardness",
+          ],
+          standards: ["ASTM E10", "ASTM E18", "ASTM E92", "ISO 6506"],
+          advantages: [
+            "Multiple scales",
+            "Portable options",
+            "Quick results",
+            "Minimal surface damage",
+            "Wide material range",
+          ],
+          image: "💎",
+        },
+        {
+          id: 13,
+          method: "Shear Testing",
+          shortName: "Shear",
+          description:
+            "Determines shear strength of materials by applying force parallel to the material surface.",
+          icon: <Wrench size={28} />,
+          color: "#4CAF50",
+          gradient: "linear-gradient(135deg, #4CAF50 0%, #81C784 100%)",
+          applications: [
+            "Fasteners",
+            "Adhesive Joints",
+            "Composite Materials",
+            "Sheet Metals",
+            "Weld Testing",
+          ],
+          standards: ["ASTM B831", "ISO 7961", "ASTM D1002", "ASTM D3165"],
+          advantages: [
+            "Accurate shear data",
+            "Fastener evaluation",
+            "Bond strength measurement",
+            "Standard procedures",
+            "Quick results",
+          ],
+          image: "✂️",
+        },
+        {
+          id: 14,
+          method: "Fastener Testing",
+          shortName: "Fastener",
+          description:
+            "Comprehensive testing of bolts, nuts, screws, and studs for mechanical properties and quality.",
+          icon: <Cog size={28} />,
+          color: "#9C27B0",
+          gradient: "linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%)",
+          applications: [
+            "Bolts & Nuts",
+            "Screws & Studs",
+            "Anchors",
+            "Rivets",
+            "Special Fasteners",
+          ],
+          standards: ["ASTM F606", "ISO 898", "ASTM A490", "ASTM A325"],
+          advantages: [
+            "Complete fastener testing",
+            "Proof load data",
+            "Hardness measurement",
+            "Tensile strength",
+            "Standard-compliant",
+          ],
+          image: "🔩",
+        },
       ],
-      standards: ["ASTM E165", "ISO 3452", "ASME 2782", "ASTM E1417"],
-      advantages: [
-        "Portable equipment",
-        "High sensitivity",
-        "Low cost",
-        "Quick results",
-        "Easy to use",
-      ],
-      image: "💧",
-    },
-    {
-      id: 4,
-      method: "Eddy Current Testing",
-      shortName: "ECT",
-      description:
-        "Electromagnetic induction detects surface and sub-surface flaws in conductive materials with precision.",
-      icon: <Zap size={28} />,
-      color: "#7B1FA2",
-      gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
-      applications: [
-        "Heat Exchanger Tubes",
-        "Aircraft Structures",
-        "Conductive Materials",
-        "Coating Thickness",
-        "Crack Detection",
-      ],
-      standards: ["ASTM E426", "ISO 15548", "ASME Section V", "ASTM E243"],
-      advantages: [
-        "No couplant needed",
-        "High speed",
-        "Automated inspection",
-        "Good for tubes",
-        "Portable",
-      ],
-      image: "⚡",
-    },
-    {
-      id: 5,
-      method: "Phased Array UT",
-      shortName: "PAUT",
-      description:
-        "Advanced ultrasonic technique with multiple elements for detailed imaging and comprehensive inspection.",
-      icon: <Scan size={28} />,
-      color: "#E65100",
-      gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
-      applications: [
-        "Weld Inspection",
-        "Corrosion Mapping",
-        "Composite Materials",
-        "Thick Sections",
-        "Complex Geometries",
-      ],
-      standards: ["ASME Section V", "ISO 13588", "ASTM E2491", "AWS D1.1"],
-      advantages: [
-        "3D imaging",
-        "High resolution",
-        "Multiple angles",
-        "Fast scanning",
-        "Better defect sizing",
-      ],
-      image: "🔍",
-    },
-    {
-      id: 6,
-      method: "Positive Material Identification",
-      shortName: "PMI",
-      description:
-        "Verifies material composition and alloy grade using XRF or OES analysis with high accuracy.",
-      icon: <Atom size={28} />,
-      color: "#9C27B0",
-      gradient: "linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%)",
-      applications: [
-        "Alloy Verification",
-        "Material Certification",
-        "Scrap Sorting",
-        "Quality Control",
-        "Grade Confirmation",
-      ],
-      standards: ["ASTM E1476", "ISO 9001", "ASME Section II", "ASTM E1257"],
-      advantages: [
-        "Non-destructive",
-        "Quick results",
-        "Portable (XRF)",
-        "High accuracy",
-        "Real-time analysis",
-      ],
-      image: "⚛️",
-    },
-    {
-      id: 7,
-      method: "Portable Spectrometer",
-      shortName: "Spectro",
-      description:
-        "Handheld analysis of chemical composition using optical emission or X-ray fluorescence technology.",
-      icon: <Radio size={28} />,
-      color: "#FF6F00",
-      gradient: "linear-gradient(135deg, #FF6F00 0%, #FFA726 100%)",
-      applications: [
-        "Metal Sorting",
-        "Alloy Analysis",
-        "Quality Control",
-        "Scrap Recycling",
-        "Field Inspection",
-      ],
-      standards: ["ASTM E415", "ISO 17025", "ASTM E1257", "ASTM E322"],
-      advantages: [
-        "Handheld",
-        "Fast results",
-        "Multi-element",
-        "Non-destructive",
-        "Field deployable",
-      ],
-      image: "🌈",
-    },
-    {
-      id: 8,
-      method: "Hardness Testing",
-      shortName: "Hardness",
-      description:
-        "Measures material hardness without indentation using ultrasonic or rebound methods with precision.",
-      icon: <Diamond size={28} />,
-      color: "#607D8B",
-      gradient: "linear-gradient(135deg, #607D8B 0%, #90A4AE 100%)",
-      applications: [
-        "Heat Affected Zones",
-        "Large Components",
-        "In-service Inspection",
-        "Weld Hardness",
-        "Coating Hardness",
-      ],
-      standards: ["ASTM A1038", "ISO 16859", "ASTM E110", "ASTM E956"],
-      advantages: [
-        "No surface damage",
-        "Portable",
-        "Quick results",
-        "Large area coverage",
-        "Multiple scales",
-      ],
-      image: "💎",
-    },
-    {
-      id: 9,
-      method: "Thickness Measurement",
-      shortName: "Thickness",
-      description:
-        "Measures material thickness using ultrasonic or electromagnetic methods with exceptional accuracy.",
-      icon: <Ruler size={28} />,
-      color: "#4CAF50",
-      gradient: "linear-gradient(135deg, #4CAF50 0%, #81C784 100%)",
-      applications: [
-        "Corrosion Monitoring",
-        "Tank Inspection",
-        "Pipeline Assessment",
-        "Pressure Vessels",
-        "Ship Hulls",
-      ],
-      standards: ["ASTM E797", "ISO 16809", "ASME Section V", "ASTM E1930"],
-      advantages: [
-        "Non-invasive",
-        "Accurate",
-        "Portable",
-        "Real-time data",
-        "Multiple materials",
-      ],
-      image: "📏",
     },
   ];
 
@@ -606,159 +889,189 @@ const Home = () => {
 
   const industries = [
     {
-      id: 0,
-      name: "Oil & Gas",
-      icon: <Factory size={20} />,
-      color: primaryColor,
-      description:
-        "Comprehensive testing solutions for pipelines, refineries, and offshore platforms.",
-      applications: [
-        "Pipeline Integrity",
-        "Pressure Vessels",
-        "Storage Tanks",
-        "Heat Exchangers",
-      ],
-      features: [
-        "API Standards Compliance",
-        "Corrosion Monitoring",
-        "Weld Inspection",
-        "Risk Assessment",
-      ],
-      materials: [
-        "Carbon Steel",
-        "Stainless Steel",
-        "Duplex Steel",
-        "Alloy Pipes",
-      ],
-    },
-    {
-      id: 3,
-      name: "Marine",
-      icon: <Ship size={20} />,
-      color: "#009688",
-      description:
-        "Rugged testing solutions for shipbuilding, offshore, and marine structures.",
-      applications: [
-        "Hull Inspection",
-        "Propulsion Systems",
-        "Deck Structures",
-        "Piping Systems",
-      ],
-      features: [
-        "DNV GL Approved",
-        "Corrosion Assessment",
-        "Weld Inspection",
-        "Underwater Testing",
-      ],
-      materials: [
-        "Marine Grade Steel",
-        "Stainless Steel",
-        "Copper Alloys",
-        "Aluminum",
-      ],
-    },
-    {
       id: 1,
-      name: "Aerospace",
-      icon: <Plane size={20} />,
-      color: "#2196f3",
+      name: "NDT Services",
+      icon: <Activity size={20} />,
+      color: primaryColor,
+      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
       description:
-        "Precision NDT for aircraft components, engines, and critical structures.",
+        "Non-Destructive Testing services for flaw detection and material integrity without damaging the component",
       applications: [
-        "Turbine Blades",
-        "Fuselage Panels",
-        "Landing Gear",
-        "Engine Components",
+        "Weld Inspection",
+        "Casting & Forging Inspection",
+        "Pipeline Integrity",
+        "Pressure Vessel Testing",
+        "Structural Steel Inspection",
+        "Aerospace Component Testing",
       ],
       features: [
-        "NABL Accredited (UT, MT, PT)",
-        "AS9100D Compliance",
-        "Composite Testing",
-        "Fatigue Analysis",
+        "No damage to components",
+        "Real-time defect detection",
+        "Cost-effective inspection",
+        "Compliance with international standards",
       ],
       materials: [
-        "Titanium Alloys",
-        "Aluminum Alloys",
-        "Composites",
-        "Superalloys",
-      ],
-    },
-    {
-      id: 4,
-      name: "Construction",
-      icon: <HardHat size={20} />,
-      color: "#7B1FA2",
-      description:
-        "Structural testing for buildings, bridges, and infrastructure projects.",
-      applications: [
-        "Steel Structures",
-        "Concrete Reinforcement",
-        "Bridge Welds",
-        "High-Rise Buildings",
-      ],
-      features: [
-        "On-Site Testing",
-        "Non-Destructive Evaluation",
-        "Load Testing",
-        "Compliance Verification",
-      ],
-      materials: [
-        "Structural Steel",
-        "Rebar",
-        "Concrete",
-        "Composite Materials",
+        "Ultrasonic Testing (UT)",
+        "Magnetic Particle Testing (MPT)",
+        "Dye Penetrant Testing (DPT)",
+        "Phase Array Ultrasonic Testing (PAUT)",
+        "Eddy Current Testing (ET)",
+        "Portable Spectro Testing (PST)",
       ],
     },
     {
       id: 2,
-      name: "Automotive",
-      icon: <Car size={20} />,
-      color: "#1a8cff",
+      name: "DT Services",
+      icon: <BarChart3 size={20} />,
+      color: "#009688",
+      gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
       description:
-        "High-volume testing for automotive parts, welds, and safety components.",
+        "Destructive Testing services to evaluate mechanical properties and material performance under stress",
       applications: [
-        "Engine Blocks",
-        "Transmission Parts",
-        "Chassis Components",
-        "Safety Systems",
+        "Tensile Strength Testing",
+        "Compression Testing",
+        "Bend & Re-bend Testing",
+        "Impact Testing",
+        "Hardness Testing",
+        "Fastener Testing",
       ],
       features: [
-        "IATF 16949 Certified",
-        "High-Speed Inspection",
-        "Automated Testing",
-        "Statistical Analysis",
+        "Accurate mechanical property data",
+        "Quality verification",
+        "Material certification",
+        "Failure analysis support",
       ],
       materials: [
-        "Cast Iron",
-        "Aluminum",
-        "Steel Alloys",
-        "Engineering Plastics",
+        "Tensile Testing",
+        "Compression Testing",
+        "Bend Testing",
+        "Re-bend Testing",
+        "Impact Testing",
+        "Hardness Testing",
+      ],
+    },
+    {
+      id: 3,
+      name: "Material Testing",
+      icon: <Layers size={20} />,
+      color: "#2196f3",
+      gradient: "linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)",
+      description:
+        "Comprehensive material characterization and analysis for quality assurance and R&D",
+      applications: [
+        "Chemical Composition Analysis",
+        "Metallurgical Testing",
+        "Corrosion Testing",
+        "Paint & Coating Testing",
+        "PMI Testing",
+        "Geological Survey",
+      ],
+      features: [
+        "Precise chemical analysis",
+        "Microstructure evaluation",
+        "Corrosion resistance data",
+        "Coating performance metrics",
+      ],
+      materials: [
+        "Chemical & Corrosion Testing",
+        "Metallurgical Testing",
+        "Paint & Surface Coating Testing",
+        "Positive Material Identification (PMI)",
+        "Geological Survey & Consultancy",
+        "Water & Geotextile Testing",
+      ],
+    },
+    {
+      id: 4,
+      name: "NDT & DT Combined",
+      icon: <Shield size={20} />,
+      color: "#7B1FA2",
+      gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
+      description:
+        "Integrated NDT and DT solutions for complete material and component qualification",
+      applications: [
+        "Full Weld Qualification",
+        "Pressure Equipment Certification",
+        "Structural Integrity Assessment",
+        "Material Qualification",
+        "Fitness-for-Service Evaluation",
+        "Remaining Life Assessment",
+      ],
+      features: [
+        "Complete testing coverage",
+        "Single-point coordination",
+        "Comprehensive reporting",
+        "Faster project turnaround",
+      ],
+      materials: [
+        "UT + Tensile Testing",
+        "MPT + Impact Testing",
+        "DPT + Hardness Testing",
+        "PAUT + Bend Testing",
+        "ET + Chemical Analysis",
+        "PST + Metallurgical Testing",
       ],
     },
     {
       id: 5,
-      name: "Power",
-      icon: <ZapIcon size={20} />,
-      color: "#E65100",
+      name: "Advanced NDT",
+      icon: <Cpu size={20} />,
+      color: "#1a8cff",
+      gradient: "linear-gradient(135deg, #1a8cff 0%, #4a9eff 100%)",
       description:
-        "Critical testing for power plants, turbines, and energy infrastructure.",
+        "Advanced non-destructive techniques for critical and complex applications",
       applications: [
-        "Turbine Components",
-        "Boiler Tubes",
-        "Generator Parts",
-        "Nuclear Components",
+        "Phased Array UT",
+        "Time of Flight Diffraction",
+        "Guided Wave Testing",
+        "Acoustic Emission Testing",
+        "Digital Radiography",
+        "Computed Tomography",
       ],
       features: [
-        "ASME Certified",
-        "High-Temperature Testing",
-        "In-Service Inspection",
-        "Life Assessment",
+        "High-resolution imaging",
+        "Complex geometry capability",
+        "Volumetric inspection",
+        "Digital data archiving",
       ],
       materials: [
-        "Heat-Resistant Steel",
-        "Inconel",
-        "Titanium",
-        "Ceramics",
+        "Phase Array Ultrasonic Testing (PAUT)",
+        "Eddy Current Testing (ET)",
+        "Portable Spectro Testing (PST)",
+        "Positive Material Identification (PMI)",
+        "Ultrasonic Testing (UT)",
+        "Magnetic Particle Testing (MPT)",
+      ],
+    },
+    {
+      id: 6,
+      name: "Mechanical Testing",
+      icon: <Wrench size={20} />,
+      color: "#E65100",
+      gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
+      description:
+        "Destructive mechanical testing to determine material strength and performance characteristics",
+      applications: [
+        "Tensile Testing",
+        "Compression Testing",
+        "Bend Testing",
+        "Impact Testing",
+        "Hardness Testing",
+        "Shear Testing",
+      ],
+      features: [
+        "Accurate load measurement",
+        "Standard-compliant procedures",
+        "Detailed stress-strain data",
+        "Failure mode analysis",
+      ],
+      materials: [
+        "Tensile Testing",
+        "Compression Testing",
+        "Bend Testing",
+        "Re-bend Testing",
+        "Impact Testing",
+        "Hardness Testing",
       ],
     },
   ];
@@ -787,7 +1100,7 @@ const Home = () => {
         "Comprehensive testing and inspection to ensure product reliability",
       icon: <Shield size={28} />,
       features: [
-        "NDT testing services",
+        "NDT & DT testing services",
         "Dimensional inspection",
         "Chemical analysis",
         "Mechanical testing",
@@ -857,307 +1170,89 @@ const Home = () => {
     },
   ];
 
-  const ndtMethods = [
-    {
-      method: "Ultrasonic Testing (UT)",
-      description:
-        "High-frequency sound waves detect internal flaws and measure thickness",
-      applications: [
-        "Weld Inspection",
-        "Corrosion Mapping",
-        "Bond Testing",
-        "Thickness Measurement",
-      ],
-      icon: <Waves size={28} />,
-      color: primaryColor,
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, #ff4d4d 100%)`,
-      standards: ["ASTM E317", "ISO 17640", "ASME Section V"],
-      advantages: [
-        "Deep penetration",
-        "High sensitivity",
-        "Digital imaging",
-        "Real-time results",
-      ],
-    },
-    {
-      method: "Radiographic Testing (RT)",
-      description:
-        "X-ray/Gamma ray imaging reveals internal defects and structures",
-      applications: [
-        "Casting Inspection",
-        "Aerospace Components",
-        "Pipeline Welds",
-        "Complex Assemblies",
-      ],
-      icon: <Radiation size={28} />,
-      color: "#ff6b00",
-      gradient: "linear-gradient(135deg, #ff6b00 0%, #ff8c42 100%)",
-      standards: ["ASTM E94", "ISO 17636", "ASME Section V"],
-      advantages: [
-        "Permanent record",
-        "Volumetric inspection",
-        "Film/Digital options",
-        "All materials",
-      ],
-    },
-    {
-      method: "Positive Material Identification (PMI)",
-      description:
-        "Verifies material composition and alloy grade using XRF or OES analysis",
-      applications: [
-        "Alloy Verification",
-        "Material Certification",
-        "Scrap Sorting",
-        "Quality Control",
-      ],
-      icon: <Atom size={28} />,
-      color: "#9C27B0",
-      gradient: "linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%)",
-      standards: ["ASTM E1476", "ISO 9001", "ASME Section II"],
-      advantages: [
-        "Non-destructive",
-        "Quick results",
-        "Portable (XRF)",
-        "High accuracy",
-      ],
-    },
-    {
-      method: "Thickness Measurement (UT/EM)",
-      description:
-        "Measures material thickness using ultrasonic or electromagnetic methods",
-      applications: [
-        "Corrosion Monitoring",
-        "Tank Inspection",
-        "Pipeline Assessment",
-        "Pressure Vessels",
-      ],
-      icon: <Ruler size={28} />,
-      color: "#4CAF50",
-      gradient: "linear-gradient(135deg, #4CAF50 0%, #81C784 100%)",
-      standards: ["ASTM E797", "ISO 16809", "ASME Section V"],
-      advantages: ["Non-invasive", "Accurate", "Portable", "Real-time data"],
-    },
-    {
-      method: "Hardness Testing (Non-Destructive)",
-      description:
-        "Measures material hardness without indentation using ultrasonic or rebound methods",
-      applications: [
-        "Heat Affected Zones",
-        "Large Components",
-        "In-service Inspection",
-        "Weld Hardness",
-      ],
-      icon: <Diamond size={28} />,
-      color: "#607D8B",
-      gradient: "linear-gradient(135deg, #607D8B 0%, #90A4AE 100%)",
-      standards: ["ASTM A1038", "ISO 16859", "ASTM E110"],
-      advantages: [
-        "No surface damage",
-        "Portable",
-        "Quick results",
-        "Large area coverage",
-      ],
-    },
-    {
-      method: "Spectroscopy (OES/XRF)",
-      description:
-        "Analyzes chemical composition of metals using optical emission or X-ray fluorescence",
-      applications: [
-        "Material Grade Verification",
-        "Scrap Identification",
-        "Coating Analysis",
-        "Contamination Detection",
-      ],
-      icon: <Sparkles size={28} />,
-      color: "#FF9800",
-      gradient: "linear-gradient(135deg, #FF9800 0%, #FFB74D 100%)",
-      standards: ["ASTM E415", "ISO 17025", "ASTM E1257"],
-      advantages: [
-        "High accuracy",
-        "Multi-element analysis",
-        "Fast results",
-        "Non-destructive (XRF)",
-      ],
-    },
-    {
-      method: "Calibration & Certification",
-      description:
-        "Ensures measurement accuracy and traceability to international standards",
-      applications: [
-        "Equipment Certification",
-        "Laboratory Accreditation",
-        "Quality Systems",
-        "Regulatory Compliance",
-      ],
-      icon: <CheckCircle size={28} />,
-      color: "#795548",
-      gradient: "linear-gradient(135deg, #795548 0%, #A1887F 100%)",
-      standards: ["ISO/IEC 17025", "ASTM E1316", "NABL"],
-      advantages: [
-        "Traceability",
-        "Accuracy assurance",
-        "Compliance",
-        "Risk reduction",
-      ],
-    },
-    {
-      method: "Dye Penetrant Testing (PT)",
-      description:
-        "Liquid penetrant reveals surface-breaking defects with high sensitivity",
-      applications: [
-        "Non-porous Materials",
-        "Surface Cracks",
-        "Forgings",
-        "Machined Parts",
-      ],
-      icon: <Droplets size={28} />,
-      color: "#0066cc",
-      gradient: "linear-gradient(135deg, #0066cc 0%, #3399ff 100%)",
-      standards: ["ASTM E165", "ISO 3452", "ASME 2782"],
-      advantages: [
-        "Portable equipment",
-        "High sensitivity",
-        "Low cost",
-        "Quick results",
-      ],
-    },
-    {
-      method: "Magnetic Particle Testing (MPT)",
-      description:
-        "Magnetic fields detect surface and near-surface flaws in ferromagnetic materials",
-      applications: [
-        "Ferrous Materials",
-        "Automotive Parts",
-        "Structural Steel",
-        "Railway Components",
-      ],
-      icon: <Zap size={28} />,
-      color: "#009688",
-      gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
-      standards: ["ASTM E709", "ISO 9934", "ASME Section V"],
-      advantages: [
-        "Immediate results",
-        "Surface & subsurface",
-        "Easy interpretation",
-        "Cost-effective",
-      ],
-    },
-  ];
+  // Flatten all methods for the modal
+  const allTestingMethods = testingGroups.flatMap((group) => group.methods);
+  const currentTestingType = testingTypes[activeTestingType];
 
-  const dtMethods = [
-    {
-      method: "Tensile Testing",
-      description: "Measures material strength under tension until failure",
-      applications: ["Metal Alloys", "Polymers", "Composites", "Welded Joints"],
-      icon: "💪",
-      color: "#e74c3c",
-      gradient: "linear-gradient(135deg, #e74c3c 0%, #eaa29a 100%)",
-      standards: ["ASTM E8", "ISO 6892", "ASTM D638"],
-      parameters: [
-        "Yield Strength",
-        "Ultimate Strength",
-        "Elongation",
-        "Reduction Area",
-      ],
-    },
-    {
-      method: "Hardness Testing (Destructive)",
-      description:
-        "Measures material resistance to indentation using various scales",
-      applications: [
-        "Heat Treated Parts",
-        "Coatings",
-        "Forgings",
-        "Tool Steels",
-      ],
-      icon: "💎",
-      color: "#9b59b6",
-      gradient: "linear-gradient(135deg, #9b59b6 0%, #c39bd3 100%)",
-      standards: ["ASTM E10", "ISO 6506", "ASTM E384"],
-      parameters: [
-        "Brinell Hardness",
-        "Rockwell Hardness",
-        "Vickers Hardness",
-        "Knoop Hardness",
-      ],
-    },
-    {
-      method: "Spectrometry Analysis (OES)",
-      description:
-        "Analyzes chemical composition using optical emission spectrometry",
-      applications: [
-        "Alloy Identification",
-        "Grade Confirmation",
-        "Quality Control",
-        "Failure Investigation",
-      ],
-      icon: "🌈",
-      color: "#E67E22",
-      gradient: "linear-gradient(135deg, #E67E22 0%, #FAD7A0 100%)",
-      standards: ["ASTM E415", "ISO 17025", "ASTM E1257"],
-      parameters: [
-        "Chemical Composition",
-        "Elemental Analysis",
-        "Impurity Detection",
-        "Alloy Classification",
-      ],
-    },
-  ];
-
+  // ============================================
+  // 📝 KEEP "Your Message" IN SYNC WITH TESTING TYPE
+  //    Whenever the active testing type changes, we replace the
+  //    message with the auto-generated "Testing Type: ..." line.
+  // ============================================
   useEffect(() => {
+    setMessageText(buildDefaultMessage(testingTypes[activeTestingType].name));
+  }, [activeTestingType]);
+
+  // ============================================
+  // 🔢 STAT COUNTERS  (FIXED)
+  // ============================================
+  useEffect(() => {
+    const node = statsRef.current;
+    if (!node) return;
+
+    let timers = [];
+
+    const startCounters = () => {
+      Object.entries(COUNTER_CONFIG).forEach(([id, { target, duration }]) => {
+        const steps = 60;
+        const increment = target / steps;
+        let current = 0;
+
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          setCounters((prev) => ({
+            ...prev,
+            [id]: Math.floor(current),
+          }));
+        }, duration / steps);
+
+        timers.push(timer);
+      });
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const targets = [
-              { id: "projects", target: 5000, duration: 2000 },
-              { id: "clients", target: 1200, duration: 2000 },
-              { id: "countries", target: 25, duration: 2000 },
-              { id: "experience", target: 15, duration: 2000 },
-            ];
-
-            targets.forEach(({ id, target, duration }) => {
-              const steps = 60;
-              const increment = target / steps;
-              let current = 0;
-
-              const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                  current = target;
-                  clearInterval(timer);
-                }
-                setCounters((prev) => ({
-                  ...prev,
-                  [id]: Math.floor(current),
-                }));
-              }, duration / steps);
-            });
+            startCounters();
+            observer.disconnect(); // run only once
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
     );
 
-    if (counterRef.current) {
-      observer.observe(counterRef.current);
-    }
+    observer.observe(node);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      timers.forEach((t) => clearInterval(t));
+      timers = [];
+    };
   }, []);
 
+  // ============================================
+  // 🖱️ SCROLL PROGRESS
+  // ============================================
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / docHeight) * 100;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       setScrollProgress(progress);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // ============================================
+  // 🎬 PROCESS STEP ANIMATION
+  // ============================================
   useEffect(() => {
     const stepTimer = setTimeout(() => {
       setAnimatedSteps([1]);
@@ -1178,6 +1273,9 @@ const Home = () => {
     };
   }, []);
 
+  // ============================================
+  // 👁️ SECTION VISIBILITY OBSERVER  (FIXED)
+  // ============================================
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (heroRef.current) {
@@ -1192,10 +1290,11 @@ const Home = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          const key = entry.target.dataset.section;
+          if (entry.isIntersecting && key) {
             setVisibleSections((prev) => ({
               ...prev,
-              [entry.target.dataset.section]: true,
+              [key]: true,
             }));
           }
         });
@@ -1219,339 +1318,26 @@ const Home = () => {
     };
   }, []);
 
+  // ============================================
+  // 👁️ SECOND OBSERVER (fade classes)
+  // ============================================
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -100px 0px",
-      }
-    );
-
-    setVisibleSections((prev) => ({ ...prev, overview: true }));
-
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const stepTimer = setTimeout(() => {
-      setAnimatedSteps([1]);
-    }, 1000);
-
-    const stepInterval = setInterval(() => {
-      setAnimatedSteps((prev) => {
-        if (prev.length < 6) {
-          return [...prev, prev.length + 1];
-        }
-        return prev;
-      });
-    }, 300);
-
-    return () => {
-      clearTimeout(stepTimer);
-      clearInterval(stepInterval);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (heroRef.current) {
-        const { left, top, width, height } =
-          heroRef.current.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setMousePosition({ x, y });
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
-          }
-        });
-      },
-      { threshold: 0.2, rootMargin: "-50px" }
-    );
-
-    if (heroRef.current) {
-      heroRef.current.addEventListener("mousemove", handleMouseMove);
-    }
-
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
-
-    return () => {
-      observer.disconnect();
-      if (heroRef.current) {
-        heroRef.current.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            statsData.forEach((stat, index) => {
-              const duration = 2000;
-              const steps = 60;
-              const increment = stat.max / steps;
-              let current = 0;
-
-              const timer = setInterval(() => {
-                current += increment;
-                if (current >= stat.max) {
-                  current = stat.max;
-                  clearInterval(timer);
-                }
-                setStats((prev) => {
-                  const newStats = [...prev];
-                  newStats[index] = {
-                    ...newStats[index],
-                    value: Math.floor(current),
-                  };
-                  return newStats;
-                });
-              }, duration / steps);
-            });
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    if (statsRef.current) observer.observe(statsRef.current);
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
-          }
-        });
-      },
-      { threshold: 0.2, rootMargin: "-50px" }
-    );
-
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
-
-            if (entry.target.classList.contains("tk-contact-card")) {
-              setTimeout(() => {
-                entry.target.classList.add("tk-card-pop-in");
-              }, entry.target.dataset.index * 200);
-            } else {
-              entry.target.classList.add("tk-fade-in-up");
+            const key = entry.target.dataset.section;
+            if (key) {
+              setVisibleSections((prev) => ({
+                ...prev,
+                [key]: true,
+              }));
             }
-
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.2,
-        rootMargin: "0px 0px -50px 0px",
-      }
-    );
-
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
-
-    cardsRef.current.forEach((card, index) => {
-      if (card) {
-        card.dataset.index = index;
-        observer.observe(card);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const targets = [
-              { id: "projects", target: 5000, duration: 2500 },
-              { id: "industries", target: 25, duration: 2000 },
-              { id: "experience", target: 15, duration: 2000 },
-              { id: "satisfaction", target: 98, duration: 2000 },
-            ];
-
-            targets.forEach(({ id, target, duration }) => {
-              const steps = 60;
-              const increment = target / steps;
-              let current = 0;
-
-              const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                  current = target;
-                  clearInterval(timer);
-                }
-                setCounters((prev) => ({
-                  ...prev,
-                  [id]: Math.floor(current),
-                }));
-              }, duration / steps);
-            });
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    if (statsRef.current) {
-      observer.observe(statsRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / docHeight) * 100;
-      setScrollProgress(progress);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (heroRef.current) {
-        const { left, top, width, height } =
-          heroRef.current.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setMousePosition({ x, y });
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "-30px" }
-    );
-
-    if (heroRef.current) {
-      heroRef.current.addEventListener("mousemove", handleMouseMove);
-    }
-
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
-
-    return () => {
-      observer.disconnect();
-      if (heroRef.current) {
-        heroRef.current.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / docHeight) * 100;
-      setScrollProgress(progress);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (heroRef.current) {
-        const { left, top, width, height } =
-          heroRef.current.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setMousePosition({ x, y });
-      }
-    };
-
-    if (heroRef.current) {
-      heroRef.current.addEventListener("mousemove", handleMouseMove);
-    }
-
-    return () => {
-      if (heroRef.current) {
-        heroRef.current.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
 
             if (entry.target.classList.contains("qc-contact-card")) {
               setTimeout(() => {
                 entry.target.classList.add("qc-card-pop-in");
-              }, entry.target.dataset.index * 200);
+              }, (Number(entry.target.dataset.index) || 0) * 200);
             } else {
               entry.target.classList.add("qc-fade-in-up");
             }
@@ -1580,8 +1366,25 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
-  const addToRefs = (el, index) => {
-    sectionRefs.current[index] = el;
+  // ✅ Push-based ref collector — NO MORE INDEX COLLISIONS
+  const addToRefs = (el) => {
+    if (el && !sectionRefs.current.includes(el)) {
+      sectionRefs.current.push(el);
+    }
+  };
+
+  // 🖱️ Makes the contact card glow follow the cursor
+  const handleCardMouseMove = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty(
+      "--mouse-x",
+      `${((e.clientX - rect.left) / rect.width) * 100}%`
+    );
+    card.style.setProperty(
+      "--mouse-y",
+      `${((e.clientY - rect.top) / rect.height) * 100}%`
+    );
   };
 
   const handleRequestService = (method) => {
@@ -1598,47 +1401,6 @@ const Home = () => {
     setSelectedMethod(method);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const form = e.target;
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        form.reset();
-
-        setSuccessMessage("Message sent successfully!");
-
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 2000);
-      } else {
-        setSuccessMessage("Something went wrong! Try again.");
-
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 2000);
-      }
-    } catch (error) {
-      setSuccessMessage("Error sending message!");
-
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 2000);
-    }
-
-    setIsSubmitting(false);
-  };
-
   const handleSubmit2 = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -1646,6 +1408,10 @@ const Home = () => {
     const form = e.target;
     const formData = new FormData(form);
 
+    // Append the selected testing type + service so it reaches Web3Forms
+    formData.append("testing_type", testingTypes[activeTestingType].name);
+    formData.append("service_selected", selectedService);
+
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -1656,7 +1422,10 @@ const Home = () => {
 
       if (result.success) {
         form.reset();
+        setSelectedService("");
         setSuccessMessage("Message sent successfully!");
+        // restore auto message after reset
+        setMessageText(buildDefaultMessage(testingTypes[activeTestingType].name));
         setTimeout(() => {
           setSuccessMessage("");
         }, 2000);
@@ -1685,8 +1454,8 @@ const Home = () => {
       <div className="prod-page2" id="services">
         <section
           className="prod-overview-section"
-          ref={(el) => addToRefs(el, 1)}
-          data-section="overview"
+          ref={addToRefs}
+          data-section="prodOverview"
         >
           <div className="prod-container-inner">
             <div className="prod-section-header">
@@ -1698,8 +1467,8 @@ const Home = () => {
                 Our Services
               </div>
               <h2 className="prod-section-title">
-                Comprehensive Testing{" "}
-                <span style={{ color: primaryColor }}>Solutions</span>
+                Comprehensive{" "}
+                <span style={{ color: primaryColor }}>Testing Solutions</span>
               </h2>
               <div className="prod-section-divider">
                 <div
@@ -1720,14 +1489,16 @@ const Home = () => {
                 ></div>
               </div>
               <p className="prod-section-description">
-                ASNT Level III certified testing services with advanced
-                equipment and expert analysis
+                ASNT Level III certified NDT and DT testing services with
+                advanced equipment and expert analysis
               </p>
             </div>
 
             <div className="prod-overview-content">
               <div
-                className={`prod-overview-text ${visibleSections.overview ? "prod-animate-fade" : ""}`}
+                className={`prod-overview-text ${
+                  visibleSections.prodOverview ? "prod-animate-fade" : ""
+                }`}
               >
                 <div className="prod-content-highlight prod-float-animation">
                   <div className="prod-highlight-icon">
@@ -1739,7 +1510,7 @@ const Home = () => {
                       className="prod-highlight-text"
                       style={{ color: primaryColor }}
                     >
-                      Non-Destructive Testing (NDT)
+                      NDT &amp; DT Testing
                     </strong>{" "}
                     services for quality assurance and structural integrity
                     evaluation. Our certified technicians use state-of-the-art
@@ -1751,14 +1522,14 @@ const Home = () => {
                 <div className="prod-service-highlights">
                   <div className="prod-highlight-item prod-slide-animation">
                     <CheckCircle color={primaryColor} size={24} />
-                    <span>ISO 9712 & ASNT SNT-TC-1A Certified</span>
+                    <span>ISO 9712 &amp; ASNT SNT-TC-1A Certified</span>
                   </div>
                   <div
                     className="prod-highlight-item prod-slide-animation"
                     style={{ animationDelay: "0.1s" }}
                   >
                     <CheckCircle color={primaryColor} size={24} />
-                    <span>NABL Accredited for UT, MT and PT</span>
+                    <span>NABL Accredited for Aerospace</span>
                   </div>
                   <div
                     className="prod-highlight-item prod-slide-animation"
@@ -1778,7 +1549,9 @@ const Home = () => {
               </div>
 
               <div
-                className={`prod-features-grid ${visibleSections.overview ? "prod-animate-slide-right" : ""}`}
+                className={`prod-features-grid ${
+                  visibleSections.prodOverview ? "prod-animate-slide-right" : ""
+                }`}
               >
                 {serviceFeatures.map((feature, index) => (
                   <div
@@ -1794,9 +1567,7 @@ const Home = () => {
                         {feature.icon}
                         <div className="prod-icon-ring"></div>
                       </div>
-                      <h3 className="prod-feature-card-title">
-                        {feature.title}
-                      </h3>
+                      <h3 className="prod-feature-card-title">{feature.title}</h3>
                       <p className="prod-feature-card-description">
                         {feature.description}
                       </p>
@@ -1811,7 +1582,7 @@ const Home = () => {
 
         <section
           className="prod-methods-section"
-          ref={(el) => addToRefs(el, 2)}
+          ref={addToRefs}
           data-section="methods"
         >
           <div className="prod-container-inner">
@@ -1821,7 +1592,7 @@ const Home = () => {
                 style={{ background: primaryColor }}
               >
                 <Microscope size={16} />
-                Testing Methods
+                Testing Services
               </div>
               <h2 className="prod-section-title">
                 Our Testing{" "}
@@ -1846,8 +1617,8 @@ const Home = () => {
                 ></div>
               </div>
               <p className="prod-section-description">
-                Advanced testing techniques for accurate results and quality
-                assurance
+                Advanced NDT and DT testing techniques for accurate results and
+                quality assurance
               </p>
             </div>
 
@@ -1864,121 +1635,188 @@ const Home = () => {
               ))}
             </div>
 
-            <div className="prod-methods-grid">
-              {testingMethods.map((method, index) => (
-                <div
-                  key={method.id}
-                  className={`prod-method-card ${visibleSections.methods ? "prod-animate-fade" : ""}`}
-                  style={{ animationDelay: `${index * 0.08}s` }}
+            {/* ==========================================
+                🔬 NDT / DT GROUP TABS
+                ========================================== */}
+            <div className="prod-testing-group-tabs">
+              {testingGroups.map((group) => (
+                <button
+                  key={group.id}
+                  className={`prod-group-tab ${
+                    activeTab === group.id ? "prod-group-tab-active" : ""
+                  }`}
+                  onClick={() => setActiveTab(group.id)}
+                  style={
+                    activeTab === group.id
+                      ? {
+                          borderColor: group.color,
+                          background: `${group.color}12`,
+                          color: group.color,
+                          boxShadow: `0 8px 25px ${group.color}30`,
+                        }
+                      : {}
+                  }
                 >
-                  <div
-                    className="prod-method-card-header"
-                    style={{ background: method.gradient }}
-                  >
-                    <div className="prod-method-card-icon prod-icon-pulse">
-                      {method.icon}
-                    </div>
-                    <h3 className="prod-method-card-title">{method.method}</h3>
-                    <div className="prod-method-card-number">
-                      #{String(index + 1).padStart(2, "0")}
-                    </div>
-                    <div className="prod-method-card-short">
-                      {method.shortName}
-                    </div>
+                  <span className="prod-group-tab-icon">{group.icon}</span>
+                  <span className="prod-group-tab-text">
+                    <strong>{group.name}</strong>
+                    <small>{group.fullName}</small>
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* ==========================================
+                🔬 ACTIVE GROUP DESCRIPTION
+                ========================================== */}
+            {testingGroups
+              .filter((g) => g.id === activeTab)
+              .map((group) => (
+                <div key={group.id} className="prod-active-group-info">
+                  <p className="prod-active-group-desc">{group.description}</p>
+                  <div className="prod-active-group-meta">
+                    <span
+                      className="prod-group-count"
+                      style={{
+                        background: `${group.color}15`,
+                        color: group.color,
+                        borderColor: `${group.color}30`,
+                      }}
+                    >
+                      {group.methods.length} Testing Methods
+                    </span>
                   </div>
-
-                  <div className="prod-method-card-content">
-                    <p className="prod-method-card-description">
-                      {method.description}
-                    </p>
-
-                    <div className="prod-method-card-section">
-                      <h4 className="prod-method-card-subtitle">
-                        <Target size={16} />
-                        Applications:
-                      </h4>
-                      <div className="prod-applications-list">
-                        {method.applications.map((app, i) => (
-                          <span
-                            key={i}
-                            className="prod-application-tag prod-slide-animation"
-                            style={{
-                              background: method.color + "15",
-                              color: method.color,
-                              borderColor: method.color + "30",
-                              animationDelay: `${i * 0.05}s`,
-                            }}
-                          >
-                            <CheckCircle size={12} />
-                            {app}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="prod-method-card-section">
-                      <h4 className="prod-method-card-subtitle">
-                        <BookOpen size={16} />
-                        Standards:
-                      </h4>
-                      <div className="prod-standards-list">
-                        {method.standards.map((std, i) => (
-                          <span
-                            key={i}
-                            className="prod-standard-badge prod-pop-animation"
-                            style={{ animationDelay: `${i * 0.1}s` }}
-                          >
-                            {std}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="prod-method-card-section">
-                      <h4 className="prod-method-card-subtitle">
-                        <Rocket size={16} />
-                        Advantages:
-                      </h4>
-                      <ul className="prod-advantages-list">
-                        {method.advantages.map((adv, i) => (
-                          <li
-                            key={i}
-                            className="prod-slide-animation"
-                            style={{ animationDelay: `${i * 0.1}s` }}
-                          >
-                            <div
-                              className="prod-advantage-dot prod-pulse-dot"
-                              style={{ background: method.color }}
-                            ></div>
-                            <span className="prod-advantage-text">{adv}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="prod-button-container">
-                      <button
-                        className="prod-method-card-button"
-                        style={{ background: method.gradient }}
-                        onClick={() => handleRequestService(method)}
-                      >
-                        <span>Request Service</span>
-                        <div className="prod-button-arrow">→</div>
-                        <div className="prod-btn-ripple"></div>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="prod-method-card-hover-effect"></div>
                 </div>
               ))}
+
+            {/* ==========================================
+                🔬 METHODS GRID FOR ACTIVE GROUP
+                ========================================== */}
+            <div className="prod-methods-grid" key={activeTab}>
+              {testingGroups
+                .filter((g) => g.id === activeTab)
+                .flatMap((group) =>
+                  group.methods.map((method, index) => (
+                    <div
+                      key={method.id}
+                      className={`prod-method-card ${
+                        visibleSections.methods ? "prod-animate-fade" : ""
+                      }`}
+                      style={{ animationDelay: `${index * 0.08}s` }}
+                    >
+                      <div
+                        className="prod-method-card-header"
+                        style={{ background: method.gradient }}
+                      >
+                        <div className="prod-method-card-icon prod-icon-pulse">
+                          {method.icon}
+                        </div>
+                        <h3 className="prod-method-card-title">
+                          {method.method}
+                        </h3>
+                        <div className="prod-method-card-number">
+                          #{String(index + 1).padStart(2, "0")}
+                        </div>
+                        <div className="prod-method-card-short">
+                          {method.shortName}
+                        </div>
+                      </div>
+
+                      <div className="prod-method-card-content">
+                        <p className="prod-method-card-description">
+                          {method.description}
+                        </p>
+
+                        <div className="prod-method-card-section">
+                          <h4 className="prod-method-card-subtitle">
+                            <Target size={16} />
+                            Applications:
+                          </h4>
+                          <div className="prod-applications-list">
+                            {method.applications.map((app, i) => (
+                              <span
+                                key={i}
+                                className="prod-application-tag prod-slide-animation"
+                                style={{
+                                  background: method.color + "15",
+                                  color: method.color,
+                                  borderColor: method.color + "30",
+                                  animationDelay: `${i * 0.05}s`,
+                                }}
+                              >
+                                <CheckCircle size={12} />
+                                {app}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="prod-method-card-section">
+                          <h4 className="prod-method-card-subtitle">
+                            <BookOpen size={16} />
+                            Standards:
+                          </h4>
+                          <div className="prod-standards-list">
+                            {method.standards.map((std, i) => (
+                              <span
+                                key={i}
+                                className="prod-standard-badge prod-pop-animation"
+                                style={{ animationDelay: `${i * 0.1}s` }}
+                              >
+                                {std}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="prod-method-card-section">
+                          <h4 className="prod-method-card-subtitle">
+                            <Rocket size={16} />
+                            Advantages:
+                          </h4>
+                          <ul className="prod-advantages-list">
+                            {method.advantages.map((adv, i) => (
+                              <li
+                                key={i}
+                                className="prod-slide-animation"
+                                style={{ animationDelay: `${i * 0.1}s` }}
+                              >
+                                <div
+                                  className="prod-advantage-dot prod-pulse-dot"
+                                  style={{ background: method.color }}
+                                ></div>
+                                <span className="prod-advantage-text">
+                                  {adv}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="prod-button-container">
+                          <button
+                            className="prod-method-card-button"
+                            style={{ background: method.gradient }}
+                            onClick={() => handleRequestService(method)}
+                          >
+                            <span>Request Service</span>
+                            <div className="prod-button-arrow">→</div>
+                            <div className="prod-btn-ripple"></div>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="prod-method-card-hover-effect"></div>
+                    </div>
+                  ))
+                )}
             </div>
           </div>
         </section>
 
         <section
           className="prod-certification-section"
-          ref={(el) => addToRefs(el, 6)}
+          ref={addToRefs}
           data-section="process"
         >
           <div className="prod-container-inner">
@@ -2069,7 +1907,7 @@ const Home = () => {
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           method={selectedMethod}
-          allMethods={testingMethods}
+          allMethods={allTestingMethods}
           onSelectMethod={handleSelectMethod}
         />
       </div>
@@ -2111,8 +1949,8 @@ const Home = () => {
 
         <section
           className="tk-industries-overview"
-          ref={(el) => addToRefs(el, 1)}
-          data-section="overview"
+          ref={addToRefs}
+          data-section="industriesOverview"
         >
           <div className="tk-container">
             <div className="tk-section-header">
@@ -2156,7 +1994,9 @@ const Home = () => {
               {industries.map((industry, index) => (
                 <button
                   key={industry.id}
-                  className={`tk-industry-tab ${activeIndustry === index ? "tk-active" : ""} tk-tab-3d`}
+                  className={`tk-industry-tab ${
+                    activeIndustry === index ? "tk-active" : ""
+                  } tk-tab-3d`}
                   onClick={() => setActiveIndustry(index)}
                   style={
                     activeIndustry === index
@@ -2286,7 +2126,7 @@ const Home = () => {
 
         <section
           className="tk-industry-services"
-          ref={(el) => addToRefs(el, 2)}
+          ref={addToRefs}
           data-section="services"
         >
           <div className="tk-container">
@@ -2330,7 +2170,9 @@ const Home = () => {
               {industryServices.map((service, index) => (
                 <div
                   key={index}
-                  className={`tk-service-card ${visibleSections.services ? "tk-animate-slide-up" : ""}`}
+                  className={`tk-service-card ${
+                    visibleSections.services ? "tk-animate-slide-up" : ""
+                  }`}
                   style={{ animationDelay: `${index * 0.12}s` }}
                   onMouseEnter={() => setHoveredCard(`service-${index}`)}
                   onMouseLeave={() => setHoveredCard(null)}
@@ -2385,8 +2227,8 @@ const Home = () => {
         <section
           className="qc-contact-form-section"
           id="contact-form"
-          ref={(el) => addToRefs(el, 1)}
-          data-section="form"
+          ref={addToRefs}
+          data-section="contactForm"
         >
           <div className="qc-form-pattern"></div>
 
@@ -2396,10 +2238,10 @@ const Home = () => {
               style={{ background: primaryColor }}
             >
               <MessageSquare size={16} />
-              Send Message
+              Send Enquiry
             </div>
             <h2 className="qc-form-heading qc-text-shimmer">
-              Get in <span style={{ color: primaryColor }}>Touch</span>
+              Request a <span style={{ color: primaryColor }}>Test Quote</span>
             </h2>
             <div className="qc-section-divider">
               <div
@@ -2420,7 +2262,7 @@ const Home = () => {
               ></div>
             </div>
             <p className="qc-form-subheading">
-              We'll get back to you within 24 hours
+              Select your testing type and we&apos;ll get back within 24 hours
             </p>
           </div>
 
@@ -2449,6 +2291,61 @@ const Home = () => {
                   name="access_key"
                   value="5162d798-f96f-4824-a967-12cdaad116e8"
                 />
+
+                {/* ==========================================
+                    🔬 TESTING TYPE SELECTOR (COMPACT TABS)
+                    ========================================== */}
+                <div className="qc-testing-type-selector">
+                  {testingTypes.map((type, index) => (
+                    <button
+                      key={type.id}
+                      type="button"
+                      className={`qc-testing-tab ${
+                        activeTestingType === index
+                          ? "qc-testing-tab-active"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        setActiveTestingType(index);
+                        setSelectedService("");
+                      }}
+                      style={
+                        activeTestingType === index
+                          ? {
+                              borderColor: primaryColor,
+                              color: primaryColor,
+                              background: `${primaryColor}10`,
+                              boxShadow: `0 6px 18px ${primaryColor}25`,
+                            }
+                          : {}
+                      }
+                      title={type.name}
+                    >
+                      <span className="qc-tab-icon-wrap">{type.icon}</span>
+                      <span className="qc-tab-label">{type.name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* ==========================================
+                    🔬 SERVICE DROPDOWN FOR SELECTED TYPE
+                    ========================================== */}
+                <div className="qc-service-select">
+                  <label className="qc-service-label">Testing Service</label>
+                  <select
+                    name="service"
+                    value={selectedService}
+                    onChange={(e) => setSelectedService(e.target.value)}
+                    required
+                  >
+                    <option value="">Select a test / service</option>
+                    {currentTestingType.services.map((service, idx) => (
+                      <option key={idx} value={service}>
+                        {service}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 <div className="qc-form-group">
                   <div className="qc-form-field qc-input-float">
@@ -2481,8 +2378,17 @@ const Home = () => {
                     ></div>
                   </div>
 
+                  {/* ==========================================
+                      📝 YOUR MESSAGE — controlled + auto-filled
+                      ========================================== */}
                   <div className="qc-form-message qc-input-float">
-                    <textarea name="message" placeholder=" " required />
+                    <textarea
+                      name="message"
+                      placeholder=" "
+                      required
+                      value={messageText}
+                      onChange={(e) => setMessageText(e.target.value)}
+                    />
                     <label>Your Message</label>
                     <i className="fas fa-comment-dots"></i>
                     <div
@@ -2502,14 +2408,16 @@ const Home = () => {
                 <div className="qc-button-area">
                   <button
                     type="submit"
-                    className={`qc-btn-magnetic qc-btn-3d ${isSubmitting ? "qc-btn-loading" : ""}`}
+                    className={`qc-btn-magnetic qc-btn-3d ${
+                      isSubmitting ? "qc-btn-loading" : ""
+                    }`}
                     disabled={isSubmitting}
                     style={{
                       background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
                     }}
                   >
                     <span className="qc-btn-text">
-                      {isSubmitting ? "Sending..." : "Send Message"}
+                      {isSubmitting ? "Sending..." : "Send Enquiry"}
                     </span>
                     <span className="qc-btn-icon">
                       <i className="fa fa-paper-plane"></i>
@@ -2558,19 +2466,23 @@ const Home = () => {
               ></div>
             </div>
             <p className="qc-section-subtitle">
-              We're here to help. Reach out to us through any of these channels
+              We&apos;re here to help. Reach out to us through any of these
+              channels — just tap a card
             </p>
           </div>
 
           <div className="qc-contact-card-container">
             {contactData.map((item, index) => (
-              <div
+              <a
                 key={index}
-                className="qc-contact-card"
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+                className="qc-contact-card qc-contact-card-link"
                 ref={(el) => (cardsRef.current[index] = el)}
                 data-index={index}
-                onMouseEnter={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}
+                onMouseMove={handleCardMouseMove}
+                aria-label={item.actionLabel}
               >
                 <div
                   className="qc-card-glow"
@@ -2589,6 +2501,12 @@ const Home = () => {
                 <p className="qc-contact-card-description">
                   {item.description}
                 </p>
+
+                {/* Small "action" hint that appears on hover */}
+                <span className="qc-contact-card-cta">
+                  {item.actionLabel} <span className="qc-cta-arrow">→</span>
+                </span>
+
                 <div
                   className="qc-card-hover-line"
                   style={{
@@ -2596,7 +2514,7 @@ const Home = () => {
                   }}
                 ></div>
                 <div className="qc-card-number">0{index + 1}</div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
@@ -2633,86 +2551,84 @@ const Home = () => {
         </div>
       </div>
 
-     {/* ============================================================
-    🏢 OUR CLIENTS — HORIZONTAL AUTO-SCROLLING LOGO MARQUEE
-    Logos always shown in full colour
-    Hover only adds shadow + lift (no colour change)
-    ============================================================ */}
-<section className="tk-clients-section" id="clients">
-  <div className="tk-container">
-    <div className="tk-section-header">
-      <div
-        className="tk-section-badge"
-        style={{ background: primaryColor }}
-      >
-        <Users size={16} />
-        Our Clients
-      </div>
-      <h2 className="tk-section-title-iws">
-        Trusted by{" "}
-        <span style={{ color: primaryColor }}>Industry Leaders</span>
-      </h2>
-      <div className="tk-section-divider">
-        <div
-          className="tk-divider-line"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-          }}
-        ></div>
-        <div
-          className="tk-divider-dot tk-pulse-dot"
-          style={{ background: primaryColor }}
-        ></div>
-        <div
-          className="tk-divider-line"
-          style={{
-            background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-          }}
-        ></div>
-      </div>
-      <p className="tk-section-subtitle">
-        We proudly serve leading companies across diverse industries
-      </p>
-    </div>
+      {/* ============================================================
+          🏢 OUR CLIENTS — HORIZONTAL AUTO-SCROLLING LOGO MARQUEE
+          ============================================================ */}
+      <section className="tk-clients-section" id="clients">
+        <div className="tk-container">
+          <div className="tk-section-header">
+            <div
+              className="tk-section-badge"
+              style={{ background: primaryColor }}
+            >
+              <Users size={16} />
+              Our Clients
+            </div>
+            <h2 className="tk-section-title-iws">
+              Trusted by{" "}
+              <span style={{ color: primaryColor }}>Industry Leaders</span>
+            </h2>
+            <div className="tk-section-divider">
+              <div
+                className="tk-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+                }}
+              ></div>
+              <div
+                className="tk-divider-dot tk-pulse-dot"
+                style={{ background: primaryColor }}
+              ></div>
+              <div
+                className="tk-divider-line"
+                style={{
+                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+                }}
+              ></div>
+            </div>
+            <p className="tk-section-subtitle">
+              We proudly serve leading companies across diverse industries
+            </p>
+          </div>
 
-    <div className="tk-clients-marquee">
-      <div className="tk-clients-track">
-        {clientsData.map((client) => (
-          <div
-            key={`client-a-${client.id}`}
-            className="tk-client-logo-card"
-            title={client.name}
-          >
-            <img
-              src={client.logo}
-              alt={client.name}
-              draggable="false"
-              loading="lazy"
-            />
-            <span className="tk-client-name">{client.name}</span>
+          <div className="tk-clients-marquee">
+            <div className="tk-clients-track">
+              {clientsData.map((client) => (
+                <div
+                  key={`client-a-${client.id}`}
+                  className="tk-client-logo-card"
+                  title={client.name}
+                >
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    draggable="false"
+                    loading="lazy"
+                  />
+                  <span className="tk-client-name">{client.name}</span>
+                </div>
+              ))}
+              {/* Duplicate set for seamless infinite loop */}
+              {clientsData.map((client) => (
+                <div
+                  key={`client-b-${client.id}`}
+                  className="tk-client-logo-card"
+                  title={client.name}
+                  aria-hidden="true"
+                >
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    draggable="false"
+                    loading="lazy"
+                  />
+                  <span className="tk-client-name">{client.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-        {/* Duplicate set for seamless infinite loop */}
-        {clientsData.map((client) => (
-          <div
-            key={`client-b-${client.id}`}
-            className="tk-client-logo-card"
-            title={client.name}
-            aria-hidden="true"
-          >
-            <img
-              src={client.logo}
-              alt={client.name}
-              draggable="false"
-              loading="lazy"
-            />
-            <span className="tk-client-name">{client.name}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
+        </div>
+      </section>
     </div>
   );
 };

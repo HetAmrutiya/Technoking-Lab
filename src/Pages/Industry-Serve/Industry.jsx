@@ -180,187 +180,190 @@ const Industry = () => {
   };
 
   // ============================================
-  // 🏭 INDUSTRIES DATA (UPDATED WITH BLUE THEME)
+  // 🏭 INDUSTRIES DATA — NDT & DT SERVICES
+  // ============================================
+  // ============================================
+  // 🏭 INDUSTRIES DATA — NDT & DT SERVICES
   // ============================================
   const industries = [
     {
-      id: 2,
-      name: "Oil & Gas",
-      icon: <Factory size={32} />,
+      id: 1,
+      name: "NDT Services",
+      icon: <Activity size={20} />,
       color: primaryColor,
       gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      description: "Durable materials for extreme conditions in exploration and processing",
+      description: "Non-Destructive Testing services for flaw detection and material integrity without damaging the component",
       applications: [
-        "Pipeline Systems",
-        "Pressure Vessels",
-        "Drilling Equipment",
-        "Refinery Components",
-        "Offshore Platforms",
-        "Storage Tanks",
+        "Weld Inspection",
+        "Casting & Forging Inspection",
+        "Pipeline Integrity",
+        "Pressure Vessel Testing",
+        "Structural Steel Inspection",
+        "Aerospace Component Testing",
       ],
       features: [
-        "Corrosion resistance",
-        "High pressure tolerance",
-        "Temperature stability",
-        "Longevity in harsh environments",
+        "No damage to components",
+        "Real-time defect detection",
+        "Cost-effective inspection",
+        "Compliance with international standards",
       ],
       materials: [
-        "Carbon Steel (API 5L)",
-        "Stainless Steel (316/317L)",
-        "Duplex/Super Duplex",
-        "Inconel 625/825",
-        "Titanium Alloys",
-        "High-Yield Steels",
+        "Ultrasonic Testing (UT)",
+        "Magnetic Particle Testing (MPT)",
+        "Dye Penetrant Testing (DPT)",
+        "Phase Array Ultrasonic Testing (PAUT)",
+        "Eddy Current Testing (ET)",
+        "Portable Spectro Testing (PST)",
       ],
     },
-     {
-      id: 5,
-      name: "Marine & Shipbuilding",
-      icon: <Ship size={32} />,
+    {
+      id: 2,
+      name: "DT Services",
+      icon: <BarChart3 size={20} />,
       color: "#009688",
       gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
-      description: "Corrosion-resistant materials for marine environments",
+      description: "Destructive Testing services to evaluate mechanical properties and material performance under stress",
       applications: [
-        "Hull Components",
-        "Propeller Systems",
-        "Deck Equipment",
-        "Navigation Systems",
-        "Cargo Handling",
-        "Offshore Structures",
+        "Tensile Strength Testing",
+        "Compression Testing",
+        "Bend & Re-bend Testing",
+        "Impact Testing",
+        "Hardness Testing",
+        "Fastener Testing",
       ],
       features: [
-        "Saltwater corrosion resistance",
-        "High durability",
-        "Low maintenance",
-        "Impact resistance",
+        "Accurate mechanical property data",
+        "Quality verification",
+        "Material certification",
+        "Failure analysis support",
       ],
       materials: [
-        "Marine-grade Aluminum (5083)",
-        "Stainless Steel 316L",
-        "Bronze Alloys",
-        "Composite Materials",
-        "Zinc Anodes",
-        "Special Coatings",
+        "Tensile Testing",
+        "Compression Testing",
+        "Bend Testing",
+        "Re-bend Testing",
+        "Impact Testing",
+        "Hardness Testing",
       ],
     },
     {
       id: 3,
-      name: "Power Generation",
-      icon: <Zap size={32} />,
+      name: "Material Testing",
+      icon: <Layers size={20} />,
       color: "#2196f3",
       gradient: "linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)",
-      description: "Materials for conventional and renewable energy production",
+      description: "Comprehensive material characterization and analysis for quality assurance and R&D",
       applications: [
-        "Turbine Components",
-        "Nuclear Plant Parts",
-        "Solar Panel Frames",
-        "Wind Turbine Parts",
-        "Boiler Systems",
-        "Heat Exchangers",
+        "Chemical Composition Analysis",
+        "Metallurgical Testing",
+        "Corrosion Testing",
+        "Paint & Coating Testing",
+        "PMI Testing",
+        "Geological Survey",
       ],
       features: [
-        "Heat resistance",
-        "Structural integrity",
-        "Vibration damping",
-        "Environmental compatibility",
+        "Precise chemical analysis",
+        "Microstructure evaluation",
+        "Corrosion resistance data",
+        "Coating performance metrics",
       ],
       materials: [
-        "Superalloys (Inconel 718)",
-        "Turbine-grade Steels",
-        "Aluminum Alloys",
-        "Copper Conductors",
-        "Ceramic Coatings",
-        "Composites (GFRP)",
-      ],
-    },
-      {
-      id: 6,
-      name: "Construction",
-      icon: <Building size={32} />,
-      color: "#7B1FA2",
-      gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
-      description: "Structural materials for building and infrastructure projects",
-      applications: [
-        "Structural Steel",
-        "Reinforcement Bars",
-        "Precast Concrete",
-        "Bridge Components",
-        "Tunnel Linings",
-        "Architectural Elements",
-      ],
-      features: [
-        "Load-bearing capacity",
-        "Weather resistance",
-        "Fire retardancy",
-        "Long service life",
-      ],
-      materials: [
-        "Structural Steel (A36, A992)",
-        "Rebar (Grade 60)",
-        "Concrete Mixes",
-        "Weathering Steel",
-        "Glass Facades",
-        "Fireproof Materials",
+        "Chemical & Corrosion Testing",
+        "Metallurgical Testing",
+        "Paint & Surface Coating Testing",
+        "Positive Material Identification (PMI)",
+        "Geological Survey & Consultancy",
+        "Water & Geotextile Testing",
       ],
     },
     {
       id: 4,
-      name: "Automotive",
-      icon: <Car size={32} />,
-      color: "#1a8cff",
-      gradient: "linear-gradient(135deg, #1a8cff 0%, #4a9eff 100%)",
-      description: "Lightweight and durable components for vehicle manufacturing",
+      name: "NDT & DT Combined",
+      icon: <Shield size={20} />,
+      color: "#7B1FA2",
+      gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
+      description: "Integrated NDT and DT solutions for complete material and component qualification",
       applications: [
-        "Engine Blocks",
-        "Transmission Parts",
-        "Suspension Components",
-        "Brake Systems",
-        "Chassis Parts",
-        "Electrical Components",
+        "Full Weld Qualification",
+        "Pressure Equipment Certification",
+        "Structural Integrity Assessment",
+        "Material Qualification",
+        "Fitness-for-Service Evaluation",
+        "Remaining Life Assessment",
       ],
       features: [
-        "Weight optimization",
-        "High strength-to-weight ratio",
-        "Corrosion protection",
-        "Precision manufacturing",
+        "Complete testing coverage",
+        "Single-point coordination",
+        "Comprehensive reporting",
+        "Faster project turnaround",
       ],
       materials: [
-        "Advanced High-Strength Steel",
-        "Aluminum 6061/7075",
-        "Magnesium Alloys",
-        "Carbon Fiber Composites",
-        "Titanium Grade 5",
-        "Engineering Plastics",
+        "UT + Tensile Testing",
+        "MPT + Impact Testing",
+        "DPT + Hardness Testing",
+        "PAUT + Bend Testing",
+        "ET + Chemical Analysis",
+        "PST + Metallurgical Testing",
       ],
     },
     {
-      id: 7,
-      name: "Heavy Machinery",
-      icon: <Wrench size={32} />,
-      color: "#E65100",
-      gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
-      description: "Robust components for industrial machinery and equipment",
+      id: 5,
+      name: "Advanced NDT",
+      icon: <Cpu size={20} />,
+      color: "#1a8cff",
+      gradient: "linear-gradient(135deg, #1a8cff 0%, #4a9eff 100%)",
+      description: "Advanced non-destructive techniques for critical and complex applications",
       applications: [
-        "Mining Equipment",
-        "Excavator Parts",
-        "Conveyor Systems",
-        "Crusher Components",
-        "Material Handling",
-        "Industrial Gearboxes",
+        "Phased Array UT",
+        "Time of Flight Diffraction",
+        "Guided Wave Testing",
+        "Acoustic Emission Testing",
+        "Digital Radiography",
+        "Computed Tomography",
       ],
       features: [
-        "High wear resistance",
-        "Shock absorption",
-        "Heavy load capacity",
-        "Minimal deformation",
+        "High-resolution imaging",
+        "Complex geometry capability",
+        "Volumetric inspection",
+        "Digital data archiving",
       ],
       materials: [
-        "Hardox Wear Plates",
-        "Forged Steel Components",
-        "Cast Iron Alloys",
-        "Bearing Steels",
-        "Hard-facing Alloys",
-        "Polyurethane Liners",
+        "Phase Array Ultrasonic Testing (PAUT)",
+        "Eddy Current Testing (ET)",
+        "Portable Spectro Testing (PST)",
+        "Positive Material Identification (PMI)",
+        "Ultrasonic Testing (UT)",
+        "Magnetic Particle Testing (MPT)",
+      ],
+    },
+    {
+      id: 6,
+      name: "Mechanical Testing",
+      icon: <Wrench size={20} />,
+      color: "#E65100",
+      gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
+      description: "Destructive mechanical testing to determine material strength and performance characteristics",
+      applications: [
+        "Tensile Testing",
+        "Compression Testing",
+        "Bend Testing",
+        "Impact Testing",
+        "Hardness Testing",
+        "Shear Testing",
+      ],
+      features: [
+        "Accurate load measurement",
+        "Standard-compliant procedures",
+        "Detailed stress-strain data",
+        "Failure mode analysis",
+      ],
+      materials: [
+        "Tensile Testing",
+        "Compression Testing",
+        "Bend Testing",
+        "Re-bend Testing",
+        "Impact Testing",
+        "Hardness Testing",
       ],
     },
   ];
@@ -385,7 +388,7 @@ const Industry = () => {
       description: "Comprehensive testing and inspection to ensure product reliability",
       icon: <Shield size={28} />,
       features: [
-        "NDT testing services",
+        "NDT & DT testing services",
         "Dimensional inspection",
         "Chemical analysis",
         "Mechanical testing",
@@ -472,35 +475,13 @@ const Industry = () => {
           >
             <div className="tk-hero-badge tk-badge-pulse">
               <span className="tk-badge-dot"></span>
-              Industries We Serve
+              NDT & DT Services
             </div>
 
-            {/* <h1 className="tk-hero-title">
-              <span className="tk-title-line">
-                Industry&nbsp;
-                <span className="tk-title-line tk-hero-highlight">We Serve</span>
-              </span>
-            </h1> */}
-
             <p className="tk-hero-subtitle">
-              Cutting-edge technology and seamless operations ensuring superior
+              Cutting-edge NDT and DT testing services ensuring superior
               quality and reliability across all industrial sectors
             </p>
-{/* 
-            <div className="tk-hero-cta">
-              <button
-                className="tk-hero-btn tk-btn-3d"
-                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})` }}
-                onClick={() => navigate("/contact")}
-              >
-                <span>Contact Us</span>
-                <div className="tk-btn-glow"></div>
-              </button>
-              <button className="tk-hero-btn tk-btn-outline">
-                <span>Learn More</span>
-                <span className="tk-btn-arrow">→</span>
-              </button>
-            </div> */}
           </div>
         </div>
 
@@ -555,7 +536,7 @@ const Industry = () => {
           <div className="tk-section-header">
             <div className="tk-section-badge" style={{ background: primaryColor }}>
               <Target size={16} />
-              Industries We Serve
+              NDT & DT Services
             </div>
             <h2 className="tk-section-title-iws">
               Powering <span style={{ color: primaryColor }}>Industrial</span> Excellence
@@ -566,7 +547,7 @@ const Industry = () => {
               <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
             </div>
             <p className="tk-section-subtitle">
-              Specialized solutions for diverse industrial sectors with unmatched quality and technical support
+              Specialized NDT and DT testing solutions for diverse industrial sectors with unmatched quality and technical support
             </p>
           </div>
 
@@ -759,7 +740,7 @@ const Industry = () => {
             <Rocket size={48} style={{ color: 'white' }} />
           </div>
           <h2 className="tk-cta-title">Ready to <span>Transform</span> Your Industry?</h2>
-          <p className="tk-cta-description">Contact us today for expert solutions tailored to your needs</p>
+          <p className="tk-cta-description">Contact us today for expert NDT & DT solutions tailored to your needs</p>
           <button className="tk-cta-button tk-btn-3d" onClick={() => navigate("/contact")}>
             <span>Get Started</span>
             <span className="tk-cta-arrow">→</span>

@@ -92,8 +92,8 @@
 }
 
 .ne-navbar-logo-image {
-  height: 50px;
-  width: auto;
+  height: 85px;
+  width: 140px;
   transition: height var(--ne-transition-fast);
 }
 
@@ -726,7 +726,7 @@
 
 @media (max-width: 480px) {
   .ne-navbar-container {
-    padding: 0 15px;
+    padding: 0 23px;
   }
 
   .ne-navbar {
@@ -1905,5 +1905,53 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   🖼️ LOGO SWAP — DESKTOP vs MOBILE
+   Desktop (above 992px)  →  logo-ls.png  (wide landscape logo)
+   Mobile  (992px & below) →  logo.png     (square / compact logo)
+   ============================================================ */
+
+/* Default: show desktop logo, hide mobile logo */
+.ne-navbar-logo-desktop {
+  display: block;
+}
+
+.ne-navbar-logo-mobile {
+  display: none;
+}
+
+/* Below 992px (tablet + mobile) — swap them */
+@media (max-width: 992px) {
+  .ne-navbar-logo-desktop {
+    display: none;
+  }
+
+  .ne-navbar-logo-mobile {
+    display: block;
+  }
+}
+
+/* Optional: slightly smaller mobile logo on very small screens */
+@media (max-width: 480px) {
+  .ne-navbar-logo-mobile {
+    height: 60px;
+    width: auto;
+  }
+
+  .ne-navbar-scrolled .ne-navbar-logo-mobile {
+    height: 53px;
+  }
+}
+
+@media (max-width: 360px) {
+  .ne-navbar-logo-mobile {
+    height: 34px;
+  }
+
+  .ne-navbar-scrolled .ne-navbar-logo-mobile {
+    height: 30px;
   }
 }

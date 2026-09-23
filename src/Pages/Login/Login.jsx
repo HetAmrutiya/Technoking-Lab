@@ -108,7 +108,7 @@ const Login = ({ onToggleMode, onClose }) => {
             <div className="tk-auth-logo-icon">
               <HiOutlineUser />
             </div>
-            Technoking Engineers Pvt Ltd
+            Technoking Testlab Pvt Ltd
             <span></span>
           </div>
           {/* ⚪ WHITE TITLE - Welcome Back */}
