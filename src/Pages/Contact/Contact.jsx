@@ -65,6 +65,19 @@ const testingTypes = [
       "Impact Testing",
       "Hardness Testing",
     ],
+  },  
+  {
+    id: "advanced",
+    name: "Advanced NDT",
+    icon: <Cpu size={16} />,
+    services: [
+      "Phased Array UT",
+      "Time of Flight Diffraction",
+      "Guided Wave Testing",
+      "Acoustic Emission Testing",
+      "Digital Radiography",
+      "Computed Tomography",
+    ],
   },
   {
     id: "material",
@@ -77,19 +90,6 @@ const testingTypes = [
       "Positive Material Identification (PMI)",
       "Geological Survey & Consultancy",
       "Water & Geotextile Testing",
-    ],
-  },
-  {
-    id: "advanced",
-    name: "Advanced NDT",
-    icon: <Cpu size={16} />,
-    services: [
-      "Phased Array UT",
-      "Time of Flight Diffraction",
-      "Guided Wave Testing",
-      "Acoustic Emission Testing",
-      "Digital Radiography",
-      "Computed Tomography",
     ],
   },
   {

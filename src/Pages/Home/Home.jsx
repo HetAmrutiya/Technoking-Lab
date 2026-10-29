@@ -156,8 +156,6 @@ const AddressBlock = () => (
 
 /* ============================================================
    📇 CONTACT CARDS — each card is fully clickable
-   href  →  what opens on click
-   external  →  true = opens in a new tab (Google Maps)
    ============================================================ */
 const contactData = [
   {
@@ -186,7 +184,6 @@ const contactData = [
   },
 ];
 
-/* Helper: builds the default auto-filled message for a given type */
 const buildDefaultMessage = (typeName) => `Testing Type: ${typeName}`;
 
 /* ============================================================
@@ -247,19 +244,6 @@ const testingTypes = [
     ],
   },
   {
-    id: "material",
-    name: "Material Testing",
-    icon: <Layers size={16} />,
-    services: [
-      "Chemical & Corrosion Testing",
-      "Metallurgical Testing",
-      "Paint & Surface Coating Testing",
-      "Positive Material Identification (PMI)",
-      "Geological Survey & Consultancy",
-      "Water & Geotextile Testing",
-    ],
-  },
-  {
     id: "advanced",
     name: "Advanced NDT",
     icon: <Cpu size={16} />,
@@ -270,6 +254,19 @@ const testingTypes = [
       "Acoustic Emission Testing",
       "Digital Radiography",
       "Computed Tomography",
+    ],
+  },
+  {
+    id: "material",
+    name: "Material Testing",
+    icon: <Layers size={16} />,
+    services: [
+      "Chemical & Corrosion Testing",
+      "Metallurgical Testing",
+      "Paint & Surface Coating Testing",
+      "Positive Material Identification (PMI)",
+      "Geological Survey & Consultancy",
+      "Water & Geotextile Testing",
     ],
   },
   {
@@ -289,7 +286,6 @@ const testingTypes = [
 
 /* ============================================================
    🔢 STAT COUNTER CONFIG — EDIT NUMBERS HERE
-   ids MUST match the `id` values inside `statsData`
    ============================================================ */
 const COUNTER_CONFIG = {
   projects: { target: 5000, duration: 2000 },
@@ -313,11 +309,9 @@ const Home = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [is3DHover, setIs3DHover] = useState(false);
 
-  // 🎯 Home contact form — testing type + selected service
   const [activeTestingType, setActiveTestingType] = useState(0);
   const [selectedService, setSelectedService] = useState("");
 
-  // 📝 Controlled message — auto updates with the active testing type
   const [messageText, setMessageText] = useState(
     buildDefaultMessage(testingTypes[0].name)
   );
@@ -372,6 +366,7 @@ const Home = () => {
 
   // ============================================
   // 🔬 TESTING SERVICE GROUPS — NDT & DT
+  // (synced with Product.jsx — unique IDs 1-12 for NDT, 13-20 for DT)
   // ============================================
   const testingGroups = [
     {
@@ -386,89 +381,58 @@ const Home = () => {
       methods: [
         {
           id: 1,
-          method: "Ultrasonic Testing",
-          shortName: "UT",
+          method: "Phased Array UT",
+          shortName: "PAUT",
           description:
-            "High-frequency sound waves detect internal flaws and measure thickness with exceptional precision.",
-          icon: <Waves size={28} />,
-          color: primaryColor,
-          gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+            "Advanced ultrasonic technique with multiple elements for detailed imaging and comprehensive inspection.",
+          icon: <Scan size={28} />,
+          color: "#E65100",
+          gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
           applications: [
             "Weld Inspection",
             "Corrosion Mapping",
-            "Bond Testing",
-            "Thickness Measurement",
-            "Composite Inspection",
+            "Composite Materials",
+            "Thick Sections",
+            "Complex Geometries",
           ],
-          standards: ["ASTM E317", "ISO 17640", "ASME Section V", "AWS D1.1"],
+          standards: ["ASME Section V", "ISO 13588", "ASTM E2491", "AWS D1.1"],
           advantages: [
-            "Deep penetration",
-            "High sensitivity",
-            "Digital imaging",
-            "Real-time results",
-            "Portable equipment",
+            "3D imaging",
+            "High resolution",
+            "Multiple angles",
+            "Fast scanning",
+            "Better defect sizing",
           ],
-          image: "📡",
+          image: "🔍",
         },
         {
           id: 2,
-          method: "Magnetic Particle Testing",
-          shortName: "MPT",
+          method: "Time of Flight Diffraction",
+          shortName: "TOFD",
           description:
-            "Magnetic fields detect surface and near-surface flaws in ferromagnetic materials with high reliability.",
-          icon: <Magnet size={28} />,
-          color: "#009688",
-          gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
+            "Advanced ultrasonic technique that uses diffracted signals to detect, locate, and size internal weld defects accurately.",
+          icon: <Waves size={28} />,
+          color: "#00838F",
+          gradient: "linear-gradient(135deg, #00838F 0%, #4DD0E1 100%)",
           applications: [
-            "Ferrous Materials",
-            "Automotive Parts",
-            "Structural Steel",
-            "Railway Components",
-            "Forgings",
+            "Weld Inspection",
+            "Crack Detection",
+            "Defect Sizing",
+            "Pressure Vessels",
+            "Pipeline Inspection",
           ],
-          standards: [
-            "ASTM E709",
-            "ISO 9934",
-            "ASME Section V",
-            "ASTM E1444",
-          ],
+          standards: ["ASME Section V", "ISO 10863", "ASTM E2373", "EN ISO 15626"],
           advantages: [
-            "Immediate results",
-            "Surface & subsurface",
-            "Easy interpretation",
-            "Cost-effective",
-            "Portable",
+            "Accurate defect sizing",
+            "High inspection coverage",
+            "Permanent digital records",
+            "Fast weld inspection",
+            "Reliable crack detection",
           ],
-          image: "🧲",
+          image: "📐",
         },
         {
           id: 3,
-          method: "Dye Penetrant Testing",
-          shortName: "DPT",
-          description:
-            "Liquid penetrant reveals surface-breaking defects with exceptional sensitivity and clarity.",
-          icon: <Droplets size={28} />,
-          color: "#0066cc",
-          gradient: "linear-gradient(135deg, #0066cc 0%, #3399ff 100%)",
-          applications: [
-            "Non-porous Materials",
-            "Surface Cracks",
-            "Forgings",
-            "Machined Parts",
-            "Castings",
-          ],
-          standards: ["ASTM E165", "ISO 3452", "ASME 2782", "ASTM E1417"],
-          advantages: [
-            "Portable equipment",
-            "High sensitivity",
-            "Low cost",
-            "Quick results",
-            "Easy to use",
-          ],
-          image: "💧",
-        },
-        {
-          id: 4,
           method: "Eddy Current Testing",
           shortName: "ECT",
           description:
@@ -494,38 +458,137 @@ const Home = () => {
           image: "⚡",
         },
         {
-          id: 5,
-          method: "Phased Array UT",
-          shortName: "PAUT",
+          id: 4,
+          method: "Digital Radiography",
+          shortName: "DR",
           description:
-            "Advanced ultrasonic technique with multiple elements for detailed imaging and comprehensive inspection.",
+            "Digital radiographic inspection using electronic detectors to produce images for evaluating internal discontinuities in components and welds.",
           icon: <Scan size={28} />,
-          color: "#E65100",
-          gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
+          color: "#6A1B9A",
+          gradient: "linear-gradient(135deg, #6A1B9A 0%, #AB47BC 100%)",
           applications: [
             "Weld Inspection",
-            "Corrosion Mapping",
-            "Composite Materials",
-            "Thick Sections",
-            "Complex Geometries",
+            "Casting Inspection",
+            "Pipeline Inspection",
+            "Porosity Detection",
+            "Pressure Vessel Inspection",
           ],
-          standards: [
-            "ASME Section V",
-            "ISO 13588",
-            "ASTM E2491",
-            "AWS D1.1",
-          ],
+          standards: ["ASME Section V", "ISO 17636-2", "ASTM E2698", "ASTM E2737"],
           advantages: [
-            "3D imaging",
-            "High resolution",
-            "Multiple angles",
-            "Fast scanning",
-            "Better defect sizing",
+            "Real-time image acquisition",
+            "Fast inspection workflow",
+            "Digital image enhancement",
+            "Easy image storage",
+            "Efficient defect evaluation",
           ],
-          image: "🔍",
+          image: "📷",
+        },
+        {
+          id: 5,
+          method: "Computed Radiography",
+          shortName: "CR",
+          description:
+            "Digital radiographic technique that uses reusable imaging plates to capture and evaluate internal defects in materials and welds.",
+          icon: <Scan size={28} />,
+          color: "#1565C0",
+          gradient: "linear-gradient(135deg, #1565C0 0%, #42A5F5 100%)",
+          applications: [
+            "Weld Inspection",
+            "Casting Inspection",
+            "Pipeline Radiography",
+            "Porosity Detection",
+            "Internal Defect Evaluation",
+          ],
+          standards: ["ASME Section V", "ISO 17636-2", "ASTM E2446", "ASTM E2033"],
+          advantages: [
+            "Reusable imaging plates",
+            "Digital image processing",
+            "Reduced chemical waste",
+            "Permanent image storage",
+            "Efficient image review",
+          ],
+          image: "🩻",
         },
         {
           id: 6,
+          method: "Ultrasonic Testing",
+          shortName: "UT",
+          description:
+            "High-frequency sound waves detect internal flaws and measure thickness with exceptional precision.",
+          icon: <Waves size={28} />,
+          color: primaryColor,
+          gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
+          applications: [
+            "Weld Inspection",
+            "Corrosion Mapping",
+            "Bond Testing",
+            "Thickness Measurement",
+            "Composite Inspection",
+          ],
+          standards: ["ASTM E317", "ISO 17640", "ASME Section V", "AWS D1.1"],
+          advantages: [
+            "Deep penetration",
+            "High sensitivity",
+            "Digital imaging",
+            "Real-time results",
+            "Portable equipment",
+          ],
+          image: "📡",
+        },
+        {
+          id: 7,
+          method: "Magnetic Particle Testing",
+          shortName: "MPT",
+          description:
+            "Magnetic fields detect surface and near-surface flaws in ferromagnetic materials with high reliability.",
+          icon: <Magnet size={28} />,
+          color: "#009688",
+          gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
+          applications: [
+            "Ferrous Materials",
+            "Automotive Parts",
+            "Structural Steel",
+            "Railway Components",
+            "Forgings",
+          ],
+          standards: ["ASTM E709", "ISO 9934", "ASME Section V", "ASTM E1444"],
+          advantages: [
+            "Immediate results",
+            "Surface & subsurface",
+            "Easy interpretation",
+            "Cost-effective",
+            "Portable",
+          ],
+          image: "🧲",
+        },
+        {
+          id: 8,
+          method: "Dye Penetrant Testing",
+          shortName: "DPT",
+          description:
+            "Liquid penetrant reveals surface-breaking defects with exceptional sensitivity and clarity.",
+          icon: <Droplets size={28} />,
+          color: "#0066cc",
+          gradient: "linear-gradient(135deg, #0066cc 0%, #3399ff 100%)",
+          applications: [
+            "Non-porous Materials",
+            "Surface Cracks",
+            "Forgings",
+            "Machined Parts",
+            "Castings",
+          ],
+          standards: ["ASTM E165", "ISO 3452", "ASME 2782", "ASTM E1417"],
+          advantages: [
+            "Portable equipment",
+            "High sensitivity",
+            "Low cost",
+            "Quick results",
+            "Easy to use",
+          ],
+          image: "💧",
+        },
+        {
+          id: 9,
           method: "Positive Material Identification",
           shortName: "PMI",
           description:
@@ -540,12 +603,7 @@ const Home = () => {
             "Quality Control",
             "Grade Confirmation",
           ],
-          standards: [
-            "ASTM E1476",
-            "ISO 9001",
-            "ASME Section II",
-            "ASTM E1257",
-          ],
+          standards: ["ASTM E1476", "ISO 9001", "ASME Section II", "ASTM E1257"],
           advantages: [
             "Non-destructive",
             "Quick results",
@@ -554,6 +612,84 @@ const Home = () => {
             "Real-time analysis",
           ],
           image: "⚛️",
+        },
+        {
+          id: 10,
+          method: "Portable Spectrometry",
+          shortName: "SPECTRO",
+          description:
+            "Field-portable OES/XRF analysers verify alloy grade and chemical composition including carbon and light elements.",
+          icon: <Microscope size={28} />,
+          color: "#2E7D32",
+          gradient: "linear-gradient(135deg, #2E7D32 0%, #66BB6A 100%)",
+          applications: [
+            "Alloy Grade Verification",
+            "PMI on Piping & Valves",
+            "Material Certification",
+            "Weld Consumable Verification",
+            "Scrap Sorting",
+          ],
+          standards: ["ASTM E415", "ASTM E1086", "ASTM E1257", "API 578"],
+          advantages: [
+            "Field-portable",
+            "Carbon & light element analysis",
+            "Fast alloy identification",
+            "High accuracy for metals",
+            "Complements XRF (adds C, Si, Al)",
+          ],
+          image: "🔬",
+        },
+        {
+          id: 11,
+          method: "Portable Hardness Testing",
+          shortName: "Hardness",
+          description:
+            "Non-destructive portable hardness testing using UCI or Leeb rebound methods for in-situ measurement of large components and heat-affected zones.",
+          icon: <Diamond size={28} />,
+          color: "#607D8B",
+          gradient: "linear-gradient(135deg, #607D8B 0%, #90A4AE 100%)",
+          applications: [
+            "Heat Affected Zones",
+            "Large Components",
+            "In-service Inspection",
+            "Weld Hardness",
+            "Coating Hardness",
+          ],
+          standards: ["ASTM A1038", "ISO 16859", "ASTM E110", "ASTM E956"],
+          advantages: [
+            "Minimal surface damage",
+            "Portable",
+            "Quick results",
+            "Multiple scales",
+            "Field deployable",
+          ],
+          image: "💎",
+        },
+        {
+          id: 12,
+          method: "Ultrasonic Thickness Measurement",
+          shortName: "Thickness",
+          description:
+            "Ultrasonic thickness gauging to monitor corrosion, erosion, and wall thinning in pipelines, storage tanks, and pressure vessels from one side.",
+          icon: <Ruler size={28} />,
+          color: "#00838F",
+          gradient: "linear-gradient(135deg, #00838F 0%, #26C6DA 100%)",
+          applications: [
+            "Corrosion Monitoring",
+            "Tank Inspection",
+            "Pipeline Assessment",
+            "Pressure Vessels",
+            "Ship Hulls",
+          ],
+          standards: ["ASTM E797", "ISO 16809", "ASME Section V", "API 570"],
+          advantages: [
+            "Non-invasive (one side)",
+            "Accuracy ±0.01 mm",
+            "Portable",
+            "Real-time readout",
+            "Data logging",
+          ],
+          image: "📏",
         },
       ],
     },
@@ -568,7 +704,7 @@ const Home = () => {
         "Destructive Testing services to evaluate mechanical properties and material performance under stress",
       methods: [
         {
-          id: 7,
+          id: 13,
           method: "Tensile Testing",
           shortName: "Tensile",
           description:
@@ -594,7 +730,7 @@ const Home = () => {
           image: "📈",
         },
         {
-          id: 8,
+          id: 14,
           method: "Compression Testing",
           shortName: "Compression",
           description:
@@ -620,7 +756,7 @@ const Home = () => {
           image: "🔽",
         },
         {
-          id: 9,
+          id: 15,
           method: "Bend Testing",
           shortName: "Bend",
           description:
@@ -646,7 +782,7 @@ const Home = () => {
           image: "↩️",
         },
         {
-          id: 10,
+          id: 16,
           method: "Re-bend Testing",
           shortName: "Re-bend",
           description:
@@ -672,7 +808,7 @@ const Home = () => {
           image: "🔄",
         },
         {
-          id: 11,
+          id: 17,
           method: "Impact Testing",
           shortName: "Impact",
           description:
@@ -698,9 +834,9 @@ const Home = () => {
           image: "💥",
         },
         {
-          id: 12,
+          id: 18,
           method: "Hardness Testing",
-          shortName: "Hardness",
+          shortName: "BenchHardness",
           description:
             "Measures material hardness using Brinell, Rockwell, Vickers, or Leeb methods.",
           icon: <Diamond size={28} />,
@@ -724,56 +860,56 @@ const Home = () => {
           image: "💎",
         },
         {
-          id: 13,
-          method: "Shear Testing",
-          shortName: "Shear",
+          id: 19,
+          method: "Mechanical Testing",
+          shortName: "Mechanical",
           description:
-            "Determines shear strength of materials by applying force parallel to the material surface.",
+            "Comprehensive mechanical property evaluation covering tensile, compression, bend, impact, hardness, and fastener tests on metals and structural components.",
           icon: <Wrench size={28} />,
-          color: "#4CAF50",
-          gradient: "linear-gradient(135deg, #4CAF50 0%, #81C784 100%)",
+          color: "#455A64",
+          gradient: "linear-gradient(135deg, #455A64 0%, #78909C 100%)",
           applications: [
-            "Fasteners",
-            "Adhesive Joints",
-            "Composite Materials",
-            "Sheet Metals",
-            "Weld Testing",
+            "Material Certification",
+            "Weld Qualification",
+            "Design Validation",
+            "Failure Analysis",
+            "Batch Quality Control",
           ],
-          standards: ["ASTM B831", "ISO 7961", "ASTM D1002", "ASTM D3165"],
+          standards: ["ASTM E8", "ASTM E9", "ASTM E23", "ASTM E10", "ASTM E190"],
           advantages: [
-            "Accurate shear data",
-            "Fastener evaluation",
-            "Bond strength measurement",
-            "Standard procedures",
-            "Quick results",
+            "Single-vendor convenience",
+            "Consolidated reporting",
+            "Wide property coverage",
+            "Standard-compliant",
+            "Fast turnaround",
           ],
-          image: "✂️",
+          image: "⚙️",
         },
         {
-          id: 14,
-          method: "Fastener Testing",
-          shortName: "Fastener",
+          id: 20,
+          method: "Metallurgical Testing",
+          shortName: "Metallurgical",
           description:
-            "Comprehensive testing of bolts, nuts, screws, and studs for mechanical properties and quality.",
-          icon: <Cog size={28} />,
-          color: "#9C27B0",
-          gradient: "linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%)",
+            "Microstructural and metallurgical evaluation including macro/micro examination, grain size, phase analysis, microhardness, case depth, corrosion, and failure investigation.",
+          icon: <Microscope size={28} />,
+          color: "#6A1B9A",
+          gradient: "linear-gradient(135deg, #6A1B9A 0%, #BA68C8 100%)",
           applications: [
-            "Bolts & Nuts",
-            "Screws & Studs",
-            "Anchors",
-            "Rivets",
-            "Special Fasteners",
+            "Microstructure Analysis",
+            "Weld Metallurgy",
+            "Heat Treatment Verification",
+            "Failure Investigation",
+            "Corrosion Assessment",
           ],
-          standards: ["ASTM F606", "ISO 898", "ASTM A490", "ASTM A325"],
+          standards: ["ASTM E3", "ASTM E112", "ASTM E407", "ASTM E384", "ASTM E45"],
           advantages: [
-            "Complete fastener testing",
-            "Proof load data",
-            "Hardness measurement",
-            "Tensile strength",
-            "Standard-compliant",
+            "High-resolution imaging",
+            "Phase & grain analysis",
+            "Failure root cause",
+            "Corrosion diagnosis",
+            "Detailed metallurgical report",
           ],
-          image: "🔩",
+          image: "🔬",
         },
       ],
     },
@@ -793,11 +929,7 @@ const Home = () => {
     magnetic: [
       { property: "Magnetizing Current", value: "AC / DC / HWDC", icon: "🧲" },
       { property: "Field Strength", value: "≥ 2400 A/m", icon: "⚡" },
-      {
-        property: "Particle Type",
-        value: "Dry / Wet / Fluorescent",
-        icon: "✨",
-      },
+      { property: "Particle Type", value: "Dry / Wet / Fluorescent", icon: "✨" },
       { property: "Sensitivity Level", value: "Level 3-4", icon: "🎯" },
       { property: "UV Light Intensity", value: "1000 μW/cm²", icon: "🔦" },
       { property: "Temperature Range", value: "10-52°C", icon: "🌡️" },
@@ -817,11 +949,7 @@ const Home = () => {
     penetrant: [
       { property: "Sensitivity Level", value: "Level 4", icon: "🔬" },
       { property: "Developer Type", value: "Dry/Non-aq/Aq", icon: "💧" },
-      {
-        property: "Penetrant Type",
-        value: "Fluorescent/Visible",
-        icon: "🌈",
-      },
+      { property: "Penetrant Type", value: "Fluorescent/Visible", icon: "🌈" },
       { property: "Removal Method", value: "Water/Solvent", icon: "🚿" },
       { property: "Dwell Time", value: "5-60 min", icon: "⏱️" },
       { property: "Temperature Range", value: "10-52°C", icon: "🌡️" },
@@ -831,60 +959,12 @@ const Home = () => {
   };
 
   const certificationProcess = [
-    {
-      step: 1,
-      title: "Client Consultation",
-      description:
-        "Understanding testing requirements and specifications for accurate results",
-      icon: "💬",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      duration: "1-2 Days",
-    },
-    {
-      step: 2,
-      title: "Method Selection",
-      description:
-        "Choosing appropriate testing methods based on material and defect type",
-      icon: "📋",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      duration: "1 Day",
-    },
-    {
-      step: 3,
-      title: "On-site Inspection",
-      description:
-        "Deploying certified technicians with calibrated equipment for precise testing",
-      icon: "🔍",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      duration: "Variable",
-    },
-    {
-      step: 4,
-      title: "Data Analysis",
-      description:
-        "Expert analysis of test results using advanced software and AI tools",
-      icon: "📊",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      duration: "2-3 Days",
-    },
-    {
-      step: 5,
-      title: "Report Generation",
-      description:
-        "Comprehensive report with findings, analysis, and actionable recommendations",
-      icon: "📑",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      duration: "1-2 Days",
-    },
-    {
-      step: 6,
-      title: "Certification Issuance",
-      description:
-        "Official certification, quality stamp, and ongoing technical support",
-      icon: "🏆",
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      duration: "1 Day",
-    },
+    { step: 1, title: "Client Consultation", description: "Understanding testing requirements and specifications for accurate results", icon: "💬", gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`, duration: "1-2 Days" },
+    { step: 2, title: "Method Selection", description: "Choosing appropriate testing methods based on material and defect type", icon: "📋", gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`, duration: "1 Day" },
+    { step: 3, title: "On-site Inspection", description: "Deploying certified technicians with calibrated equipment for precise testing", icon: "🔍", gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`, duration: "Variable" },
+    { step: 4, title: "Data Analysis", description: "Expert analysis of test results using advanced software and AI tools", icon: "📊", gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`, duration: "2-3 Days" },
+    { step: 5, title: "Report Generation", description: "Comprehensive report with findings, analysis, and actionable recommendations", icon: "📑", gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`, duration: "1-2 Days" },
+    { step: 6, title: "Certification Issuance", description: "Official certification, quality stamp, and ongoing technical support", icon: "🏆", gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`, duration: "1 Day" },
   ];
 
   const industries = [
@@ -1087,48 +1167,25 @@ const Home = () => {
       title: "Material Selection",
       description: "Expert guidance in choosing the right materials",
       icon: <Layers size={28} />,
-      features: [
-        "Material testing",
-        "Cost optimization",
-        "Performance evaluation",
-        "Compliance verification",
-      ],
+      features: ["Material testing", "Cost optimization", "Performance evaluation", "Compliance verification"],
     },
     {
       title: "Quality Assurance",
-      description:
-        "Comprehensive testing and inspection to ensure product reliability",
+      description: "Comprehensive testing and inspection to ensure product reliability",
       icon: <Shield size={28} />,
-      features: [
-        "NDT & DT testing services",
-        "Dimensional inspection",
-        "Chemical analysis",
-        "Mechanical testing",
-      ],
+      features: ["NDT & DT testing services", "Dimensional inspection", "Chemical analysis", "Mechanical testing"],
     },
     {
       title: "Custom Solutions",
-      description:
-        "Tailored products designed to meet unique industry specifications",
+      description: "Tailored products designed to meet unique industry specifications",
       icon: <Cog size={28} />,
-      features: [
-        "Custom alloy development",
-        "Specialized coatings",
-        "Unique geometries",
-        "Prototype development",
-      ],
+      features: ["Custom alloy development", "Specialized coatings", "Unique geometries", "Prototype development"],
     },
     {
       title: "Technical Support",
-      description:
-        "24/7 expert support for installation, maintenance, and troubleshooting",
+      description: "24/7 expert support for installation, maintenance, and troubleshooting",
       icon: <Users size={28} />,
-      features: [
-        "On-site assistance",
-        "Training programs",
-        "Technical documentation",
-        "Performance monitoring",
-      ],
+      features: ["On-site assistance", "Training programs", "Technical documentation", "Performance monitoring"],
     },
   ];
 
@@ -1144,52 +1201,22 @@ const Home = () => {
   ];
 
   const statsData = [
-    {
-      id: "projects",
-      label: "Projects Completed",
-      icon: <Briefcase size={24} />,
-      suffix: "+",
-    },
-    {
-      id: "industries",
-      label: "Industries Served",
-      icon: <Globe size={24} />,
-      suffix: "+",
-    },
-    {
-      id: "experience",
-      label: "Years Experience",
-      icon: <Clock size={24} />,
-      suffix: "+",
-    },
-    {
-      id: "satisfaction",
-      label: "Client Satisfaction",
-      icon: <ThumbsUp size={24} />,
-      suffix: "%",
-    },
+    { id: "projects", label: "Projects Completed", icon: <Briefcase size={24} />, suffix: "+" },
+    { id: "industries", label: "Industries Served", icon: <Globe size={24} />, suffix: "+" },
+    { id: "experience", label: "Years Experience", icon: <Clock size={24} />, suffix: "+" },
+    { id: "satisfaction", label: "Client Satisfaction", icon: <ThumbsUp size={24} />, suffix: "%" },
   ];
 
-  // Flatten all methods for the modal
   const allTestingMethods = testingGroups.flatMap((group) => group.methods);
   const currentTestingType = testingTypes[activeTestingType];
 
-  // ============================================
-  // 📝 KEEP "Your Message" IN SYNC WITH TESTING TYPE
-  //    Whenever the active testing type changes, we replace the
-  //    message with the auto-generated "Testing Type: ..." line.
-  // ============================================
   useEffect(() => {
     setMessageText(buildDefaultMessage(testingTypes[activeTestingType].name));
   }, [activeTestingType]);
 
-  // ============================================
-  // 🔢 STAT COUNTERS  (FIXED)
-  // ============================================
   useEffect(() => {
     const node = statsRef.current;
     if (!node) return;
-
     let timers = [];
 
     const startCounters = () => {
@@ -1197,19 +1224,14 @@ const Home = () => {
         const steps = 60;
         const increment = target / steps;
         let current = 0;
-
         const timer = setInterval(() => {
           current += increment;
           if (current >= target) {
             current = target;
             clearInterval(timer);
           }
-          setCounters((prev) => ({
-            ...prev,
-            [id]: Math.floor(current),
-          }));
+          setCounters((prev) => ({ ...prev, [id]: Math.floor(current) }));
         }, duration / steps);
-
         timers.push(timer);
       });
     };
@@ -1219,7 +1241,7 @@ const Home = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             startCounters();
-            observer.disconnect(); // run only once
+            observer.disconnect();
           }
         });
       },
@@ -1235,14 +1257,10 @@ const Home = () => {
     };
   }, []);
 
-  // ============================================
-  // 🖱️ SCROLL PROGRESS
-  // ============================================
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       setScrollProgress(progress);
     };
@@ -1250,37 +1268,21 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ============================================
-  // 🎬 PROCESS STEP ANIMATION
-  // ============================================
   useEffect(() => {
-    const stepTimer = setTimeout(() => {
-      setAnimatedSteps([1]);
-    }, 1000);
-
+    const stepTimer = setTimeout(() => setAnimatedSteps([1]), 1000);
     const stepInterval = setInterval(() => {
-      setAnimatedSteps((prev) => {
-        if (prev.length < 6) {
-          return [...prev, prev.length + 1];
-        }
-        return prev;
-      });
+      setAnimatedSteps((prev) => (prev.length < 6 ? [...prev, prev.length + 1] : prev));
     }, 300);
-
     return () => {
       clearTimeout(stepTimer);
       clearInterval(stepInterval);
     };
   }, []);
 
-  // ============================================
-  // 👁️ SECTION VISIBILITY OBSERVER  (FIXED)
-  // ============================================
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (heroRef.current) {
-        const { left, top, width, height } =
-          heroRef.current.getBoundingClientRect();
+        const { left, top, width, height } = heroRef.current.getBoundingClientRect();
         const x = ((e.clientX - left) / width) * 100;
         const y = ((e.clientY - top) / height) * 100;
         setMousePosition({ x, y });
@@ -1292,47 +1294,31 @@ const Home = () => {
         entries.forEach((entry) => {
           const key = entry.target.dataset.section;
           if (entry.isIntersecting && key) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [key]: true,
-            }));
+            setVisibleSections((prev) => ({ ...prev, [key]: true }));
           }
         });
       },
       { threshold: 0.15, rootMargin: "-30px" }
     );
 
-    if (heroRef.current) {
-      heroRef.current.addEventListener("mousemove", handleMouseMove);
-    }
-
+    if (heroRef.current) heroRef.current.addEventListener("mousemove", handleMouseMove);
     sectionRefs.current.forEach((section) => {
       if (section) observer.observe(section);
     });
 
     return () => {
       observer.disconnect();
-      if (heroRef.current) {
-        heroRef.current.removeEventListener("mousemove", handleMouseMove);
-      }
+      if (heroRef.current) heroRef.current.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
-  // ============================================
-  // 👁️ SECOND OBSERVER (fade classes)
-  // ============================================
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const key = entry.target.dataset.section;
-            if (key) {
-              setVisibleSections((prev) => ({
-                ...prev,
-                [key]: true,
-              }));
-            }
+            if (key) setVisibleSections((prev) => ({ ...prev, [key]: true }));
 
             if (entry.target.classList.contains("qc-contact-card")) {
               setTimeout(() => {
@@ -1346,10 +1332,7 @@ const Home = () => {
           }
         });
       },
-      {
-        threshold: 0.2,
-        rootMargin: "0px 0px -50px 0px",
-      }
+      { threshold: 0.2, rootMargin: "0px 0px -50px 0px" }
     );
 
     sectionRefs.current.forEach((section) => {
@@ -1366,25 +1349,17 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
-  // ✅ Push-based ref collector — NO MORE INDEX COLLISIONS
   const addToRefs = (el) => {
     if (el && !sectionRefs.current.includes(el)) {
       sectionRefs.current.push(el);
     }
   };
 
-  // 🖱️ Makes the contact card glow follow the cursor
   const handleCardMouseMove = (e) => {
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
-    card.style.setProperty(
-      "--mouse-x",
-      `${((e.clientX - rect.left) / rect.width) * 100}%`
-    );
-    card.style.setProperty(
-      "--mouse-y",
-      `${((e.clientY - rect.top) / rect.height) * 100}%`
-    );
+    card.style.setProperty("--mouse-x", `${((e.clientX - rect.left) / rect.width) * 100}%`);
+    card.style.setProperty("--mouse-y", `${((e.clientY - rect.top) / rect.height) * 100}%`);
   };
 
   const handleRequestService = (method) => {
@@ -1408,7 +1383,6 @@ const Home = () => {
     const form = e.target;
     const formData = new FormData(form);
 
-    // Append the selected testing type + service so it reaches Web3Forms
     formData.append("testing_type", testingTypes[activeTestingType].name);
     formData.append("service_selected", selectedService);
 
@@ -1417,29 +1391,21 @@ const Home = () => {
         method: "POST",
         body: formData,
       });
-
       const result = await response.json();
 
       if (result.success) {
         form.reset();
         setSelectedService("");
         setSuccessMessage("Message sent successfully!");
-        // restore auto message after reset
         setMessageText(buildDefaultMessage(testingTypes[activeTestingType].name));
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 2000);
+        setTimeout(() => setSuccessMessage(""), 2000);
       } else {
         setSuccessMessage("Something went wrong! Try again.");
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 2000);
+        setTimeout(() => setSuccessMessage(""), 2000);
       }
     } catch (error) {
       setSuccessMessage("Error sending message!");
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 2000);
+      setTimeout(() => setSuccessMessage(""), 2000);
     }
 
     setIsSubmitting(false);
@@ -1452,70 +1418,38 @@ const Home = () => {
       </div>
 
       <div className="prod-page2" id="services">
-        <section
-          className="prod-overview-section"
-          ref={addToRefs}
-          data-section="prodOverview"
-        >
+        <section className="prod-overview-section" ref={addToRefs} data-section="prodOverview">
           <div className="prod-container-inner">
             <div className="prod-section-header">
-              <div
-                className="prod-section-badge"
-                style={{ background: primaryColor }}
-              >
+              <div className="prod-section-badge" style={{ background: primaryColor }}>
                 <Shield size={16} />
                 Our Services
               </div>
               <h2 className="prod-section-title">
-                Comprehensive{" "}
-                <span style={{ color: primaryColor }}>Testing Solutions</span>
+                Comprehensive <span style={{ color: primaryColor }}>Testing Solutions</span>
               </h2>
               <div className="prod-section-divider">
-                <div
-                  className="prod-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                  }}
-                ></div>
-                <div
-                  className="prod-divider-dot prod-pulse-dot"
-                  style={{ background: primaryColor }}
-                ></div>
-                <div
-                  className="prod-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                  }}
-                ></div>
+                <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
+                <div className="prod-divider-dot prod-pulse-dot" style={{ background: primaryColor }}></div>
+                <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
               </div>
               <p className="prod-section-description">
-                ASNT Level III certified NDT and DT testing services with
-                advanced equipment and expert analysis
+                ASNT Level III certified NDT and DT testing services with advanced equipment and expert analysis
               </p>
             </div>
 
             <div className="prod-overview-content">
-              <div
-                className={`prod-overview-text ${
-                  visibleSections.prodOverview ? "prod-animate-fade" : ""
-                }`}
-              >
+              <div className={`prod-overview-text ${visibleSections.prodOverview ? "prod-animate-fade" : ""}`}>
                 <div className="prod-content-highlight prod-float-animation">
                   <div className="prod-highlight-icon">
                     <Star size={24} style={{ color: primaryColor }} />
                   </div>
                   <p>
                     We provide complete{" "}
-                    <strong
-                      className="prod-highlight-text"
-                      style={{ color: primaryColor }}
-                    >
+                    <strong className="prod-highlight-text" style={{ color: primaryColor }}>
                       NDT &amp; DT Testing
                     </strong>{" "}
-                    services for quality assurance and structural integrity
-                    evaluation. Our certified technicians use state-of-the-art
-                    equipment to detect flaws, measure material properties, and
-                    ensure compliance with international standards.
+                    services for quality assurance and structural integrity evaluation. Our certified technicians use state-of-the-art equipment to detect flaws, measure material properties, and ensure compliance with international standards.
                   </p>
                 </div>
 
@@ -1524,53 +1458,31 @@ const Home = () => {
                     <CheckCircle color={primaryColor} size={24} />
                     <span>ISO 9712 &amp; ASNT SNT-TC-1A Certified</span>
                   </div>
-                  <div
-                    className="prod-highlight-item prod-slide-animation"
-                    style={{ animationDelay: "0.1s" }}
-                  >
+                  <div className="prod-highlight-item prod-slide-animation" style={{ animationDelay: "0.1s" }}>
                     <CheckCircle color={primaryColor} size={24} />
                     <span>NABL Accredited for Aerospace</span>
                   </div>
-                  <div
-                    className="prod-highlight-item prod-slide-animation"
-                    style={{ animationDelay: "0.2s" }}
-                  >
+                  <div className="prod-highlight-item prod-slide-animation" style={{ animationDelay: "0.2s" }}>
                     <CheckCircle color={primaryColor} size={24} />
                     <span>24/7 Emergency Inspection Services</span>
                   </div>
-                  <div
-                    className="prod-highlight-item prod-slide-animation"
-                    style={{ animationDelay: "0.3s" }}
-                  >
+                  <div className="prod-highlight-item prod-slide-animation" style={{ animationDelay: "0.3s" }}>
                     <CheckCircle color={primaryColor} size={24} />
                     <span>Worldwide Testing Capabilities</span>
                   </div>
                 </div>
               </div>
 
-              <div
-                className={`prod-features-grid ${
-                  visibleSections.prodOverview ? "prod-animate-slide-right" : ""
-                }`}
-              >
+              <div className={`prod-features-grid ${visibleSections.prodOverview ? "prod-animate-slide-right" : ""}`}>
                 {serviceFeatures.map((feature, index) => (
-                  <div
-                    key={index}
-                    className="prod-feature-card prod-hover-float prod-card-glow"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
+                  <div key={index} className="prod-feature-card prod-hover-float prod-card-glow" style={{ animationDelay: `${index * 0.1}s` }}>
                     <div className="prod-feature-card-inner">
-                      <div
-                        className="prod-feature-card-icon"
-                        style={{ background: feature.gradient }}
-                      >
+                      <div className="prod-feature-card-icon" style={{ background: feature.gradient }}>
                         {feature.icon}
                         <div className="prod-icon-ring"></div>
                       </div>
                       <h3 className="prod-feature-card-title">{feature.title}</h3>
-                      <p className="prod-feature-card-description">
-                        {feature.description}
-                      </p>
+                      <p className="prod-feature-card-description">{feature.description}</p>
                       <div className="prod-feature-card-shine"></div>
                     </div>
                   </div>
@@ -1580,71 +1492,40 @@ const Home = () => {
           </div>
         </section>
 
-        <section
-          className="prod-methods-section"
-          ref={addToRefs}
-          data-section="methods"
-        >
+        <section className="prod-methods-section" ref={addToRefs} data-section="methods">
           <div className="prod-container-inner">
             <div className="prod-section-header">
-              <div
-                className="prod-section-badge"
-                style={{ background: primaryColor }}
-              >
+              <div className="prod-section-badge" style={{ background: primaryColor }}>
                 <Microscope size={16} />
                 Testing Services
               </div>
               <h2 className="prod-section-title">
-                Our Testing{" "}
-                <span style={{ color: primaryColor }}>Capabilities</span>
+                Our Testing <span style={{ color: primaryColor }}>Capabilities</span>
               </h2>
               <div className="prod-section-divider">
-                <div
-                  className="prod-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                  }}
-                ></div>
-                <div
-                  className="prod-divider-dot prod-pulse-dot"
-                  style={{ background: primaryColor }}
-                ></div>
-                <div
-                  className="prod-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                  }}
-                ></div>
+                <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
+                <div className="prod-divider-dot prod-pulse-dot" style={{ background: primaryColor }}></div>
+                <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
               </div>
               <p className="prod-section-description">
-                Advanced NDT and DT testing techniques for accurate results and
-                quality assurance
+                Advanced NDT and DT testing techniques for accurate results and quality assurance
               </p>
             </div>
 
             <div className="prod-industry-tags">
               {industries.map((industry, idx) => (
-                <span
-                  key={idx}
-                  className="prod-industry-tag"
-                  style={{ borderColor: industry.color }}
-                >
+                <span key={idx} className="prod-industry-tag" style={{ borderColor: industry.color }}>
                   {industry.icon}
                   {industry.name}
                 </span>
               ))}
             </div>
 
-            {/* ==========================================
-                🔬 NDT / DT GROUP TABS
-                ========================================== */}
             <div className="prod-testing-group-tabs">
               {testingGroups.map((group) => (
                 <button
                   key={group.id}
-                  className={`prod-group-tab ${
-                    activeTab === group.id ? "prod-group-tab-active" : ""
-                  }`}
+                  className={`prod-group-tab ${activeTab === group.id ? "prod-group-tab-active" : ""}`}
                   onClick={() => setActiveTab(group.id)}
                   style={
                     activeTab === group.id
@@ -1666,9 +1547,6 @@ const Home = () => {
               ))}
             </div>
 
-            {/* ==========================================
-                🔬 ACTIVE GROUP DESCRIPTION
-                ========================================== */}
             {testingGroups
               .filter((g) => g.id === activeTab)
               .map((group) => (
@@ -1689,9 +1567,6 @@ const Home = () => {
                 </div>
               ))}
 
-            {/* ==========================================
-                🔬 METHODS GRID FOR ACTIVE GROUP
-                ========================================== */}
             <div className="prod-methods-grid" key={activeTab}>
               {testingGroups
                 .filter((g) => g.id === activeTab)
@@ -1699,33 +1574,18 @@ const Home = () => {
                   group.methods.map((method, index) => (
                     <div
                       key={method.id}
-                      className={`prod-method-card ${
-                        visibleSections.methods ? "prod-animate-fade" : ""
-                      }`}
+                      className={`prod-method-card ${visibleSections.methods ? "prod-animate-fade" : ""}`}
                       style={{ animationDelay: `${index * 0.08}s` }}
                     >
-                      <div
-                        className="prod-method-card-header"
-                        style={{ background: method.gradient }}
-                      >
-                        <div className="prod-method-card-icon prod-icon-pulse">
-                          {method.icon}
-                        </div>
-                        <h3 className="prod-method-card-title">
-                          {method.method}
-                        </h3>
-                        <div className="prod-method-card-number">
-                          #{String(index + 1).padStart(2, "0")}
-                        </div>
-                        <div className="prod-method-card-short">
-                          {method.shortName}
-                        </div>
+                      <div className="prod-method-card-header" style={{ background: method.gradient }}>
+                        <div className="prod-method-card-icon prod-icon-pulse">{method.icon}</div>
+                        <h3 className="prod-method-card-title">{method.method}</h3>
+                        <div className="prod-method-card-number">#{String(index + 1).padStart(2, "0")}</div>
+                        <div className="prod-method-card-short">{method.shortName}</div>
                       </div>
 
                       <div className="prod-method-card-content">
-                        <p className="prod-method-card-description">
-                          {method.description}
-                        </p>
+                        <p className="prod-method-card-description">{method.description}</p>
 
                         <div className="prod-method-card-section">
                           <h4 className="prod-method-card-subtitle">
@@ -1758,11 +1618,7 @@ const Home = () => {
                           </h4>
                           <div className="prod-standards-list">
                             {method.standards.map((std, i) => (
-                              <span
-                                key={i}
-                                className="prod-standard-badge prod-pop-animation"
-                                style={{ animationDelay: `${i * 0.1}s` }}
-                              >
+                              <span key={i} className="prod-standard-badge prod-pop-animation" style={{ animationDelay: `${i * 0.1}s` }}>
                                 {std}
                               </span>
                             ))}
@@ -1776,18 +1632,9 @@ const Home = () => {
                           </h4>
                           <ul className="prod-advantages-list">
                             {method.advantages.map((adv, i) => (
-                              <li
-                                key={i}
-                                className="prod-slide-animation"
-                                style={{ animationDelay: `${i * 0.1}s` }}
-                              >
-                                <div
-                                  className="prod-advantage-dot prod-pulse-dot"
-                                  style={{ background: method.color }}
-                                ></div>
-                                <span className="prod-advantage-text">
-                                  {adv}
-                                </span>
+                              <li key={i} className="prod-slide-animation" style={{ animationDelay: `${i * 0.1}s` }}>
+                                <div className="prod-advantage-dot prod-pulse-dot" style={{ background: method.color }}></div>
+                                <span className="prod-advantage-text">{adv}</span>
                               </li>
                             ))}
                           </ul>
@@ -1814,63 +1661,33 @@ const Home = () => {
           </div>
         </section>
 
-        <section
-          className="prod-certification-section"
-          ref={addToRefs}
-          data-section="process"
-        >
+        <section className="prod-certification-section" ref={addToRefs} data-section="process">
           <div className="prod-container-inner">
             <div className="prod-section-header">
-              <div
-                className="prod-section-badge"
-                style={{ background: primaryColor }}
-              >
+              <div className="prod-section-badge" style={{ background: primaryColor }}>
                 <Crown size={16} />
                 Our Process
               </div>
               <h2 className="prod-section-title">
-                Certification{" "}
-                <span style={{ color: primaryColor }}>Process</span>
+                Certification <span style={{ color: primaryColor }}>Process</span>
               </h2>
               <div className="prod-section-divider">
-                <div
-                  className="prod-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                  }}
-                ></div>
-                <div
-                  className="prod-divider-dot prod-pulse-dot"
-                  style={{ background: primaryColor }}
-                ></div>
-                <div
-                  className="prod-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                  }}
-                ></div>
+                <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
+                <div className="prod-divider-dot prod-pulse-dot" style={{ background: primaryColor }}></div>
+                <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
               </div>
-              <p className="prod-section-description">
-                Streamlined process from inspection to certification
-              </p>
+              <p className="prod-section-description">Streamlined process from inspection to certification</p>
             </div>
 
             <div className="prod-process-timeline">
               {certificationProcess.map((process, index) => (
                 <div
                   key={index}
-                  className={`prod-process-step ${
-                    animatedSteps.includes(process.step)
-                      ? "prod-animate-fade"
-                      : ""
-                  }`}
+                  className={`prod-process-step ${animatedSteps.includes(process.step) ? "prod-animate-fade" : ""}`}
                   style={{ animationDelay: `${index * 0.2}s` }}
                 >
                   <div className="prod-process-step-indicator">
-                    <div
-                      className="prod-process-step-number prod-pulse-animation"
-                      style={{ background: process.gradient }}
-                    >
+                    <div className="prod-process-step-number prod-pulse-animation" style={{ background: process.gradient }}>
                       {process.step}
                       <div className="prod-process-step-glow"></div>
                     </div>
@@ -1879,23 +1696,16 @@ const Home = () => {
 
                   <div className="prod-process-step-content prod-hover-float">
                     <h3 className="prod-process-step-title">{process.title}</h3>
-                    <p className="prod-process-step-description">
-                      {process.description}
-                    </p>
+                    <p className="prod-process-step-description">{process.description}</p>
                     <div className="prod-process-step-duration">
-                      <span className="prod-duration-icon prod-pulse-animation">
-                        ⏱️
-                      </span>
+                      <span className="prod-duration-icon prod-pulse-animation">⏱️</span>
                       {process.duration}
                     </div>
                     <div className="prod-process-step-hover"></div>
                   </div>
 
                   {index < certificationProcess.length - 1 && (
-                    <div
-                      className="prod-process-step-connector prod-pulse-animation"
-                      style={{ background: primaryColor }}
-                    ></div>
+                    <div className="prod-process-step-connector prod-pulse-animation" style={{ background: primaryColor }}></div>
                   )}
                 </div>
               ))}
@@ -1913,80 +1723,41 @@ const Home = () => {
       </div>
 
       <div className="industry-page" id="industry">
-        <section
-          className="tk-stats-section"
-          ref={statsRef}
-          data-section="stats"
-        >
+        <section className="tk-stats-section" ref={statsRef} data-section="stats">
           <div className="tk-container">
             <div className="tk-stats-grid">
               {statsData.map((stat, index) => (
-                <div
-                  key={stat.id}
-                  className="tk-stat-card tk-stat-3d"
-                  style={{ animationDelay: `${index * 0.15}s` }}
-                >
-                  <div className="tk-stat-icon" style={{ color: primaryColor }}>
-                    {stat.icon}
-                  </div>
-                  <span
-                    className="tk-stat-number"
-                    style={{ color: primaryColor }}
-                  >
+                <div key={stat.id} className="tk-stat-card tk-stat-3d" style={{ animationDelay: `${index * 0.15}s` }}>
+                  <div className="tk-stat-icon" style={{ color: primaryColor }}>{stat.icon}</div>
+                  <span className="tk-stat-number" style={{ color: primaryColor }}>
                     {counters[stat.id] || 0}
                     {stat.suffix}
                   </span>
                   <span className="tk-stat-label">{stat.label}</span>
-                  <div
-                    className="tk-stat-glow"
-                    style={{ background: primaryColor }}
-                  ></div>
+                  <div className="tk-stat-glow" style={{ background: primaryColor }}></div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section
-          className="tk-industries-overview"
-          ref={addToRefs}
-          data-section="industriesOverview"
-        >
+        <section className="tk-industries-overview" ref={addToRefs} data-section="industriesOverview">
           <div className="tk-container">
             <div className="tk-section-header">
-              <div
-                className="tk-section-badge"
-                style={{ background: primaryColor }}
-              >
+              <div className="tk-section-badge" style={{ background: primaryColor }}>
                 <Target size={16} />
                 Industries We Serve
               </div>
               <h2 className="tk-section-title-iws">
-                Powering{" "}
-                <span style={{ color: primaryColor }}>Industrial</span>{" "}
-                Excellence
+                Powering <span style={{ color: primaryColor }}>Industrial</span> Excellence
               </h2>
               <div className="tk-section-divider">
-                <div
-                  className="tk-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                  }}
-                ></div>
-                <div
-                  className="tk-divider-dot tk-pulse-dot"
-                  style={{ background: primaryColor }}
-                ></div>
-                <div
-                  className="tk-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                  }}
-                ></div>
+                <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
+                <div className="tk-divider-dot tk-pulse-dot" style={{ background: primaryColor }}></div>
+                <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
               </div>
               <p className="tk-section-subtitle">
-                Specialized solutions for diverse industrial sectors with
-                unmatched quality and technical support
+                Specialized solutions for diverse industrial sectors with unmatched quality and technical support
               </p>
             </div>
 
@@ -1994,28 +1765,14 @@ const Home = () => {
               {industries.map((industry, index) => (
                 <button
                   key={industry.id}
-                  className={`tk-industry-tab ${
-                    activeIndustry === index ? "tk-active" : ""
-                  } tk-tab-3d`}
+                  className={`tk-industry-tab ${activeIndustry === index ? "tk-active" : ""} tk-tab-3d`}
                   onClick={() => setActiveIndustry(index)}
-                  style={
-                    activeIndustry === index
-                      ? {
-                          borderColor: industry.color,
-                          boxShadow: `0 8px 30px ${industry.color}40`,
-                        }
-                      : {}
-                  }
+                  style={activeIndustry === index ? { borderColor: industry.color, boxShadow: `0 8px 30px ${industry.color}40` } : {}}
                 >
-                  <div className="tk-tab-icon" style={{ color: industry.color }}>
-                    {industry.icon}
-                  </div>
+                  <div className="tk-tab-icon" style={{ color: industry.color }}>{industry.icon}</div>
                   <span className="tk-tab-name">{industry.name}</span>
                   {activeIndustry === index && (
-                    <div
-                      className="tk-tab-active-indicator"
-                      style={{ background: industry.color }}
-                    ></div>
+                    <div className="tk-tab-active-indicator" style={{ background: industry.color }}></div>
                   )}
                 </button>
               ))}
@@ -2036,15 +1793,10 @@ const Home = () => {
                       {industries[activeIndustry].icon}
                     </div>
                     <div>
-                      <h3
-                        className="tk-industry-name"
-                        style={{ color: industries[activeIndustry].color }}
-                      >
+                      <h3 className="tk-industry-name" style={{ color: industries[activeIndustry].color }}>
                         {industries[activeIndustry].name}
                       </h3>
-                      <p className="tk-industry-description">
-                        {industries[activeIndustry].description}
-                      </p>
+                      <p className="tk-industry-description">{industries[activeIndustry].description}</p>
                     </div>
                   </div>
 
@@ -2055,20 +1807,12 @@ const Home = () => {
                         Applications
                       </h4>
                       <ul className="tk-applications-list">
-                        {industries[activeIndustry].applications.map(
-                          (app, idx) => (
-                            <div
-                              key={idx}
-                              className="tk-feature-item2 tk-feature-3d"
-                            >
-                              <CheckCircle
-                                size={16}
-                                style={{ color: primaryColor }}
-                              />
-                              {app}
-                            </div>
-                          )
-                        )}
+                        {industries[activeIndustry].applications.map((app, idx) => (
+                          <div key={idx} className="tk-feature-item2 tk-feature-3d">
+                            <CheckCircle size={16} style={{ color: primaryColor }} />
+                            {app}
+                          </div>
+                        ))}
                       </ul>
                     </div>
 
@@ -2078,20 +1822,12 @@ const Home = () => {
                         Key Features
                       </h4>
                       <div className="tk-features-grid">
-                        {industries[activeIndustry].features.map(
-                          (feature, idx) => (
-                            <div
-                              key={idx}
-                              className="tk-feature-item tk-feature-3d"
-                            >
-                              <CheckCircle
-                                size={16}
-                                style={{ color: primaryColor }}
-                              />
-                              {feature}
-                            </div>
-                          )
-                        )}
+                        {industries[activeIndustry].features.map((feature, idx) => (
+                          <div key={idx} className="tk-feature-item tk-feature-3d">
+                            <CheckCircle size={16} style={{ color: primaryColor }} />
+                            {feature}
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -2101,20 +1837,12 @@ const Home = () => {
                         Materials
                       </h4>
                       <div className="tk-features-grid">
-                        {industries[activeIndustry].materials.map(
-                          (materials, idx) => (
-                            <div
-                              key={idx}
-                              className="tk-feature-item tk-feature-3d"
-                            >
-                              <CheckCircle
-                                size={16}
-                                style={{ color: primaryColor }}
-                              />
-                              {materials}
-                            </div>
-                          )
-                        )}
+                        {industries[activeIndustry].materials.map((materials, idx) => (
+                          <div key={idx} className="tk-feature-item tk-feature-3d">
+                            <CheckCircle size={16} style={{ color: primaryColor }} />
+                            {materials}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -2124,45 +1852,23 @@ const Home = () => {
           </div>
         </section>
 
-        <section
-          className="tk-industry-services"
-          ref={addToRefs}
-          data-section="services"
-        >
+        <section className="tk-industry-services" ref={addToRefs} data-section="services">
           <div className="tk-container">
             <div className="tk-section-header">
-              <div
-                className="tk-section-badge"
-                style={{ background: primaryColor }}
-              >
+              <div className="tk-section-badge" style={{ background: primaryColor }}>
                 <Briefcase size={16} />
                 Our Services
               </div>
               <h2 className="tk-section-title-iws">
-                Comprehensive{" "}
-                <span style={{ color: primaryColor }}>Industry</span> Solutions
+                Comprehensive <span style={{ color: primaryColor }}>Industry</span> Solutions
               </h2>
               <div className="tk-section-divider">
-                <div
-                  className="tk-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                  }}
-                ></div>
-                <div
-                  className="tk-divider-dot tk-pulse-dot"
-                  style={{ background: primaryColor }}
-                ></div>
-                <div
-                  className="tk-divider-line"
-                  style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                  }}
-                ></div>
+                <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
+                <div className="tk-divider-dot tk-pulse-dot" style={{ background: primaryColor }}></div>
+                <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
               </div>
               <p className="tk-section-subtitle">
-                End-to-end support from material selection to after-sales
-                service
+                End-to-end support from material selection to after-sales service
               </p>
             </div>
 
@@ -2170,9 +1876,7 @@ const Home = () => {
               {industryServices.map((service, index) => (
                 <div
                   key={index}
-                  className={`tk-service-card ${
-                    visibleSections.services ? "tk-animate-slide-up" : ""
-                  }`}
+                  className={`tk-service-card ${visibleSections.services ? "tk-animate-slide-up" : ""}`}
                   style={{ animationDelay: `${index * 0.12}s` }}
                   onMouseEnter={() => setHoveredCard(`service-${index}`)}
                   onMouseLeave={() => setHoveredCard(null)}
@@ -2188,17 +1892,12 @@ const Home = () => {
                       {service.icon}
                     </div>
                     <h3 className="tk-service-title">{service.title}</h3>
-                    <p className="tk-service-description">
-                      {service.description}
-                    </p>
+                    <p className="tk-service-description">{service.description}</p>
 
                     <ul className="tk-service-features">
                       {service.features.map((feature, idx) => (
                         <li key={idx} className="tk-feature-3d">
-                          <ChevronRight
-                            size={14}
-                            style={{ color: primaryColor }}
-                          />
+                          <ChevronRight size={14} style={{ color: primaryColor }} />
                           {feature}
                         </li>
                       ))}
@@ -2206,10 +1905,7 @@ const Home = () => {
 
                     <button
                       className="tk-service-button tk-btn-3d"
-                      style={{
-                        borderColor: primaryColor,
-                        color: primaryColor,
-                      }}
+                      style={{ borderColor: primaryColor, color: primaryColor }}
                       onClick={() => navigate("/contact")}
                     >
                       <span>Learn More</span>
@@ -2224,19 +1920,11 @@ const Home = () => {
       </div>
 
       <div className="contact-page4" id="contact">
-        <section
-          className="qc-contact-form-section"
-          id="contact-form"
-          ref={addToRefs}
-          data-section="contactForm"
-        >
+        <section className="qc-contact-form-section" id="contact-form" ref={addToRefs} data-section="contactForm">
           <div className="qc-form-pattern"></div>
 
           <div className="qc-section-header qc-form-header">
-            <div
-              className="qc-section-badge"
-              style={{ background: primaryColor }}
-            >
+            <div className="qc-section-badge" style={{ background: primaryColor }}>
               <MessageSquare size={16} />
               Send Enquiry
             </div>
@@ -2244,22 +1932,9 @@ const Home = () => {
               Request a <span style={{ color: primaryColor }}>Test Quote</span>
             </h2>
             <div className="qc-section-divider">
-              <div
-                className="qc-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                }}
-              ></div>
-              <div
-                className="qc-divider-dot qc-pulse-dot"
-                style={{ background: primaryColor }}
-              ></div>
-              <div
-                className="qc-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                }}
-              ></div>
+              <div className="qc-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
+              <div className="qc-divider-dot qc-pulse-dot" style={{ background: primaryColor }}></div>
+              <div className="qc-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
             </div>
             <p className="qc-form-subheading">
               Select your testing type and we&apos;ll get back within 24 hours
@@ -2272,9 +1947,7 @@ const Home = () => {
                 <img draggable="false" src={contactImage} alt="Contact" />
                 <div
                   className="qc-image-glow"
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
-                  }}
+                  style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})` }}
                 ></div>
               </div>
 
@@ -2286,25 +1959,14 @@ const Home = () => {
                 onSubmit={handleSubmit2}
                 className="qc-form-slide-in"
               >
-                <input
-                  type="hidden"
-                  name="access_key"
-                  value="5162d798-f96f-4824-a967-12cdaad116e8"
-                />
+                <input type="hidden" name="access_key" value="5162d798-f96f-4824-a967-12cdaad116e8" />
 
-                {/* ==========================================
-                    🔬 TESTING TYPE SELECTOR (COMPACT TABS)
-                    ========================================== */}
                 <div className="qc-testing-type-selector">
                   {testingTypes.map((type, index) => (
                     <button
                       key={type.id}
                       type="button"
-                      className={`qc-testing-tab ${
-                        activeTestingType === index
-                          ? "qc-testing-tab-active"
-                          : ""
-                      }`}
+                      className={`qc-testing-tab ${activeTestingType === index ? "qc-testing-tab-active" : ""}`}
                       onClick={() => {
                         setActiveTestingType(index);
                         setSelectedService("");
@@ -2327,9 +1989,6 @@ const Home = () => {
                   ))}
                 </div>
 
-                {/* ==========================================
-                    🔬 SERVICE DROPDOWN FOR SELECTED TYPE
-                    ========================================== */}
                 <div className="qc-service-select">
                   <label className="qc-service-label">Testing Service</label>
                   <select
@@ -2352,35 +2011,23 @@ const Home = () => {
                     <input type="text" name="name" placeholder=" " required />
                     <label>Full Name</label>
                     <i className="fas fa-user"></i>
-                    <div
-                      className="qc-input-focus-line"
-                      style={{ background: primaryColor }}
-                    ></div>
+                    <div className="qc-input-focus-line" style={{ background: primaryColor }}></div>
                   </div>
 
                   <div className="qc-form-field qc-input-float">
                     <input type="email" name="email" placeholder=" " required />
                     <label>Email Address</label>
                     <i className="fas fa-envelope"></i>
-                    <div
-                      className="qc-input-focus-line"
-                      style={{ background: primaryColor }}
-                    ></div>
+                    <div className="qc-input-focus-line" style={{ background: primaryColor }}></div>
                   </div>
 
                   <div className="qc-form-field qc-input-float">
                     <input type="text" name="phone" placeholder=" " />
                     <label>Phone Number</label>
                     <i className="fas fa-phone-alt"></i>
-                    <div
-                      className="qc-input-focus-line"
-                      style={{ background: primaryColor }}
-                    ></div>
+                    <div className="qc-input-focus-line" style={{ background: primaryColor }}></div>
                   </div>
 
-                  {/* ==========================================
-                      📝 YOUR MESSAGE — controlled + auto-filled
-                      ========================================== */}
                   <div className="qc-form-message qc-input-float">
                     <textarea
                       name="message"
@@ -2391,45 +2038,27 @@ const Home = () => {
                     />
                     <label>Your Message</label>
                     <i className="fas fa-comment-dots"></i>
-                    <div
-                      className="qc-input-focus-line"
-                      style={{ background: primaryColor }}
-                    ></div>
+                    <div className="qc-input-focus-line" style={{ background: primaryColor }}></div>
                   </div>
                 </div>
 
-                <input
-                  type="checkbox"
-                  name="botcheck"
-                  className="qc-hidden"
-                  style={{ display: "none" }}
-                />
+                <input type="checkbox" name="botcheck" className="qc-hidden" style={{ display: "none" }} />
 
                 <div className="qc-button-area">
                   <button
                     type="submit"
-                    className={`qc-btn-magnetic qc-btn-3d ${
-                      isSubmitting ? "qc-btn-loading" : ""
-                    }`}
+                    className={`qc-btn-magnetic qc-btn-3d ${isSubmitting ? "qc-btn-loading" : ""}`}
                     disabled={isSubmitting}
-                    style={{
-                      background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
-                    }}
+                    style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})` }}
                   >
-                    <span className="qc-btn-text">
-                      {isSubmitting ? "Sending..." : "Send Enquiry"}
-                    </span>
-                    <span className="qc-btn-icon">
-                      <i className="fa fa-paper-plane"></i>
-                    </span>
+                    <span className="qc-btn-text">{isSubmitting ? "Sending..." : "Send Enquiry"}</span>
+                    <span className="qc-btn-icon"><i className="fa fa-paper-plane"></i></span>
                     <span className="qc-btn-glow"></span>
                     <span className="qc-btn-ripple"></span>
                   </button>
                 </div>
 
-                {successMessage && (
-                  <div className="qc-success-alert">{successMessage}</div>
-                )}
+                {successMessage && <div className="qc-success-alert">{successMessage}</div>}
               </form>
             </div>
           </div>
@@ -2437,10 +2066,7 @@ const Home = () => {
 
         <div className="qc-contact-cards-wrapper">
           <div className="qc-section-header">
-            <div
-              className="qc-section-badge"
-              style={{ background: primaryColor }}
-            >
+            <div className="qc-section-badge" style={{ background: primaryColor }}>
               <Compass size={16} />
               Connect With Us
             </div>
@@ -2448,26 +2074,12 @@ const Home = () => {
               How to <span style={{ color: primaryColor }}>Reach Us</span>
             </h2>
             <div className="qc-section-divider">
-              <div
-                className="qc-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                }}
-              ></div>
-              <div
-                className="qc-divider-dot qc-pulse-dot"
-                style={{ background: primaryColor }}
-              ></div>
-              <div
-                className="qc-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                }}
-              ></div>
+              <div className="qc-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
+              <div className="qc-divider-dot qc-pulse-dot" style={{ background: primaryColor }}></div>
+              <div className="qc-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
             </div>
             <p className="qc-section-subtitle">
-              We&apos;re here to help. Reach out to us through any of these
-              channels — just tap a card
+              We&apos;re here to help. Reach out to us through any of these channels — just tap a card
             </p>
           </div>
 
@@ -2492,26 +2104,16 @@ const Home = () => {
                 ></div>
                 <div className="qc-contact-icon qc-icon-pulse">
                   {item.icon}
-                  <div
-                    className="qc-icon-ring"
-                    style={{ borderColor: primaryColor }}
-                  ></div>
+                  <div className="qc-icon-ring" style={{ borderColor: primaryColor }}></div>
                 </div>
                 <h2 className="qc-contact-card-title">{item.title}</h2>
-                <p className="qc-contact-card-description">
-                  {item.description}
-                </p>
-
-                {/* Small "action" hint that appears on hover */}
+                <p className="qc-contact-card-description">{item.description}</p>
                 <span className="qc-contact-card-cta">
                   {item.actionLabel} <span className="qc-cta-arrow">→</span>
                 </span>
-
                 <div
                   className="qc-card-hover-line"
-                  style={{
-                    background: `linear-gradient(90deg, ${primaryColor}, ${primaryLight})`,
-                  }}
+                  style={{ background: `linear-gradient(90deg, ${primaryColor}, ${primaryLight})` }}
                 ></div>
                 <div className="qc-card-number">0{index + 1}</div>
               </a>
@@ -2531,9 +2133,7 @@ const Home = () => {
               </p>
               <button
                 className="qc-map-btn qc-btn-3d"
-                style={{
-                  background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
-                }}
+                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})` }}
                 onClick={() => window.open(MAPS_URL, "_blank")}
               >
                 <i className="fas fa-map-marker-alt"></i>
@@ -2543,48 +2143,26 @@ const Home = () => {
             </div>
             <div
               className="qc-map-glow"
-              style={{
-                background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)`,
-              }}
+              style={{ background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)` }}
             ></div>
           </div>
         </div>
       </div>
 
-      {/* ============================================================
-          🏢 OUR CLIENTS — HORIZONTAL AUTO-SCROLLING LOGO MARQUEE
-          ============================================================ */}
       <section className="tk-clients-section" id="clients">
         <div className="tk-container">
           <div className="tk-section-header">
-            <div
-              className="tk-section-badge"
-              style={{ background: primaryColor }}
-            >
+            <div className="tk-section-badge" style={{ background: primaryColor }}>
               <Users size={16} />
               Our Clients
             </div>
             <h2 className="tk-section-title-iws">
-              Trusted by{" "}
-              <span style={{ color: primaryColor }}>Industry Leaders</span>
+              Trusted by <span style={{ color: primaryColor }}>Industry Leaders</span>
             </h2>
             <div className="tk-section-divider">
-              <div
-                className="tk-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-                }}
-              ></div>
-              <div
-                className="tk-divider-dot tk-pulse-dot"
-                style={{ background: primaryColor }}
-              ></div>
-              <div
-                className="tk-divider-line"
-                style={{
-                  background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-                }}
-              ></div>
+              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
+              <div className="tk-divider-dot tk-pulse-dot" style={{ background: primaryColor }}></div>
+              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
             </div>
             <p className="tk-section-subtitle">
               We proudly serve leading companies across diverse industries
@@ -2594,34 +2172,14 @@ const Home = () => {
           <div className="tk-clients-marquee">
             <div className="tk-clients-track">
               {clientsData.map((client) => (
-                <div
-                  key={`client-a-${client.id}`}
-                  className="tk-client-logo-card"
-                  title={client.name}
-                >
-                  <img
-                    src={client.logo}
-                    alt={client.name}
-                    draggable="false"
-                    loading="lazy"
-                  />
+                <div key={`client-a-${client.id}`} className="tk-client-logo-card" title={client.name}>
+                  <img src={client.logo} alt={client.name} draggable="false" loading="lazy" />
                   <span className="tk-client-name">{client.name}</span>
                 </div>
               ))}
-              {/* Duplicate set for seamless infinite loop */}
               {clientsData.map((client) => (
-                <div
-                  key={`client-b-${client.id}`}
-                  className="tk-client-logo-card"
-                  title={client.name}
-                  aria-hidden="true"
-                >
-                  <img
-                    src={client.logo}
-                    alt={client.name}
-                    draggable="false"
-                    loading="lazy"
-                  />
+                <div key={`client-b-${client.id}`} className="tk-client-logo-card" title={client.name} aria-hidden="true">
+                  <img src={client.logo} alt={client.name} draggable="false" loading="lazy" />
                   <span className="tk-client-name">{client.name}</span>
                 </div>
               ))}
@@ -2634,14 +2192,7 @@ const Home = () => {
 };
 
 const BookIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
   </svg>

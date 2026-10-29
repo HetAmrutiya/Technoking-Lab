@@ -12,13 +12,12 @@ const Header = () => {
   // 🔬 NDT & DT SERVICES LIST
   // ============================================
   const services = [
-    "Ultrasonic Testing (UT)",
-    "Magnetic Particle Testing (MPT)",
-    "Dye Penetrant Testing (DPT)",
     "Phase Array Ultrasonic Testing (PAUT)",
+    "Time of Flight Diffraction (TOFD)",
+    "Computed Radiography (CR)",
+    "Digital Radiography (DR)",
     "Eddy Current Testing (ET)",
     "Portable Spectro Testing (PST)",
-    "Positive Material Identification (PMI)",
     "Tensile Testing",
     "Compression Testing",
     "Bend Testing",
@@ -32,6 +31,10 @@ const Header = () => {
     "Chemical & Corrosion Testing",
     "Geological Survey & Consultancy",
     "Water & Geotextile Testing",
+    "Ultrasonic Testing (UT)",
+    "Magnetic Particle Testing (MPT)",
+    "Dye Penetrant Testing (DPT)",
+    "Positive Material Identification (PMI)",
   ];
 
   const [text, setText] = useState("");
@@ -78,7 +81,7 @@ const Header = () => {
         setSubIndex((prev) => (deleting ? prev - 1 : prev + 1));
         setText(currentService.substring(0, subIndex));
       },
-      deleting ? 30 : 80
+      deleting ? 30 : 80,
     );
 
     return () => clearTimeout(timeout);
