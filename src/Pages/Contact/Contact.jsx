@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";                    // 🔑 NEW
 import "./Contact.css";
 import { SlLocationPin } from "react-icons/sl";
 import { HiOutlineMail } from "react-icons/hi";
@@ -65,7 +66,7 @@ const testingTypes = [
       "Impact Testing",
       "Hardness Testing",
     ],
-  },  
+  },
   {
     id: "advanced",
     name: "Advanced NDT",
@@ -109,8 +110,6 @@ const testingTypes = [
 
 /* ============================================================
    📇 CONTACT CARDS — each card is fully clickable
-   href  →  what opens on click
-   external  →  true = opens in a new tab (Google Maps)
    ============================================================ */
 const contactData = [
   {
@@ -162,9 +161,37 @@ const Contact = () => {
   const formRef = useRef(null);
   const heroRef = useRef(null);
 
+  const location = useLocation();                                   // 🔑 NEW
+
   // 🔵 Primary Blue Colors
   const primaryColor = "#235781";
   const primaryLight = "#4A82A8";
+
+  /* ============================================================
+     🔑 HASH → SCROLL TO "Request a Test Quote"
+     ------------------------------------------------------------
+     ServiceDetailModal navigates to `/contact#request-quote`.
+     Browser can't find the anchor by itself when we use SPA
+     routing, so we handle it manually:
+       1. Wait a tick for layout to render
+       2. Scroll to #request-quote (the form section)
+       3. Offset by the fixed navbar height
+     Also handles the legacy `#contact-form` alias.
+     ============================================================ */
+  useEffect(() => {
+    const hash = (location.hash || "").replace("#", "").trim();
+    if (hash === "request-quote" || hash === "contact-form") {
+      const timer = setTimeout(() => {
+        const el = document.getElementById("request-quote");
+        if (!el) return;
+        const NAV_OFFSET = 90; // fixed navbar height + a bit of padding
+        const y =
+          el.getBoundingClientRect().top + window.pageYOffset - NAV_OFFSET;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }, 250);
+      return () => clearTimeout(timer);
+    }
+  }, [location.hash, location.key]);
 
   // ============================================
   // 📝 KEEP "Your Message" IN SYNC WITH TESTING TYPE
@@ -379,10 +406,11 @@ const Contact = () => {
 
       {/* ==========================================
           📝 CONTACT FORM SECTION
+          🔑 id="request-quote" — ServiceDetailModal scrolls here
           ========================================== */}
       <section
         className="qc-contact-form-section"
-        id="contact-form"
+        id="request-quote"
         ref={(el) => addToRefs(el, 1)}
         data-section="form"
       >
@@ -651,7 +679,6 @@ const Contact = () => {
               <h2 className="qc-contact-card-title">{item.title}</h2>
               <p className="qc-contact-card-description">{item.description}</p>
 
-              {/* Small "action" hint that appears on hover */}
               <span className="qc-contact-card-cta">
                 {item.actionLabel} <span className="qc-cta-arrow">→</span>
               </span>
@@ -669,7 +696,7 @@ const Contact = () => {
       </div>
 
       {/* ==========================================
-          🗺️ MAP SECTION — uses the SAME address
+          🗺️ MAP SECTION
           ========================================== */}
       <div className="qc-map-section">
         <div className="qc-map-container qc-map-float">

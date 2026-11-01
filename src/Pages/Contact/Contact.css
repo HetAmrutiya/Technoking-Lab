@@ -1821,3 +1821,11 @@ body {
   opacity: 0.25;
   transition: opacity 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+
+/* ============================================================
+   🔑 REQUEST-QUOTE ANCHOR
+   Ensures smooth scroll stops below the fixed navbar
+   ============================================================ */
+#request-quote {
+  scroll-margin-top: 90px;
+}

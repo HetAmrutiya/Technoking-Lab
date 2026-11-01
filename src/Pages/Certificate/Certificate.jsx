@@ -16,7 +16,7 @@ const certificatesData = [
     description:
       "National Accreditation Board for Testing and Calibration Laboratories — accredited for Ultrasonic, Magnetic Particle and Dye Penetrant Testing.",
     icon: <ShieldCheck size={28} />,
-    file: "/certificates/nabl.pdf",
+    file: "/certificates/nabl_certificate.pdf",
     badge: "NABL",
   },
   {

@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Product.css";
 import testingBackground from "../../assets/ut.jpg";
 import {
   Shield, Clock, Users, Award, Waves, Magnet, Droplets, Zap, Scan, Atom,
-  Radio, Diamond, Cog, Ruler, CheckCircle, Target, BookOpen, Rocket, Crown,
+  Diamond, Ruler, CheckCircle, Target, BookOpen, Rocket, Crown,
   Star, TrendingUp, Layers, Gauge, Microscope, Factory, Plane, Car, Ship,
   HardHat, Zap as ZapIcon, Sparkles, Gem as GemIcon, Heart, Globe, Lightbulb,
-  GitBranch, Code, Palette, ShieldCheck, Activity, BarChart3, Cpu, Wrench,
+  GitBranch, Activity, BarChart3, Wrench,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import ServiceDetailModal from "../ServiceDetail/ServiceDetailModal";
 
 const Product = () => {
@@ -21,10 +21,13 @@ const Product = () => {
   const [counters, setCounters] = useState({});
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [highlightSlug, setHighlightSlug] = useState("");
   const sectionRefs = useRef([]);
   const heroRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const counterRef = useRef(null);
+  const handledServiceRef = useRef(null);
 
   const primaryColor = "#235781";
   const primaryDark = "#16405F";
@@ -74,14 +77,77 @@ const Product = () => {
   }, []);
 
   /* ---------------- STEPS ---------------- */
+  /* ============================================================
+     🔑 AUTO-OPEN SERVICE MODAL WHEN NAVBAR PASSES openService
+     ------------------------------------------------------------
+     Navbar sends: navigate('/product', { state: { openService: 'paut', key } })
+     We find the matching method from testingGroups and open the modal.
+     Then we clear the state so reload doesn't re-open the modal.
+     ============================================================ */
+  /* ============================================================
+     🔑 NAVBAR → SCROLL TO METHODS + OPEN SERVICE MODAL
+     ------------------------------------------------------------
+     Flow:
+       1. Navbar → navigate('/product', { state: { openService, key } })
+       2. Switch activeTab to the correct group
+       3. Scroll to the "Our Testing Capabilities" section
+       4. Open the ServiceDetailModal with the matching method
+     When the modal is closed, the user is already at the
+     methods grid — perfectly positioned to see the card.
+     ============================================================ */
   useEffect(() => {
-    const stepTimer = setTimeout(() => setAnimatedSteps([1]), 1000);
-    const stepInterval = setInterval(() => {
-      setAnimatedSteps((prev) => (prev.length < 6 ? [...prev, prev.length + 1] : prev));
-    }, 300);
-    return () => { clearTimeout(stepTimer); clearInterval(stepInterval); };
-  }, []);
+    const openSlug = location.state?.openService;
+    const stateKey = location.state?.key;
+    if (!openSlug || !stateKey) return;
 
+    // Prevent duplicate runs for the same navigation event
+    if (handledServiceRef.current === stateKey) return;
+    handledServiceRef.current = stateKey;
+
+    // Find the method + its parent group
+    let foundMethod = null;
+    let targetGroupId = null;
+    for (const group of testingGroups) {
+      const m = group.methods.find(
+        (method) => method.shortName.toLowerCase() === openSlug
+      );
+      if (m) {
+        foundMethod = m;
+        targetGroupId = group.id;
+        break;
+      }
+    }
+    if (!foundMethod) return;
+
+    // 1) Switch tab so the card is rendered
+    setActiveTab(targetGroupId);
+
+    // 2) Wait for tab render → scroll → open modal
+    let openModalTimer = null;
+    const scrollTimer = setTimeout(() => {
+      const methodsSection = document.querySelector('[data-section="methods"]');
+      if (methodsSection) {
+        const NAV_OFFSET = 100; // fixed navbar height
+        const y =
+          methodsSection.getBoundingClientRect().top +
+          window.pageYOffset -
+          NAV_OFFSET;
+        window.scrollTo({ top: y, behavior: "instant" });
+      }
+
+      // 3) Open the ServiceDetailModal after the scroll has taken effect
+      openModalTimer = setTimeout(() => {
+        setSelectedMethod(foundMethod);
+        setIsModalOpen(true);
+      }, 120);
+    }, 150);
+
+    return () => {
+      clearTimeout(scrollTimer);
+      if (openModalTimer) clearTimeout(openModalTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state?.key, location.state?.openService]);
   /* ---------------- FEATURES ---------------- */
   const serviceFeatures = [
     { icon: <Shield size={32} />, title: "Quality Assurance", description: "Certified testing ensuring structural integrity and safety compliance", color: primaryColor, gradient: `linear-gradient(135deg, #cc1616 0%, #ff4d4d 100%)` },
@@ -414,7 +480,6 @@ const Product = () => {
           advantages: ["Multiple scales", "Portable options", "Quick results", "Minimal surface damage", "Wide material range"],
           image: "💎",
         },
-        /* ============ MECHANICAL TESTING ============ */
         {
           id: 19,
           method: "Mechanical Testing",
@@ -442,7 +507,6 @@ const Product = () => {
           ],
           image: "⚙️",
         },
-        /* ============ METALLURGICAL TESTING ============ */
         {
           id: 20,
           method: "Metallurgical Testing",
@@ -473,6 +537,48 @@ const Product = () => {
       ],
     },
   ];
+
+  /* ============================================================
+     🔑 SCROLL-TO-SERVICE EFFECT
+     ------------------------------------------------------------
+     When Navbar navigates to /product#<slug>:
+       1. Find which group contains this slug
+       2. Switch activeTab if needed
+       3. Wait for DOM, then smooth scroll + highlight pulse
+     ============================================================ */
+  useEffect(() => {
+    const slug = location.hash.replace("#", "").trim();
+    if (!slug) return;
+
+    // Find the target group
+    let targetGroupId = null;
+    for (const group of testingGroups) {
+      if (group.methods.some((m) => m.shortName.toLowerCase() === slug)) {
+        targetGroupId = group.id;
+        break;
+      }
+    }
+    if (!targetGroupId) return;
+
+    // Switch tab so the card is mounted
+    if (targetGroupId !== activeTab) {
+      setActiveTab(targetGroupId);
+    }
+
+    // Wait for React to render the new tab's cards
+    const timer = setTimeout(() => {
+      const el = document.getElementById(slug);
+      if (!el) return;
+      const NAV_OFFSET = 100;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - NAV_OFFSET;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      setHighlightSlug(slug);
+      setTimeout(() => setHighlightSlug(""), 2500);
+    }, 320);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.hash, location.key]);
 
   /* ---------------- INDUSTRIES ---------------- */
   const industries = [
@@ -511,12 +617,6 @@ const Product = () => {
   }, []);
 
   const addToRefs = (el, index) => { sectionRefs.current[index] = el; };
-
-  const specTabs = [
-    { id: "ultrasonic", label: "UT", icon: "📡" },
-    { id: "magnetic", label: "MPT", icon: "🧲" },
-    { id: "penetrant", label: "DPT", icon: "🔬" },
-  ];
 
   const handleRequestService = (method) => { setSelectedMethod(method); setIsModalOpen(true); };
   const handleCloseModal = () => { setIsModalOpen(false); setTimeout(() => setSelectedMethod(null), 300); };
@@ -689,67 +789,75 @@ const Product = () => {
             {testingGroups
               .filter((g) => g.id === activeTab)
               .flatMap((group) =>
-                group.methods.map((method, index) => (
-                  <div
-                    key={method.id}
-                    className={`prod-method-card ${visibleSections.methods ? "prod-animate-fade" : ""}`}
-                    style={{ animationDelay: `${index * 0.08}s` }}
-                  >
-                    <div className="prod-method-card-header" style={{ background: method.gradient }}>
-                      <div className="prod-method-card-icon prod-icon-pulse">{method.icon}</div>
-                      <h3 className="prod-method-card-title">{method.method}</h3>
-                      <div className="prod-method-card-number">#{String(index + 1).padStart(2, "0")}</div>
-                      <div className="prod-method-card-short">{method.shortName}</div>
-                    </div>
+                group.methods.map((method, index) => {
+                  // 🔑 Compute slug + highlight flag
+                  const slug = method.shortName.toLowerCase();
+                  const isHighlighted = highlightSlug === slug;
+                  return (
+                    <div
+                      key={method.id}
+                      id={slug}
+                      className={`prod-method-card ${visibleSections.methods ? "prod-animate-fade" : ""} ${
+                        isHighlighted ? "prod-method-card-highlight" : ""
+                      }`}
+                      style={{ animationDelay: `${index * 0.08}s` }}
+                    >
+                      <div className="prod-method-card-header" style={{ background: method.gradient }}>
+                        <div className="prod-method-card-icon prod-icon-pulse">{method.icon}</div>
+                        <h3 className="prod-method-card-title">{method.method}</h3>
+                        <div className="prod-method-card-number">#{String(index + 1).padStart(2, "0")}</div>
+                        <div className="prod-method-card-short">{method.shortName}</div>
+                      </div>
 
-                    <div className="prod-method-card-content">
-                      <p className="prod-method-card-description">{method.description}</p>
+                      <div className="prod-method-card-content">
+                        <p className="prod-method-card-description">{method.description}</p>
 
-                      <div className="prod-method-card-section">
-                        <h4 className="prod-method-card-subtitle"><Target size={16} />Applications:</h4>
-                        <div className="prod-applications-list">
-                          {method.applications.map((app, i) => (
-                            <span key={i} className="prod-application-tag prod-slide-animation"
-                              style={{ background: method.color + "15", color: method.color, borderColor: method.color + "30", animationDelay: `${i * 0.05}s` }}>
-                              <CheckCircle size={12} />{app}
-                            </span>
-                          ))}
+                        <div className="prod-method-card-section">
+                          <h4 className="prod-method-card-subtitle"><Target size={16} />Applications:</h4>
+                          <div className="prod-applications-list">
+                            {method.applications.map((app, i) => (
+                              <span key={i} className="prod-application-tag prod-slide-animation"
+                                style={{ background: method.color + "15", color: method.color, borderColor: method.color + "30", animationDelay: `${i * 0.05}s` }}>
+                                <CheckCircle size={12} />{app}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="prod-method-card-section">
+                          <h4 className="prod-method-card-subtitle"><BookOpen size={16} />Standards:</h4>
+                          <div className="prod-standards-list">
+                            {method.standards.map((std, i) => (
+                              <span key={i} className="prod-standard-badge prod-pop-animation" style={{ animationDelay: `${i * 0.1}s` }}>{std}</span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="prod-method-card-section">
+                          <h4 className="prod-method-card-subtitle"><Rocket size={16} />Advantages:</h4>
+                          <ul className="prod-advantages-list">
+                            {method.advantages.map((adv, i) => (
+                              <li key={i} className="prod-slide-animation" style={{ animationDelay: `${i * 0.1}s` }}>
+                                <div className="prod-advantage-dot prod-pulse-dot" style={{ background: method.color }}></div>
+                                <span className="prod-advantage-text">{adv}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="prod-button-container">
+                          <button className="prod-method-card-button" style={{ background: method.gradient }} onClick={() => handleRequestService(method)}>
+                            <span>Request Service</span>
+                            <div className="prod-button-arrow">→</div>
+                            <div className="prod-btn-ripple"></div>
+                          </button>
                         </div>
                       </div>
 
-                      <div className="prod-method-card-section">
-                        <h4 className="prod-method-card-subtitle"><BookOpen size={16} />Standards:</h4>
-                        <div className="prod-standards-list">
-                          {method.standards.map((std, i) => (
-                            <span key={i} className="prod-standard-badge prod-pop-animation" style={{ animationDelay: `${i * 0.1}s` }}>{std}</span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="prod-method-card-section">
-                        <h4 className="prod-method-card-subtitle"><Rocket size={16} />Advantages:</h4>
-                        <ul className="prod-advantages-list">
-                          {method.advantages.map((adv, i) => (
-                            <li key={i} className="prod-slide-animation" style={{ animationDelay: `${i * 0.1}s` }}>
-                              <div className="prod-advantage-dot prod-pulse-dot" style={{ background: method.color }}></div>
-                              <span className="prod-advantage-text">{adv}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="prod-button-container">
-                        <button className="prod-method-card-button" style={{ background: method.gradient }} onClick={() => handleRequestService(method)}>
-                          <span>Request Service</span>
-                          <div className="prod-button-arrow">→</div>
-                          <div className="prod-btn-ripple"></div>
-                        </button>
-                      </div>
+                      <div className="prod-method-card-hover-effect"></div>
                     </div>
-
-                    <div className="prod-method-card-hover-effect"></div>
-                  </div>
-                ))
+                  );
+                })
               )}
           </div>
         </div>

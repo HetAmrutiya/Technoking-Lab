@@ -7,6 +7,47 @@ import logoMobile from "../../assets/logo.png";
 import AuthContainer from "../../Pages/Login/AuthContainer";
 import "./Navbar.css";
 
+/* ============================================================
+   SERVICES DATA — slug MUST match method.shortName.toLowerCase()
+   ============================================================ */
+const servicesData = [
+  {
+    title: "Advanced NDT",
+    services: [
+      { label: "Phase Array Ultrasonic Testing (PAUT)", slug: "paut" },
+      { label: "Time of Flight Diffraction (TOFD)",     slug: "tofd" },
+      { label: "Computed Radiography (CR)",             slug: "cr"   },
+      { label: "Digital Radiography (DR)",              slug: "dr"   },
+    ],
+  },
+  {
+    title: "Conventional NDT",
+    services: [
+      { label: "Eddy Current Testing (ET)",               slug: "ect"        },
+      { label: "Portable Spectro Testing (PST)",          slug: "spectro"    },
+      { label: "Ultrasonic Testing (UT)",                 slug: "ut"         },
+      { label: "Magnetic Particle Testing (MPT)",         slug: "mpt"        },
+      { label: "Dye Penetrant Testing (DPT)",             slug: "dpt"        },
+      { label: "Positive Material Identification (PMI)",  slug: "pmi"        },
+      { label: "Hardness Testing",                        slug: "hardness"   },
+      { label: "Thickness Measurement",                   slug: "thickness"  },
+    ],
+  },
+  {
+    title: "Destructive Testing",
+    services: [
+      { label: "Tensile Testing",          slug: "tensile"        },
+      { label: "Compression Testing",      slug: "compression"    },
+      { label: "Bend Testing",             slug: "bend"           },
+      { label: "Re-bend Testing",          slug: "re-bend"        },
+      { label: "Impact Testing",           slug: "impact"         },
+      { label: "Bench Hardness Testing",   slug: "benchhardness"  },
+      { label: "Mechanical Testing",       slug: "mechanical"     },
+      { label: "Metallurgical Testing",    slug: "metallurgical"  },
+    ],
+  },
+];
+
 const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState("home");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -17,7 +58,9 @@ const Navbar = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
 
-  // Inquiry form state
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
+
   const [inquiryData, setInquiryData] = useState({
     name: "",
     email: "",
@@ -34,25 +77,60 @@ const Navbar = () => {
   const userMenuRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const inquiryCardRef = useRef(null);
+  const servicesMegaRef = useRef(null);
+  const servicesCloseTimeout = useRef(null);
+
+  const openServices = useCallback(() => {
+    if (servicesCloseTimeout.current) {
+      clearTimeout(servicesCloseTimeout.current);
+      servicesCloseTimeout.current = null;
+    }
+    setIsServicesOpen(true);
+  }, []);
+
+  const closeServices = useCallback(() => {
+    if (servicesCloseTimeout.current) clearTimeout(servicesCloseTimeout.current);
+    servicesCloseTimeout.current = setTimeout(() => {
+      setIsServicesOpen(false);
+    }, 180);
+  }, []);
 
   const handleNavigation = (path, name) => {
     setActiveMenu(name);
     navigate(path);
     closeMobileMenu();
+    setIsServicesOpen(false);
+    setIsMobileServicesOpen(false);
   };
 
-  // Scroll to top on route change
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "instant",
-    });
-  }, [location.pathname]);
-
-  const handleLoginClick = () => {
-    setIsAuthModalOpen(true);
+  /* ------------------------------------------------------------
+     🔑 CORE CHANGE — Click a service → open its modal on /product
+     ------------------------------------------------------------
+     We pass `state.openService = slug` and a `key` (timestamp) so
+     that clicking the SAME service again still triggers the modal.
+     ------------------------------------------------------------ */
+  const handleServiceClick = (service) => {
+    setActiveMenu("product");
+    setIsServicesOpen(false);
+    setIsMobileServicesOpen(false);
     closeMobileMenu();
+    navigate("/product", {
+      state: {
+        openService: service.slug,
+        key: Date.now(), // ensures repeat clicks work
+      },
+    });
   };
+
+  /* Scroll to top when on /product WITHOUT openService */
+  useEffect(() => {
+    if (
+      location.pathname === "/product" &&
+      !location.state?.openService
+    ) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [location.pathname, location.state]);
 
   const handleInquiryClick = () => {
     setIsInquiryModalOpen(true);
@@ -77,12 +155,13 @@ const Navbar = () => {
 
   const closeMobileMenu = useCallback(() => {
     setIsSidebarOpen(false);
+    setIsMobileServicesOpen(false);
     document.body.style.overflow = "auto";
     document.body.style.position = "static";
     document.body.style.width = "auto";
   }, []);
 
-  // ===== INQUIRY FORM HANDLERS =====
+  /* ===== Inquiry form ===== */
   const handleInquiryChange = (e) => {
     const { name, value } = e.target;
     setInquiryData((prev) => ({ ...prev, [name]: value }));
@@ -118,12 +197,10 @@ const Navbar = () => {
       setInquiryErrors(errors);
       return;
     }
-
     setIsSubmitting(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       console.log("Inquiry submitted:", inquiryData);
-
       setSubmitSuccess(true);
       setInquiryData({
         name: "",
@@ -133,7 +210,6 @@ const Navbar = () => {
         phoneNumber: "",
       });
       setInquiryErrors({});
-
       setTimeout(() => {
         setSubmitSuccess(false);
         setIsInquiryModalOpen(false);
@@ -153,11 +229,9 @@ const Navbar = () => {
     setSubmitSuccess(false);
   };
 
-  // Check login status on mount
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const storedUserData = localStorage.getItem("userData");
-
     if (token && storedUserData) {
       try {
         setIsLoggedIn(true);
@@ -170,25 +244,18 @@ const Navbar = () => {
     }
   }, []);
 
-  // Update active menu based on current path
   useEffect(() => {
     const path = location.pathname;
-    if (path === "/") {
-      setActiveMenu("home");
-    } else if (path === "/product") {
-      setActiveMenu("product");
-    } else if (path === "/industry") {
-      setActiveMenu("industry");
-    } else if (path === "/contact") {
-      setActiveMenu("contact");
-    }
+    if (path === "/") setActiveMenu("home");
+    else if (path === "/product") setActiveMenu("product");
+    else if (path === "/industry") setActiveMenu("industry");
+    else if (path === "/contact") setActiveMenu("contact");
+    else if (path === "/certificate") setActiveMenu("certificate");
   }, [location]);
 
-  // Handle scroll for scrolled state and home page section highlighting
   const handleScroll = useCallback(() => {
     const offset = window.scrollY;
     setIsScrolled(offset > 50);
-
     if (location.pathname === "/") {
       const sections = ["home", "about", "services", "team", "contact"];
       for (const sec of sections) {
@@ -204,7 +271,6 @@ const Navbar = () => {
     }
   }, [location.pathname]);
 
-  // Handle click outside
   const handleClickOutside = useCallback(
     (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
@@ -217,6 +283,13 @@ const Navbar = () => {
       ) {
         closeMobileMenu();
       }
+      if (
+        servicesMegaRef.current &&
+        !servicesMegaRef.current.contains(e.target) &&
+        !e.target.closest(".ne-navbar-menu-item-has-dropdown")
+      ) {
+        setIsServicesOpen(false);
+      }
     },
     [closeMobileMenu]
   );
@@ -225,7 +298,6 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("touchstart", handleClickOutside);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mousedown", handleClickOutside);
@@ -233,16 +305,27 @@ const Navbar = () => {
     };
   }, [handleScroll, handleClickOutside]);
 
-  // Cleanup on unmount
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 992) {
+        if (isSidebarOpen) closeMobileMenu();
+        setIsMobileServicesOpen(false);
+        setIsServicesOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isSidebarOpen, closeMobileMenu]);
+
   useEffect(() => {
     return () => {
       document.body.style.overflow = "auto";
       document.body.style.position = "static";
       document.body.style.width = "auto";
+      if (servicesCloseTimeout.current) clearTimeout(servicesCloseTimeout.current);
     };
   }, []);
 
-  // ===== LOCK BODY SCROLL WHEN INQUIRY MODAL IS OPEN =====
   useEffect(() => {
     if (isInquiryModalOpen) {
       const scrollY = window.scrollY;
@@ -256,34 +339,32 @@ const Navbar = () => {
       document.body.style.position = "static";
       document.body.style.top = "";
       document.body.style.width = "auto";
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || "0") * -1);
-      }
+      if (scrollY) window.scrollTo(0, parseInt(scrollY || "0") * -1);
     }
   }, [isInquiryModalOpen]);
 
-  // ===== RESET SCROLL POSITION WHEN MODAL OPENS =====
   useEffect(() => {
     if (isInquiryModalOpen && inquiryCardRef.current) {
       inquiryCardRef.current.scrollTop = 0;
     }
   }, [isInquiryModalOpen]);
 
-  // ===== ESC KEY CLOSES INQUIRY MODAL =====
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === "Escape" && isInquiryModalOpen) {
-        closeInquiryModal();
-      }
+      if (e.key !== "Escape") return;
+      if (isInquiryModalOpen) closeInquiryModal();
+      if (isServicesOpen) setIsServicesOpen(false);
+      if (isUserMenuOpen) setIsUserMenuOpen(false);
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInquiryModalOpen, isSubmitting]);
+  }, [isInquiryModalOpen, isSubmitting, isServicesOpen, isUserMenuOpen]);
 
   const toggleMobileMenu = () => {
     if (!isSidebarOpen) {
       setIsSidebarOpen(true);
+      setIsServicesOpen(false);
       document.body.style.overflow = "hidden";
       document.body.style.position = "fixed";
       document.body.style.width = "100%";
@@ -305,25 +386,15 @@ const Navbar = () => {
             onClick={() => handleNavigation("/", "home")}
             style={{ cursor: "pointer" }}
           >
-            {/* Desktop Logo — shown on laptop/desktop */}
-            <img
-              src={logoDesktop}
-              alt="Logo"
-              className="ne-navbar-logo-image ne-navbar-logo-desktop"
-            />
-            {/* Mobile Logo — shown on mobile/tablet */}
-            <img
-              src={logoMobile}
-              alt="Logo"
-              className="ne-navbar-logo-image ne-navbar-logo-mobile"
-            />
+            <img src={logoDesktop} alt="Logo"
+              className="ne-navbar-logo-image ne-navbar-logo-desktop" />
+            <img src={logoMobile} alt="Logo"
+              className="ne-navbar-logo-image ne-navbar-logo-mobile" />
           </div>
 
           <div className="ne-navbar-right-section">
             <ul
-              className={`ne-navbar-menu ${
-                isSidebarOpen ? "ne-navbar-menu-open" : ""
-              }`}
+              className={`ne-navbar-menu ${isSidebarOpen ? "ne-navbar-menu-open" : ""}`}
               ref={mobileMenuRef}
             >
               {isSidebarOpen && (
@@ -336,10 +407,9 @@ const Navbar = () => {
                 </button>
               )}
 
+              {/* HOME */}
               <li
-                className={`ne-navbar-menu-item ${
-                  activeMenu === "home" ? "ne-navbar-menu-item-active" : ""
-                }`}
+                className={`ne-navbar-menu-item ${activeMenu === "home" ? "ne-navbar-menu-item-active" : ""}`}
                 onClick={() => handleNavigation("/", "home")}
                 style={{ "--item-index": 1 }}
               >
@@ -347,21 +417,70 @@ const Navbar = () => {
                 <div className="ne-navbar-menu-highlight"></div>
               </li>
 
+              {/* OUR SERVICES */}
               <li
-                className={`ne-navbar-menu-item ${
+                className={`ne-navbar-menu-item ne-navbar-menu-item-has-dropdown ${
                   activeMenu === "product" ? "ne-navbar-menu-item-active" : ""
+                } ${
+                  isServicesOpen || isMobileServicesOpen
+                    ? "ne-navbar-menu-item-dropdown-open"
+                    : ""
                 }`}
-                onClick={() => handleNavigation("/product", "product")}
+                onClick={(e) => {
+                  if (isSidebarOpen) {
+                    e.stopPropagation();
+                    setIsMobileServicesOpen((prev) => !prev);
+                  } else {
+                    handleNavigation("/product", "product");
+                  }
+                }}
+                onMouseEnter={() => {
+                  if (!isSidebarOpen && window.innerWidth > 992) openServices();
+                }}
+                onMouseLeave={() => {
+                  if (!isSidebarOpen && window.innerWidth > 992) closeServices();
+                }}
                 style={{ "--item-index": 2 }}
               >
-                <span className="ne-navbar-menu-text">Our Services</span>
+                <span className="ne-navbar-menu-text">
+                  Our Services
+                  <span className="ne-navbar-dropdown-chevron" />
+                </span>
                 <div className="ne-navbar-menu-highlight"></div>
+
+                {/* MOBILE inline panel */}
+                <div
+                  className={`ne-navbar-mobile-services-panel ${
+                    isMobileServicesOpen ? "open" : ""
+                  }`}
+                >
+                  {servicesData.map((cat) => (
+                    <div key={cat.title} className="ne-navbar-mobile-services-group">
+                      <div className="ne-navbar-mobile-services-group-title">
+                        {cat.title}
+                      </div>
+                      <ul className="ne-navbar-mobile-services-list">
+                        {cat.services.map((service) => (
+                          <li
+                            key={service.slug}
+                            className="ne-navbar-mobile-services-item"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleServiceClick(service);
+                            }}
+                          >
+                            {service.label}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
               </li>
 
+              {/* INDUSTRY */}
               <li
-                className={`ne-navbar-menu-item ${
-                  activeMenu === "industry" ? "ne-navbar-menu-item-active" : ""
-                }`}
+                className={`ne-navbar-menu-item ${activeMenu === "industry" ? "ne-navbar-menu-item-active" : ""}`}
                 onClick={() => handleNavigation("/industry", "industry")}
                 style={{ "--item-index": 3 }}
               >
@@ -369,10 +488,9 @@ const Navbar = () => {
                 <div className="ne-navbar-menu-highlight"></div>
               </li>
 
+              {/* CONTACT */}
               <li
-                className={`ne-navbar-menu-item ${
-                  activeMenu === "contact" ? "ne-navbar-menu-item-active" : ""
-                }`}
+                className={`ne-navbar-menu-item ${activeMenu === "contact" ? "ne-navbar-menu-item-active" : ""}`}
                 onClick={() => handleNavigation("/contact", "contact")}
                 style={{ "--item-index": 4 }}
               >
@@ -380,12 +498,9 @@ const Navbar = () => {
                 <div className="ne-navbar-menu-highlight"></div>
               </li>
 
+              {/* CERTIFICATE */}
               <li
-                className={`ne-navbar-menu-item ${
-                  activeMenu === "certificate"
-                    ? "ne-navbar-menu-item-active"
-                    : ""
-                }`}
+                className={`ne-navbar-menu-item ${activeMenu === "certificate" ? "ne-navbar-menu-item-active" : ""}`}
                 onClick={() => handleNavigation("/certificate", "certificate")}
                 style={{ "--item-index": 5 }}
               >
@@ -393,7 +508,7 @@ const Navbar = () => {
                 <div className="ne-navbar-menu-highlight"></div>
               </li>
 
-              {/* Mobile Only Auth Section */}
+              {/* MOBILE AUTH */}
               <div className="ne-navbar-mobile-auth-section">
                 {isLoggedIn ? (
                   <div className="ne-navbar-mobile-user-info">
@@ -410,10 +525,7 @@ const Navbar = () => {
                     </div>
                   </div>
                 ) : (
-                  <button
-                    className="ne-navbar-mobile-login-btn"
-                    onClick={handleInquiryClick}
-                  >
+                  <button className="ne-navbar-mobile-login-btn" onClick={handleInquiryClick}>
                     <span>Inquiry Form</span>
                     <i className="fas fa-sign-in-alt"></i>
                   </button>
@@ -422,10 +534,7 @@ const Navbar = () => {
             </ul>
 
             {isLoggedIn ? (
-              <div
-                className="ne-navbar-user-dropdown-container"
-                ref={userMenuRef}
-              >
+              <div className="ne-navbar-user-dropdown-container" ref={userMenuRef}>
                 <button
                   className="ne-navbar-user-toggle"
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -438,17 +547,11 @@ const Navbar = () => {
                   <span className="ne-navbar-user-name">
                     {userInfo?.fullName || "User"}
                   </span>
-                  <i
-                    className={`ne-navbar-user-arrow ${
-                      isUserMenuOpen ? "ne-navbar-user-arrow-open" : ""
-                    }`}
-                  ></i>
+                  <i className={`ne-navbar-user-arrow ${isUserMenuOpen ? "ne-navbar-user-arrow-open" : ""}`}></i>
                 </button>
 
                 <div
-                  className={`ne-navbar-user-menu ${
-                    isUserMenuOpen ? "ne-navbar-user-menu-open" : ""
-                  }`}
+                  className={`ne-navbar-user-menu ${isUserMenuOpen ? "ne-navbar-user-menu-open" : ""}`}
                   aria-hidden={!isUserMenuOpen}
                 >
                   <div className="ne-navbar-user-header">
@@ -464,66 +567,27 @@ const Navbar = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="ne-navbar-menu-divider"></div>
-
-                  <button
-                    className="ne-navbar-menu-option"
-                    onClick={() => {
-                      navigate("/dashboard");
-                      setIsUserMenuOpen(false);
-                      closeMobileMenu();
-                    }}
-                    aria-label="Dashboard"
-                  >
-                    <i className="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
+                  <button className="ne-navbar-menu-option"
+                    onClick={() => { navigate("/dashboard"); setIsUserMenuOpen(false); closeMobileMenu(); }}>
+                    <i className="fas fa-tachometer-alt"></i><span>Dashboard</span>
                   </button>
-
-                  <button
-                    className="ne-navbar-menu-option"
-                    onClick={() => {
-                      navigate("/profile");
-                      setIsUserMenuOpen(false);
-                      closeMobileMenu();
-                    }}
-                    aria-label="My Profile"
-                  >
-                    <i className="fas fa-user"></i>
-                    <span>My Profile</span>
+                  <button className="ne-navbar-menu-option"
+                    onClick={() => { navigate("/profile"); setIsUserMenuOpen(false); closeMobileMenu(); }}>
+                    <i className="fas fa-user"></i><span>My Profile</span>
                   </button>
-
-                  <button
-                    className="ne-navbar-menu-option"
-                    onClick={() => {
-                      navigate("/orders");
-                      setIsUserMenuOpen(false);
-                      closeMobileMenu();
-                    }}
-                    aria-label="My Orders"
-                  >
-                    <i className="fas fa-shopping-bag"></i>
-                    <span>My Orders</span>
+                  <button className="ne-navbar-menu-option"
+                    onClick={() => { navigate("/orders"); setIsUserMenuOpen(false); closeMobileMenu(); }}>
+                    <i className="fas fa-shopping-bag"></i><span>My Orders</span>
                   </button>
-
                   <div className="ne-navbar-menu-divider"></div>
-
-                  <button
-                    className="ne-navbar-menu-option ne-navbar-menu-logout"
-                    onClick={handleLogout}
-                    aria-label="Logout"
-                  >
-                    <i className="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
+                  <button className="ne-navbar-menu-option ne-navbar-menu-logout" onClick={handleLogout}>
+                    <i className="fas fa-sign-out-alt"></i><span>Logout</span>
                   </button>
                 </div>
               </div>
             ) : (
-              <button
-                className="ne-navbar-login-button"
-                onClick={handleInquiryClick}
-                aria-label="Inquiry Form"
-              >
+              <button className="ne-navbar-login-button" onClick={handleInquiryClick} aria-label="Inquiry Form">
                 <span>Inquiry Form</span>
                 <div className="ne-navbar-button-effect"></div>
                 <i className="fas fa-sign-in-alt"></i>
@@ -531,9 +595,7 @@ const Navbar = () => {
             )}
 
             <button
-              className={`ne-navbar-mobile-toggle ${
-                isSidebarOpen ? "ne-navbar-mobile-toggle-active" : ""
-              }`}
+              className={`ne-navbar-mobile-toggle ${isSidebarOpen ? "ne-navbar-mobile-toggle-active" : ""}`}
               onClick={toggleMobileMenu}
               aria-label="Toggle menu"
               aria-expanded={isSidebarOpen}
@@ -543,90 +605,95 @@ const Navbar = () => {
           </div>
         </div>
 
+        {/* DESKTOP MEGA DROPDOWN */}
         <div
-          className={`ne-navbar-mobile-overlay ${
-            isSidebarOpen ? "ne-navbar-mobile-overlay-active" : ""
-          }`}
+          ref={servicesMegaRef}
+          className={`ne-navbar-services-mega ${isServicesOpen ? "open" : ""}`}
+          onMouseEnter={openServices}
+          onMouseLeave={closeServices}
+        >
+          <div className="ne-navbar-services-mega-grid">
+            {servicesData.map((cat) => (
+              <div key={cat.title} className="ne-navbar-services-mega-column">
+                <h4 className="ne-navbar-services-mega-title">{cat.title}</h4>
+                <ul className="ne-navbar-services-mega-list">
+                  {cat.services.map((service) => (
+                    <li
+                      key={service.slug}
+                      className="ne-navbar-services-mega-item"
+                      onClick={() => handleServiceClick(service)}
+                    >
+                      <span className="ne-navbar-services-mega-bullet" />
+                      <span>{service.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="ne-navbar-services-mega-footer">
+            <button className="ne-navbar-services-mega-viewall"
+              onClick={() => { handleNavigation("/product", "product"); setIsServicesOpen(false); }}>
+              View All Services →
+            </button>
+          </div>
+        </div>
+
+        <div
+          className={`ne-navbar-mobile-overlay ${isSidebarOpen ? "ne-navbar-mobile-overlay-active" : ""}`}
           onClick={closeMobileMenu}
           aria-hidden={!isSidebarOpen}
         ></div>
       </nav>
 
-      {/* Auth Modal */}
       <AuthContainer
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         onLoginSuccess={handleLoginSuccess}
       />
 
-      {/* ============ INQUIRY MODAL ============ */}
+      {/* INQUIRY MODAL */}
       {isInquiryModalOpen && (
-        <div
-          className="tk-auth-modal-overlay tk-inquiry-overlay-scroll"
-          onClick={closeInquiryModal}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="inquiry-modal-title"
-        >
-          <div
-            className="tk-auth-container tk-inquiry-container"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Animated Background */}
+        <div className="tk-auth-modal-overlay tk-inquiry-overlay-scroll"
+          onClick={closeInquiryModal} role="dialog" aria-modal="true"
+          aria-labelledby="inquiry-modal-title">
+          <div className="tk-auth-container tk-inquiry-container"
+            onClick={(e) => e.stopPropagation()}>
             <div className="tk-auth-background">
               <div className="tk-auth-floating-shapes">
                 {[...Array(8)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`tk-auth-shape shape-${i % 4}`}
+                  <div key={i} className={`tk-auth-shape shape-${i % 4}`}
                     style={{
                       "--delay": `${i * 0.5}s`,
                       "--duration": `${20 + i * 3}s`,
                       left: `${Math.random() * 100}%`,
                       animationDelay: `-${i * 2}s`,
-                    }}
-                  ></div>
+                    }}></div>
                 ))}
               </div>
               <div className="tk-auth-gradient-overlay"></div>
             </div>
 
-            {/* Inquiry Card — scrollable */}
-            <div
-              className="tk-auth-card tk-inquiry-card tk-inquiry-card-scroll"
-              ref={inquiryCardRef}
-            >
+            <div className="tk-auth-card tk-inquiry-card tk-inquiry-card-scroll" ref={inquiryCardRef}>
               <div className="tk-auth-card-glow"></div>
-
-              {/* Close Button */}
-              <button
-                className="tk-auth-close-btn tk-inquiry-close-sticky"
-                onClick={closeInquiryModal}
-                disabled={isSubmitting}
-                aria-label="Close inquiry form"
-              >
-                <span></span>
-                <span></span>
+              <button className="tk-auth-close-btn tk-inquiry-close-sticky"
+                onClick={closeInquiryModal} disabled={isSubmitting} aria-label="Close inquiry form">
+                <span></span><span></span>
               </button>
 
               {submitSuccess ? (
-                /* ===== SUCCESS STATE ===== */
                 <div className="tk-inquiry-success">
                   <div className="tk-inquiry-success-icon">
                     <i className="fas fa-check-circle"></i>
                   </div>
-                  <h3 className="tk-auth-title tk-text-shimmer-white">
-                    Thank You!
-                  </h3>
+                  <h3 className="tk-auth-title tk-text-shimmer-white">Thank You!</h3>
                   <p className="tk-auth-subtitle">
-                    Your inquiry has been submitted successfully.
-                    <br />
+                    Your inquiry has been submitted successfully.<br />
                     We'll get back to you soon.
                   </p>
                 </div>
               ) : (
                 <>
-                  {/* Header */}
                   <div className="tk-auth-header">
                     <div className="tk-auth-logo">
                       <div className="tk-auth-logo-icon">
@@ -634,10 +701,7 @@ const Navbar = () => {
                       </div>
                       Technoking Testlab Pvt Ltd
                     </div>
-                    <h2
-                      id="inquiry-modal-title"
-                      className="tk-auth-title tk-text-shimmer-white"
-                    >
+                    <h2 id="inquiry-modal-title" className="tk-auth-title tk-text-shimmer-white">
                       Inquiry Form
                     </h2>
                     <p className="tk-auth-subtitle">
@@ -645,148 +709,74 @@ const Navbar = () => {
                     </p>
                   </div>
 
-                  {/* Divider */}
-                  <div className="tk-auth-divider">
-                    <span>please share your details</span>
-                  </div>
+                  <div className="tk-auth-divider"><span>please share your details</span></div>
 
-                  {/* Form */}
-                  <form
-                    className="tk-auth-form"
-                    onSubmit={handleInquirySubmit}
-                    noValidate
-                  >
+                  <form className="tk-auth-form" onSubmit={handleInquirySubmit} noValidate>
                     <div className="tk-auth-input-group">
-                      {/* Name */}
                       <div className="tk-auth-input-wrapper">
                         <i className="fas fa-user tk-auth-input-icon"></i>
-                        <input
-                          id="inquiry-name"
-                          type="text"
-                          name="name"
-                          placeholder=" "
-                          value={inquiryData.name}
-                          onChange={handleInquiryChange}
-                          className={`tk-auth-input ${
-                            inquiryErrors.name ? "tk-input-error" : ""
-                          }`}
-                        />
+                        <input id="inquiry-name" type="text" name="name" placeholder=" "
+                          value={inquiryData.name} onChange={handleInquiryChange}
+                          className={`tk-auth-input ${inquiryErrors.name ? "tk-input-error" : ""}`} />
                         <label className="tk-auth-label">Name</label>
                         <div className="tk-auth-input-focus-line"></div>
                         {inquiryErrors.name && (
-                          <span className="tk-inquiry-error">
-                            {inquiryErrors.name}
-                          </span>
+                          <span className="tk-inquiry-error">{inquiryErrors.name}</span>
                         )}
                       </div>
-
-                      {/* Email */}
                       <div className="tk-auth-input-wrapper">
                         <i className="fas fa-envelope tk-auth-input-icon"></i>
-                        <input
-                          id="inquiry-email"
-                          type="email"
-                          name="email"
-                          placeholder=" "
-                          value={inquiryData.email}
-                          onChange={handleInquiryChange}
-                          className={`tk-auth-input ${
-                            inquiryErrors.email ? "tk-input-error" : ""
-                          }`}
-                        />
+                        <input id="inquiry-email" type="email" name="email" placeholder=" "
+                          value={inquiryData.email} onChange={handleInquiryChange}
+                          className={`tk-auth-input ${inquiryErrors.email ? "tk-input-error" : ""}`} />
                         <label className="tk-auth-label">Email ID</label>
                         <div className="tk-auth-input-focus-line"></div>
                         {inquiryErrors.email && (
-                          <span className="tk-inquiry-error">
-                            {inquiryErrors.email}
-                          </span>
+                          <span className="tk-inquiry-error">{inquiryErrors.email}</span>
                         )}
                       </div>
-
-                      {/* Designation */}
                       <div className="tk-auth-input-wrapper">
                         <i className="fas fa-briefcase tk-auth-input-icon"></i>
-                        <input
-                          id="inquiry-designation"
-                          type="text"
-                          name="designation"
-                          placeholder=" "
-                          value={inquiryData.designation}
-                          onChange={handleInquiryChange}
-                          className={`tk-auth-input ${
-                            inquiryErrors.designation ? "tk-input-error" : ""
-                          }`}
-                        />
+                        <input id="inquiry-designation" type="text" name="designation" placeholder=" "
+                          value={inquiryData.designation} onChange={handleInquiryChange}
+                          className={`tk-auth-input ${inquiryErrors.designation ? "tk-input-error" : ""}`} />
                         <label className="tk-auth-label">Designation</label>
                         <div className="tk-auth-input-focus-line"></div>
                         {inquiryErrors.designation && (
-                          <span className="tk-inquiry-error">
-                            {inquiryErrors.designation}
-                          </span>
+                          <span className="tk-inquiry-error">{inquiryErrors.designation}</span>
                         )}
                       </div>
-
-                      {/* Phone Number */}
                       <div className="tk-auth-input-wrapper">
                         <i className="fas fa-phone-alt tk-auth-input-icon"></i>
-                        <input
-                          id="inquiry-phone"
-                          type="tel"
-                          name="phoneNumber"
-                          placeholder=" "
-                          value={inquiryData.phoneNumber}
-                          onChange={handleInquiryChange}
-                          className={`tk-auth-input ${
-                            inquiryErrors.phoneNumber ? "tk-input-error" : ""
-                          }`}
-                        />
+                        <input id="inquiry-phone" type="tel" name="phoneNumber" placeholder=" "
+                          value={inquiryData.phoneNumber} onChange={handleInquiryChange}
+                          className={`tk-auth-input ${inquiryErrors.phoneNumber ? "tk-input-error" : ""}`} />
                         <label className="tk-auth-label">Phone Number</label>
                         <div className="tk-auth-input-focus-line"></div>
                         {inquiryErrors.phoneNumber && (
-                          <span className="tk-inquiry-error">
-                            {inquiryErrors.phoneNumber}
-                          </span>
+                          <span className="tk-inquiry-error">{inquiryErrors.phoneNumber}</span>
                         )}
                       </div>
-
-                      {/* Description */}
                       <div className="tk-auth-input-wrapper">
                         <i className="fas fa-comment-dots tk-auth-input-icon tk-textarea-icon"></i>
-                        <textarea
-                          id="inquiry-description"
-                          name="description"
-                          placeholder=" "
-                          rows="4"
-                          value={inquiryData.description}
-                          onChange={handleInquiryChange}
-                          className={`tk-auth-input tk-auth-textarea ${
-                            inquiryErrors.description ? "tk-input-error" : ""
-                          }`}
-                        />
+                        <textarea id="inquiry-description" name="description" placeholder=" " rows="4"
+                          value={inquiryData.description} onChange={handleInquiryChange}
+                          className={`tk-auth-input tk-auth-textarea ${inquiryErrors.description ? "tk-input-error" : ""}`} />
                         <label className="tk-auth-label">Description</label>
                         <div className="tk-auth-input-focus-line"></div>
                         {inquiryErrors.description && (
-                          <span className="tk-inquiry-error">
-                            {inquiryErrors.description}
-                          </span>
+                          <span className="tk-inquiry-error">{inquiryErrors.description}</span>
                         )}
                       </div>
                     </div>
 
                     {inquiryErrors.submit && (
-                      <div className="tk-inquiry-submit-error">
-                        {inquiryErrors.submit}
-                      </div>
+                      <div className="tk-inquiry-submit-error">{inquiryErrors.submit}</div>
                     )}
 
-                    {/* Submit Button */}
-                    <button
-                      type="submit"
-                      className={`tk-auth-submit-btn ${
-                        isSubmitting ? "tk-btn-loading" : ""
-                      }`}
-                      disabled={isSubmitting}
-                    >
+                    <button type="submit"
+                      className={`tk-auth-submit-btn ${isSubmitting ? "tk-btn-loading" : ""}`}
+                      disabled={isSubmitting}>
                       <span className="tk-auth-btn-text">
                         {isSubmitting ? "Submitting..." : "Submit Inquiry"}
                       </span>

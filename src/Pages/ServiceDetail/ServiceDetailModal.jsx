@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";           // 🔑 NEW
 import "./ServiceDetailModal.css";
 import {
   X, Waves, Magnet, Droplets, Zap, Scan, Atom, Radio, Diamond, Ruler,
@@ -25,6 +26,7 @@ const ServiceDetailModal = ({ isOpen, onClose, method, allMethods, onSelectMetho
   const [animatedItems, setAnimatedItems] = useState([]);
   const modalRef = useRef(null);
   const contentRef = useRef(null);
+  const navigate = useNavigate();                             // 🔑 NEW
 
   const primaryColor = "#235781";
   const primaryDark = "#16405F";
@@ -54,6 +56,21 @@ const ServiceDetailModal = ({ isOpen, onClose, method, allMethods, onSelectMetho
     if (content) content.addEventListener("scroll", handleScroll);
     return () => { if (content) content.removeEventListener("scroll", handleScroll); };
   }, [isOpen]);
+
+  /* ============================================================
+     🔑 HANDLE "CONTACT US" / "REQUEST QUOTE" CLICKS
+     ------------------------------------------------------------
+     1. Close the modal (this unlocks body scroll via useEffect cleanup)
+     2. Navigate to /contact#request-quote
+     3. Contact page will scroll to id="request-quote"
+     ============================================================ */
+  const handleGoToContactQuote = () => {
+    onClose();
+    // Small delay so the modal cleanup runs (body unlocked) before navigation
+    setTimeout(() => {
+      navigate("/contact#request-quote");
+    }, 30);
+  };
 
   if (!isOpen || !method) return null;
 
@@ -1244,7 +1261,6 @@ const ServiceDetailModal = ({ isOpen, onClose, method, allMethods, onSelectMetho
                 <p className="sdm-method-short-desc">{method.description}</p>
 
                 <div className="sdm-header-stats">
-                  {/* NABL Accreditation — only for UT / MPT / DPT */}
                   {showNABLStat && (
                     <>
                       <div className="sdm-header-stat">
@@ -1260,7 +1276,6 @@ const ServiceDetailModal = ({ isOpen, onClose, method, allMethods, onSelectMetho
                     </>
                   )}
 
-                  {/* ASNT Level II / III */}
                   {showCertStat && (
                     <>
                       <div className="sdm-header-stat">
@@ -1516,15 +1531,22 @@ const ServiceDetailModal = ({ isOpen, onClose, method, allMethods, onSelectMetho
             </div>
           )}
 
+          {/* CTA — Contact Us + Request Quote both navigate to /contact#request-quote */}
           <div className="sdm-cta-section">
             <div className="sdm-cta-content">
               <h3>Need {details.fullName}?</h3>
               <p>Get a free consultation and quote for your project</p>
               <div className="sdm-cta-buttons">
-                <button className="sdm-cta-primary" onClick={onClose}>
+                <button
+                  className="sdm-cta-primary"
+                  onClick={handleGoToContactQuote}
+                >
                   <Phone size={18} /><span>Contact Us</span><ArrowRight size={18} />
                 </button>
-                <button className="sdm-cta-secondary">
+                <button
+                  className="sdm-cta-secondary"
+                  onClick={handleGoToContactQuote}
+                >
                   <FileText size={18} /><span>Request Quote</span>
                 </button>
               </div>
