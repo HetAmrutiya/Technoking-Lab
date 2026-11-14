@@ -1,6 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Industry.css";
 import mineralsBackground from "../../assets/ut.jpg";
+import eng from "../../assets/eng.png";
+import ent from "../../assets/ent.png";
+import testlab from "../../assets/logo.png";
+import weldcast from "../../assets/weldcast.png";
+import qixp from "../../assets/qixp.png";
+import cns from "../../assets/cns.png";
 import {
   Factory,
   Zap,
@@ -131,6 +137,42 @@ const Industry = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  /* ============================================================
+   🏢 GROUP OF COMPANIES — EDIT ONLY HERE
+   ============================================================ */
+const groupCompanies = [
+  {
+    id: "ttpl",
+    name: "Technoking Testlab Pvt Ltd",
+    initials: "TT",
+    logo: testlab,
+  },
+  {
+    id: "tepl",
+    name: "Technoking Engineers Pvt Ltd",
+    initials: "TE",
+    logo: eng,
+  },
+  {
+    id: "qixs",
+    name: "Quality Industrial X-Ray Company Pvt Ltd",
+    initials: "QX",
+    logo: qixp,
+  },
+  {
+    id: "cndt",
+    name: "Capital NDT Services",
+    initials: "CN",
+    logo: cns,
+  },
+  {
+    id: "wndt",
+    name: "Weldcast NDT Pvt Ltd",
+    initials: "WN",
+    logo: weldcast,
+  },
+];
 
   // ============================================
   // 🖱️ MOUSE PARALLAX FOR 3D EFFECT
@@ -418,16 +460,6 @@ const Industry = () => {
     },
   ];
 
-  // ============================================
-  // 📊 STATS DATA
-  // ============================================
-  const statsData = [
-    { id: 'projects', label: 'Projects Completed', icon: <Briefcase size={24} />, suffix: '+' },
-    { id: 'industries', label: 'Industries Served', icon: <Globe size={24} />, suffix: '+' },
-    { id: 'experience', label: 'Years Experience', icon: <Clock size={24} />, suffix: '+' },
-    { id: 'satisfaction', label: 'Client Satisfaction', icon: <ThumbsUp size={24} />, suffix: '%' },
-  ];
-
   return (
     <div className="tk-industry-container" id="industry">
       {/* ==========================================
@@ -494,37 +526,7 @@ const Industry = () => {
         </div>
       </section>
 
-      {/* ==========================================
-          📊 STATS SECTION WITH COUNTER
-          ========================================== */}
-      <section
-        className="tk-stats-section"
-        ref={statsRef}
-        data-section="stats"
-      >
-        <div className="tk-container">
-          <div className="tk-stats-grid">
-            {statsData.map((stat, index) => (
-              <div
-                key={stat.id}
-                className="tk-stat-card tk-stat-3d"
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                <div className="tk-stat-icon" style={{ color: primaryColor }}>
-                  {stat.icon}
-                </div>
-                <span className="tk-stat-number" style={{ color: primaryColor }}>
-                  {counters[stat.id] || 0}{stat.suffix}
-                </span>
-                <span className="tk-stat-label">{stat.label}</span>
-                <div className="tk-stat-glow" style={{ background: primaryColor }}></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ==========================================
+            {/* ==========================================
           🏭 INDUSTRIES OVERVIEW SECTION
           ========================================== */}
       <section
@@ -729,7 +731,94 @@ const Industry = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section>      
+
+{/* ==========================================
+    🏢 GROUP OF COMPANIES
+    ========================================== */}
+<section
+  className="tk-clients-section tk-group-section"
+  id="group-companies"
+  ref={(el) => addToRefs(el, 3)}
+  data-section="groupCompanies"
+>
+  <div className="tk-container">
+    <div className="tk-section-header">
+      <div
+        className="tk-section-badge"
+        style={{ background: primaryColor }}
+      >
+        <Users size={16} />
+        Group of Company
+      </div>
+
+      <h2 className="tk-section-title-iws">
+        Our{" "}
+        <span style={{ color: primaryColor }}>Group of Companies</span>
+      </h2>
+
+      <div className="tk-section-divider">
+        <div
+          className="tk-divider-line"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+          }}
+        />
+        <div
+          className="tk-divider-dot tk-pulse-dot"
+          style={{ background: primaryColor }}
+        />
+        <div
+          className="tk-divider-line"
+          style={{
+            background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+          }}
+        />
+      </div>
+
+      <p className="tk-section-subtitle">
+        Providing reliable NDT and DT testing services for quality, safety and
+        structural integrity.
+      </p>
+    </div>
+
+    <div className="tk-group-grid">
+      {groupCompanies.map((company, i) => (
+        <article
+          key={company.id}
+          className="tk-company-card"
+          style={{
+            "--tk-accent": primaryColor,
+            "--tk-delay": `${i * 0.12}s`,
+            "--tk-float-delay": `${i * 0.45}s`,
+          }}
+        >
+          <div className="tk-company-logo">
+            <div className="tk-company-logo-inner">
+              {company.logo ? (
+                <img
+                  src={company.logo}
+                  alt={`${company.name} logo`}
+                  draggable="false"
+                  loading="lazy"
+                />
+              ) : (
+                <span
+                  className="tk-company-initials"
+                  style={{ color: primaryColor }}
+                >
+                  {company.initials}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <h3 className="tk-company-name">{company.name}</h3>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* ==========================================
           🎯 CTA BANNER

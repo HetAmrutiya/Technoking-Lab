@@ -1,4 +1,6 @@
-Home Main Container
+/* ============================================================
+   🏠 HOME MAIN CONTAINER
+   ============================================================ */
 .home-main-container {
   font-family: "Inter", sans-serif;
   color: #333;
@@ -668,16 +670,14 @@ Home Main Container
     padding: 25px 20px;
   }
 }
+
 .about-container1 {
   font-family: "Inter", sans-serif;
   color: #333;
   overflow-x: hidden;
-
   background-color: white !important;
   position: relative;
 }
-
-
 
 .prod-industry-tag-hm {
   display: inline-flex;
@@ -699,6 +699,7 @@ Home Main Container
   height: 20px;
   flex-shrink: 0;
 }
+
 /* ============================================================
    🏢 OUR CLIENTS — HORIZONTAL AUTO-SCROLLING MARQUEE
    Logos always in full colour — hover only adds shadow + lift
@@ -797,14 +798,12 @@ Home Main Container
   object-fit: contain;
   user-select: none;
   pointer-events: none;
-  /* No grayscale, no opacity change — full colour always */
   filter: none;
   opacity: 1;
   transition: transform 0.35s ease;
 }
 
 .tk-client-logo-card:hover img {
-  /* Slight zoom on hover only — colour unchanged */
   transform: scale(1.06);
 }
 
@@ -819,7 +818,7 @@ Home Main Container
 }
 
 .tk-client-logo-card:hover .tk-client-name {
-  color: #16405F;
+  color: #16405f;
 }
 
 /* Responsive */
@@ -856,5 +855,307 @@ Home Main Container
 
   .tk-client-logo-card img {
     max-height: 40px;
+  }
+}
+
+/* ============================================================
+   🏢 GROUP OF COMPANIES — ANIMATED CARD GRID (FLEX-CENTERED)
+   Last row auto-centers, so the 5th card sits in the middle
+   ============================================================ */
+.tk-group-section {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.tk-group-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(35, 87, 129, 0.07), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(35, 87, 129, 0.05), transparent 45%);
+  pointer-events: none;
+}
+
+/* Header entrance */
+.tk-group-section .tk-section-header {
+  position: relative;
+  animation: tk-group-header-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes tk-group-header-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Grid → Flex (auto-centers last row) ---------- */
+.tk-group-grid {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+  margin-top: 48px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---------- Card ---------- */
+.tk-company-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+  padding: 32px 20px 28px;
+
+  /* fixed width so cards don't stretch to fill the row */
+  flex: 0 0 240px;
+  width: 240px;
+  max-width: 100%;
+
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+  text-align: center;
+
+  /* Base state = final state (so :hover transform wins) */
+  opacity: 1;
+  transform: none;
+
+  animation: tk-company-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: var(--tk-delay, 0s);
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+  will-change: transform;
+}
+
+@keyframes tk-company-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hover lift + glow */
+.tk-company-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--tk-accent, #235781);
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.1),
+    0 0 0 1px var(--tk-accent, #235781) inset,
+    0 0 24px -6px var(--tk-accent, #235781);
+}
+
+/* Top accent bar grows on hover */
+.tk-company-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--tk-accent, #235781),
+    transparent
+  );
+  transform: translateX(-50%);
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tk-company-card:hover::before {
+  width: 80%;
+}
+
+/* Shine sweep on hover */
+.tk-company-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+  opacity: 0;
+}
+.tk-company-card:hover::after {
+  opacity: 1;
+  animation: tk-company-shine 0.9s ease-out;
+}
+@keyframes tk-company-shine {
+  from {
+    left: -120%;
+  }
+  to {
+    left: 120%;
+  }
+}
+
+/* ---------- Logo ---------- */
+.tk-company-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(35, 87, 129, 0.1),
+    rgba(35, 87, 129, 0.02)
+  );
+  border: 1px solid rgba(35, 87, 129, 0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  flex-shrink: 0;
+}
+
+.tk-company-logo-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  animation: tk-company-float 4.5s ease-in-out infinite;
+  animation-delay: var(--tk-float-delay, 0s);
+}
+
+@keyframes tk-company-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.tk-company-logo img {
+  max-width: 62px;
+  max-height: 62px;
+  object-fit: contain;
+  transition: transform 0.45s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Hover: outer scales & glows, inner pauses */
+.tk-company-card:hover .tk-company-logo {
+  transform: translateY(-4px) scale(1.06);
+  box-shadow: 0 10px 28px -8px var(--tk-accent, #235781);
+}
+.tk-company-card:hover .tk-company-logo-inner {
+  animation-play-state: paused;
+}
+.tk-company-card:hover .tk-company-logo img {
+  transform: scale(1.08) rotate(-3deg);
+}
+
+/* Initials fallback */
+.tk-company-initials {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* ---------- Company name ---------- */
+.tk-company-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 550;
+  color: rgb(60, 59, 59);
+  transition: color 0.3s ease;
+}
+.tk-company-card:hover .tk-company-name {
+  color: var(--tk-accent, #235781);
+}
+
+/* ---------- Responsive: Tablet ---------- */
+@media (max-width: 768px) {
+  .tk-group-section {
+    padding: 60px 15px;
+  }
+  .tk-group-grid {
+    gap: 18px;
+    margin-top: 36px;
+  }
+  .tk-company-card {
+    flex: 0 0 200px;
+    width: 200px;
+    padding: 26px 18px;
+  }
+  .tk-company-logo {
+    width: 84px;
+    height: 84px;
+  }
+  .tk-company-logo img {
+    max-width: 54px;
+    max-height: 54px;
+  }
+  .tk-company-name {
+    font-size: 14px;
+  }
+}
+
+/* ---------- Responsive: Mobile ---------- */
+@media (max-width: 480px) {
+  .tk-group-grid {
+    gap: 16px;
+  }
+  .tk-company-card {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .tk-company-logo {
+    width: 76px;
+    height: 76px;
+  }
+  .tk-company-logo img {
+    max-width: 48px;
+    max-height: 48px;
+  }
+  .tk-company-initials {
+    font-size: 24px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .tk-group-section .tk-section-header,
+  .tk-company-card,
+  .tk-company-logo-inner,
+  .tk-company-card::after {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

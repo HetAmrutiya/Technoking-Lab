@@ -7,6 +7,12 @@ import "../Industry-Serve/Industry.css";
 import testingBackground from "../../assets/ut.jpg";
 import mineralsBackground from "../../assets/ut.jpg";
 import qixp from "../../assets/qixp.png";
+// top of Home.jsx (near the qixp import)
+import eng from "../../assets/eng.png";
+import ent from "../../assets/ent.png";
+import testlab from "../../assets/logo.png";
+import weldcast from "../../assets/weldcast.png";
+import cns from "../../assets/cns.png";
 import teamBg from "../../assets/ut.jpg";
 import {
   Factory,
@@ -1163,6 +1169,42 @@ const Home = () => {
     { id: "penetrant", label: "DPT", icon: "🔬" },
   ];
 
+  /* ============================================================
+   🏢 GROUP OF COMPANIES — EDIT ONLY HERE
+   ============================================================ */
+const groupCompanies = [
+  {
+    id: "ttpl",
+    name: "Technoking Testlab Pvt Ltd",
+    initials: "TT",
+    logo: testlab,
+  },
+  {
+    id: "tepl",
+    name: "Technoking Engineers Pvt Ltd",
+    initials: "TE",
+    logo: eng,
+  },
+  {
+    id: "qixs",
+    name: "Quality Industrial X-Ray Company Pvt Ltd",
+    initials: "QX",
+    logo: qixp,
+  },
+  {
+    id: "cndt",
+    name: "Capital NDT Services",
+    initials: "CN",
+    logo: cns,
+  },
+  {
+    id: "wndt",
+    name: "Weldcast NDT Pvt Ltd",
+    initials: "WN",
+    logo: weldcast,
+  },
+];
+
   const industryServices = [
     {
       title: "Material Selection",
@@ -1724,7 +1766,7 @@ const Home = () => {
       </div>
 
       <div className="industry-page" id="industry">
-        <section className="tk-stats-section" ref={statsRef} data-section="stats">
+        {/* <section className="tk-stats-section" ref={statsRef} data-section="stats">
           <div className="tk-container">
             <div className="tk-stats-grid">
               {statsData.map((stat, index) => (
@@ -1740,7 +1782,7 @@ const Home = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className="tk-industries-overview" ref={addToRefs} data-section="industriesOverview">
           <div className="tk-container">
@@ -2150,60 +2192,86 @@ const Home = () => {
         </div>
       </div>
 
-        <section className="tk-clients-section" id="clients">
-        <div className="tk-container">
-          <div className="tk-section-header">
-            <div className="tk-section-badge" style={{ background: primaryColor }}>
-              <Users size={16} />
-              Group of Company
+       {/* ============================================
+    🏢 GROUP OF COMPANIES — animated cards
+   ============================================ */}
+<section className="tk-clients-section tk-group-section" id="group-companies">
+  <div className="tk-container">
+    <div className="tk-section-header">
+      <div
+        className="tk-section-badge"
+        style={{ background: primaryColor }}
+      >
+        <Users size={16} />
+        Group of Company
+      </div>
+
+      <h2 className="tk-section-title-iws">
+        Our{" "}
+        <span style={{ color: primaryColor }}>Group of Companies</span>
+      </h2>
+
+      <div className="tk-section-divider">
+        <div
+          className="tk-divider-line"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${primaryColor})`,
+          }}
+        />
+        <div
+          className="tk-divider-dot tk-pulse-dot"
+          style={{ background: primaryColor }}
+        />
+        <div
+          className="tk-divider-line"
+          style={{
+            background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
+          }}
+        />
+      </div>
+
+   <p className="tk-section-subtitle">
+  Providing reliable NDT and DT testing services for quality, safety and structural integrity.
+</p>
+    </div>
+
+    <div className="tk-group-grid">
+      {groupCompanies.map((company, i) => (
+        <article
+          key={company.id}
+          className="tk-company-card"
+          style={{
+            "--tk-accent": primaryColor,
+            "--tk-delay": `${i * 0.12}s`,
+            "--tk-float-delay": `${i * 0.45}s`,
+          }}
+        >
+          <div className="tk-company-logo">
+            <div className="tk-company-logo-inner">
+              {company.logo ? (
+                <img
+                  src={company.logo}
+                  alt={`${company.name} logo`}
+                  draggable="false"
+                  loading="lazy"
+                />
+              ) : (
+                <span
+                  className="tk-company-initials"
+                  style={{ color: primaryColor }}
+                >
+                  {company.initials}
+                </span>
+              )}
             </div>
-            {/* <h2 className="tk-section-title-iws">
-              Trusted by <span style={{ color: primaryColor }}>Industry Leaders</span>
-            </h2>
-            <div className="tk-section-divider">
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="tk-divider-dot tk-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
-            </div>
-            <p className="tk-section-subtitle">
-              We proudly serve leading companies across diverse industries
-            </p> */}
           </div>
 
-          <div style={{display:'flex',flexDirection:'row',gap:20,justifyContent:'space-between', alignItems:'center'}}>
-            <div style={{fontSize:10,justifyContent:'center',alignItems:'center',alignSelf:'center'}}>
-             <h1>Technoking Engineers Pvt Ltd</h1>
-            </div>
-           <div style={{fontSize:10}}>
-              <h1>Capital NDT Services</h1>
-            </div>
-           <div style={{fontSize:10}}>
-              <h1>Technoking NDT Services</h1>
-            </div>
-             <div style={{fontSize:10}}><img draggable="false" src={qixp} alt="Contact" style={{height:60,width:60,justifyContent:'center',alignItems:'center',alignSelf:'center'}}/>
-             
-              <h1>Quality Industrial X-Ray Services</h1>
-            </div>
-          </div>
-
-          {/* <div className="tk-clients-marquee">
-            <div className="tk-clients-track">
-              {clientsData.map((client) => (
-                <div key={`client-a-${client.id}`} className="tk-client-logo-card" title={client.name}>
-                  <img src={client.logo} alt={client.name} draggable="false" loading="lazy" />
-                  <span className="tk-client-name">{client.name}</span>
-                </div>
-              ))}
-              {clientsData.map((client) => (
-                <div key={`client-b-${client.id}`} className="tk-client-logo-card" title={client.name} aria-hidden="true">
-                  <img src={client.logo} alt={client.name} draggable="false" loading="lazy" />
-                  <span className="tk-client-name">{client.name}</span>
-                </div>
-              ))}
-            </div>
-          </div> */}
-        </div>
-      </section>
+          <h3 className="tk-company-name">{company.name}</h3>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
 
       <section className="tk-clients-section" id="clients">
         <div className="tk-container">
