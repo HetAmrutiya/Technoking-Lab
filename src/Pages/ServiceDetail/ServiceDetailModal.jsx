@@ -1646,7 +1646,7 @@ const ServiceDetailModal = ({ isOpen, onClose, method, allMethods, onSelectMetho
           )}
 
           {/* CTA */}
-          <div className="sdm-cta-section">
+          <div className="sdm-cta-section"> V
             <div className="sdm-cta-content">
               <h3>Need {details.fullName}?</h3>
               <p>Get a free consultation and quote for your project</p>

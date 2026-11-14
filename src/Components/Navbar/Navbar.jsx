@@ -16,8 +16,11 @@ const servicesData = [
     services: [
       { label: "Phase Array Ultrasonic Testing (PAUT)", slug: "paut" },
       { label: "Time of Flight Diffraction (TOFD)",     slug: "tofd" },
+      { label: "Eddy Current Testing (ET)",               slug: "ect"        },
+      { label: "Portable Spectro Testing (PST)",          slug: "spectro"    },
       { label: "Computed Radiography (CR)",             slug: "cr"   },
       { label: "Digital Radiography (DR)",              slug: "dr"   },
+
     ],
   },
   {
