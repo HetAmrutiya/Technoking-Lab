@@ -3,6 +3,7 @@ import "./Industry.css";
 import mineralsBackground from "../../assets/ut.jpg";
 import eng from "../../assets/eng.png";
 import ent from "../../assets/ent.png";
+import ndt from "../../assets/ndt.png";
 import testlab from "../../assets/logo.png";
 import weldcast from "../../assets/weldcast.png";
 import qixp from "../../assets/qixp.png";
@@ -153,6 +154,18 @@ const groupCompanies = [
     name: "Technoking Engineers Pvt Ltd",
     initials: "TE",
     logo: eng,
+  },
+  {
+    id: "te",
+    name: "Technoking Enterprise",
+    initials: "TE",
+    logo: ent,
+  },
+  {
+    id: "te",
+    name: "Technoking NDT Services",
+    initials: "TNS",
+    logo: ndt,
   },
   {
     id: "qixs",
