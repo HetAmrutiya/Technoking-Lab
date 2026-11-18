@@ -1,0 +1,375 @@
+/* ==================================================================
+   FLOATING ACTION MENU  (WhatsApp • LinkedIn • Back to top)
+   ================================================================== */
+
+.fab {
+  --fab-size: 52px;
+  --fab-toggle-size: 60px;
+  --fab-gap: 12px;
+  --fab-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  z-index: 9999;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--fab-gap);
+
+  font-family: inherit;
+}
+
+/* ------------------------------------------------------------------
+   MENU (stacked buttons)
+   ------------------------------------------------------------------ */
+.fab-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--fab-gap);
+}
+
+/* ------------------------------------------------------------------
+   BASE ACTION BUTTON
+   ------------------------------------------------------------------ */
+.fab-btn {
+  position: relative;
+  width: var(--fab-size);
+  height: var(--fab-size);
+  padding: 0;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  line-height: 1;
+  color: #ffffff;
+  cursor: pointer;
+
+  /* hidden / collapsed state */
+  opacity: 0;
+  transform: translateY(24px) scale(0.35);
+  pointer-events: none;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    opacity 0.28s ease,
+    transform 0.42s var(--fab-ease),
+    box-shadow 0.3s ease,
+    filter 0.3s ease;
+}
+
+/* ---------- expanded state (click) ---------- */
+.fab.open .fab-btn {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ---------- staggered reveal (WhatsApp first, top last) ---------- */
+.fab.open .fab-menu .fab-btn:nth-child(3) {
+  transition-delay: 0.04s;
+}
+.fab.open .fab-menu .fab-btn:nth-child(2) {
+  transition-delay: 0.11s;
+}
+.fab.open .fab-menu .fab-btn:nth-child(1) {
+  transition-delay: 0.18s;
+}
+
+/* ---------- reverse stagger when collapsing ---------- */
+.fab:not(.open) .fab-menu .fab-btn:nth-child(1) {
+  transition-delay: 0s;
+}
+.fab:not(.open) .fab-menu .fab-btn:nth-child(2) {
+  transition-delay: 0.05s;
+}
+.fab:not(.open) .fab-menu .fab-btn:nth-child(3) {
+  transition-delay: 0.1s;
+}
+
+/* ==================================================================
+   ✨ NEW — HOVER REVEAL (desktop / mouse only)
+   Hover the floating button → WhatsApp + LinkedIn slide up.
+   Must stay AFTER the collapse-delay block so it wins.
+   ================================================================== */
+@media (hover: hover) and (pointer: fine) {
+  .fab:hover .fab-btn {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  /* same staggered feel as the click-open state */
+  .fab:hover .fab-menu .fab-btn:nth-child(3) {
+    transition-delay: 0.04s;
+  }
+  .fab:hover .fab-menu .fab-btn:nth-child(2) {
+    transition-delay: 0.11s;
+  }
+  .fab:hover .fab-menu .fab-btn:nth-child(1) {
+    transition-delay: 0.18s;
+  }
+}
+
+/* ---------- hover lift (works for click-open AND hover-open) ---------- */
+.fab.open .fab-btn:hover,
+.fab:hover .fab-btn:hover {
+  transform: translateY(-4px) scale(1.12);
+  filter: brightness(1.07);
+}
+.fab.open .fab-btn:active,
+.fab:hover .fab-btn:active {
+  transform: translateY(-1px) scale(0.94);
+  transition-duration: 0.1s;
+}
+
+/* hide the back-to-top button completely until scrolled
+   (this also keeps it OUT of the hover reveal) */
+.fab-btn.is-hidden {
+  display: none;
+}
+
+/* ------------------------------------------------------------------
+   COLOUR VARIANTS
+   ------------------------------------------------------------------ */
+.fab-whatsapp {
+  background: linear-gradient(135deg, #4ce07a, #128c7e);
+  box-shadow: 0 8px 20px rgba(18, 140, 126, 0.42);
+}
+.fab-whatsapp:hover {
+  box-shadow: 0 14px 30px rgba(18, 140, 126, 0.58);
+}
+
+.fab-linkedin {
+  background: linear-gradient(135deg, #3ba0e8, #0a66c2);
+  box-shadow: 0 8px 20px rgba(10, 102, 194, 0.42);
+}
+.fab-linkedin:hover {
+  box-shadow: 0 14px 30px rgba(10, 102, 194, 0.58);
+}
+
+.fab-top {
+  background: linear-gradient(135deg, #75a9e0, #235781);
+  box-shadow: 0 8px 20px rgba(35, 87, 129, 0.42);
+}
+.fab-top:hover {
+  box-shadow: 0 14px 30px rgba(35, 87, 129, 0.58);
+}
+
+/* ------------------------------------------------------------------
+   TOOLTIP
+   ------------------------------------------------------------------ */
+.fab-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 12px);
+  transform: translateY(-50%) translateX(8px);
+
+  padding: 6px 11px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.fab-btn:hover::after,
+.fab-btn:focus-visible::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.fab-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 6px);
+  transform: translateY(-50%) translateX(6px);
+
+  border: 6px solid transparent;
+  border-left-color: rgba(15, 23, 42, 0.92);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.fab-btn:hover::before,
+.fab-btn:focus-visible::before {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* ------------------------------------------------------------------
+   MAIN TOGGLE (+)
+   ------------------------------------------------------------------ */
+.fab-toggle {
+  position: relative;
+  z-index: 2;
+
+  width: var(--fab-toggle-size);
+  height: var(--fab-toggle-size);
+  padding: 0;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  color: #ffffff;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #75a9e0, #235781);
+  box-shadow: 0 10px 26px rgba(35, 87, 129, 0.45);
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    transform 0.35s var(--fab-ease),
+    box-shadow 0.3s ease,
+    background 0.35s ease;
+}
+
+.fab-toggle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 14px 34px rgba(35, 87, 129, 0.58);
+}
+
+.fab-toggle:active {
+  transform: scale(0.92);
+}
+
+.fab-toggle svg {
+  transition: transform 0.45s var(--fab-ease);
+}
+
+.fab.open .fab-toggle {
+  background: linear-gradient(135deg, #ff7b7b, #c0392b);
+  box-shadow: 0 10px 26px rgba(192, 57, 43, 0.45);
+}
+
+.fab.open .fab-toggle:hover {
+  box-shadow: 0 14px 34px rgba(192, 57, 43, 0.58);
+}
+
+.fab.open .fab-toggle svg {
+  transform: rotate(135deg);
+}
+
+/* ------------------------------------------------------------------
+   PULSE RING (only while closed)
+   ------------------------------------------------------------------ */
+.fab-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(117, 169, 224, 0.75);
+  animation: fabPulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+.fab.open .fab-toggle::before {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes fabPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------------
+   ENTRANCE ANIMATION
+   ------------------------------------------------------------------ */
+.fab {
+  animation: fabIn 0.6s var(--fab-ease) both;
+  animation-delay: 0.4s;
+}
+
+@keyframes fabIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ------------------------------------------------------------------
+   FOCUS VISIBILITY
+   ------------------------------------------------------------------ */
+.fab-btn:focus-visible,
+.fab-toggle:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------
+   RESPONSIVE
+   ------------------------------------------------------------------ */
+@media (max-width: 480px) {
+  .fab {
+    --fab-size: 46px;
+    --fab-toggle-size: 54px;
+    --fab-gap: 10px;
+
+    right: 18px;
+    bottom: 18px;
+  }
+
+  .fab-btn {
+    font-size: 19px;
+  }
+
+  .fab-toggle {
+    font-size: 20px;
+  }
+
+  .fab-btn::before,
+  .fab-btn::after {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   REDUCED MOTION
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .fab,
+  .fab-btn,
+  .fab-toggle,
+  .fab-toggle svg,
+  .fab-btn::before,
+  .fab-btn::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}

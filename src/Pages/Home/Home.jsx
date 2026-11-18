@@ -10,6 +10,7 @@ import qixp from "../../assets/qixp.png";
 // top of Home.jsx (near the qixp import)
 import eng from "../../assets/eng.png";
 import ent from "../../assets/ent.png";
+import ndt from "../../assets/ndt.png";
 import testlab from "../../assets/logo.png";
 import weldcast from "../../assets/weldcast.png";
 import cns from "../../assets/cns.png";
@@ -1184,6 +1185,18 @@ const groupCompanies = [
     name: "Technoking Engineers Pvt Ltd",
     initials: "TE",
     logo: eng,
+  },
+  {
+    id: "te",
+    name: "Technoking Enterprise",
+    initials: "TE",
+    logo: ent,
+  },
+  {
+    id: "te",
+    name: "Technoking NDT Services",
+    initials: "TNS",
+    logo: ndt,
   },
   {
     id: "qixs",

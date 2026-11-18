@@ -17,6 +17,7 @@ import SignUp from "./Pages/Login/SignUp";
 import Gallery from "./Pages/Gallery/Gallery";
 import Team from "./Pages/Team/Team";
 import Certificate from "./Pages/Certificate/Certificate";
+import FloatingActions from "./Components/FloatingActions/FloatingActions";
 
 function App() {
   useEffect(() => {
@@ -66,7 +67,7 @@ function App() {
             </Routes>
             <Footer />
           </BrowserRouter>
-          <BackToTop />
+          <FloatingActions />
         </>
       )}
     </div>
