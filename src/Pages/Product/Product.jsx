@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Product.css";
 import testingBackground from "../../assets/ut.jpg";
@@ -7,9 +7,28 @@ import {
   Diamond, Ruler, CheckCircle, Target, BookOpen, Rocket, Crown,
   Star, TrendingUp, Layers, Gauge, Microscope, Factory, Plane, Car, Ship,
   HardHat, Zap as ZapIcon, Sparkles, Gem as GemIcon, Heart, Globe, Lightbulb,
-  GitBranch, Activity, BarChart3, Wrench,
+  GitBranch, Activity, BarChart3, Wrench, ArrowRight, CheckCircle2,
 } from "lucide-react";
 import ServiceDetailModal from "../ServiceDetail/ServiceDetailModal";
+
+/* ---------- capabilities cards: mouse spotlight + gentle 3D tilt (same as Home) ---------- */
+const trackPointer = (e, tilt = 0) => {
+  const card = e.currentTarget;
+  const r = card.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width;
+  const y = (e.clientY - r.top) / r.height;
+  card.style.setProperty("--mx", `${x * 100}%`);
+  card.style.setProperty("--my", `${y * 100}%`);
+  if (tilt) {
+    card.style.setProperty("--rx", `${(0.5 - y) * tilt}deg`);
+    card.style.setProperty("--ry", `${(x - 0.5) * tilt}deg`);
+  }
+};
+const resetPointer = (e) => {
+  e.currentTarget.style.setProperty("--rx", "0deg");
+  e.currentTarget.style.setProperty("--ry", "0deg");
+};
+const pad = (n) => String(n).padStart(2, "0");
 
 const Product = () => {
   const [activeTab, setActiveTab] = useState("ndt");
@@ -28,6 +47,8 @@ const Product = () => {
   const location = useLocation();
   const counterRef = useRef(null);
   const handledServiceRef = useRef(null);
+  const groupTabRefs = useRef({});
+  const [groupIndicator, setGroupIndicator] = useState({ left: 0, width: 0, ready: false });
 
   const primaryColor = "#235781";
   const primaryDark = "#16405F";
@@ -618,6 +639,46 @@ const Product = () => {
 
   const addToRefs = (el, index) => { sectionRefs.current[index] = el; };
 
+  /* ---------------- REVEAL "OUR TESTING CAPABILITIES" ----------------
+     The section is very tall, so it gets its own observer with a 0
+     threshold (a 15% threshold would never fire on mobile). */
+  useEffect(() => {
+    const el = sectionRefs.current[2];
+    if (!el) return undefined;
+    if (!("IntersectionObserver" in window)) {
+      setVisibleSections((prev) => ({ ...prev, methods: true }));
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleSections((prev) => ({ ...prev, methods: true }));
+          io.disconnect();
+        }
+      },
+      { threshold: 0, rootMargin: "0px 0px -80px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  /* ---------------- NDT / DT SLIDING TAB INDICATOR ---------------- */
+  const measureGroup = useCallback(() => {
+    const tab = groupTabRefs.current[activeTab];
+    if (!tab) return;
+    setGroupIndicator({ left: tab.offsetLeft, width: tab.offsetWidth, ready: true });
+  }, [activeTab]);
+
+  useLayoutEffect(() => {
+    measureGroup();
+  }, [measureGroup]);
+
+  useEffect(() => {
+    window.addEventListener("resize", measureGroup);
+    document.fonts?.ready?.then(measureGroup);
+    return () => window.removeEventListener("resize", measureGroup);
+  }, [measureGroup]);
+
   const handleRequestService = (method) => { setSelectedMethod(method); setIsModalOpen(true); };
   const handleCloseModal = () => { setIsModalOpen(false); setTimeout(() => setSelectedMethod(null), 300); };
   const handleSelectMethod = (method) => { setSelectedMethod(method); };
@@ -736,126 +797,151 @@ const Product = () => {
         </div>
       </section>
 
-      {/* METHODS */}
-      <section className="prod-methods-section" ref={(el) => addToRefs(el, 2)} data-section="methods">
-        <div className="prod-container-inner">
-          <div className="prod-section-header">
-            <div className="prod-section-badge" style={{ background: primaryColor }}><Microscope size={16} />Testing Services</div>
-            <h2 className="prod-section-title">Our Testing <span style={{ color: primaryColor }}>Capabilities</span></h2>
-            <div className="prod-section-divider">
-              <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="prod-divider-dot prod-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
+      {/* METHODS — same design as the Home screen "Our Testing Capabilities" */}
+      <section
+        className={`pc-methods ${visibleSections.methods ? "pc-in" : ""}`}
+        ref={(el) => addToRefs(el, 2)}
+        data-section="methods"
+      >
+        <div className="pc-container">
+          <div className="pc-header pc-reveal" style={{ "--d": "0s" }}>
+            <div className="pc-badge">
+              <Microscope size={16} />
+              Testing Services
             </div>
-            <p className="prod-section-description">
+            <h2 className="pc-title">
+              Our Testing <span className="pc-title-accent">Capabilities</span>
+            </h2>
+            <div className="pc-divider" aria-hidden="true">
+              <span className="pc-divider-line"></span>
+              <span className="pc-divider-dot"></span>
+              <span className="pc-divider-line pc-divider-line-r"></span>
+            </div>
+            <p className="pc-subtitle">
               Advanced NDT and DT testing techniques for accurate results and quality assurance
             </p>
           </div>
 
-          <div className="prod-industry-tags">
+          <div className="pc-industry-tags pc-reveal" style={{ "--d": "0.05s" }}>
             {industries.map((industry, idx) => (
-              <span key={idx} className="prod-industry-tag" style={{ borderColor: industry.color }}>
-                {industry.icon}{industry.name}
+              <span key={idx} className="pc-industry-tag" style={{ "--tag": industry.color }}>
+                {industry.icon}
+                {industry.name}
               </span>
             ))}
           </div>
 
-          <div className="prod-testing-group-tabs">
+          <div className="pc-group-tabs pc-reveal" style={{ "--d": "0.1s" }} role="tablist">
+            <span
+              className={`pc-group-indicator ${groupIndicator.ready ? "is-ready" : ""}`}
+              style={{ transform: `translateX(${groupIndicator.left}px)`, width: groupIndicator.width }}
+              aria-hidden="true"
+            />
             {testingGroups.map((group) => (
               <button
                 key={group.id}
-                className={`prod-group-tab ${activeTab === group.id ? "prod-group-tab-active" : ""}`}
+                ref={(el) => (groupTabRefs.current[group.id] = el)}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === group.id}
+                className={`pc-group-tab ${activeTab === group.id ? "is-active" : ""}`}
                 onClick={() => setActiveTab(group.id)}
-                style={activeTab === group.id ? { borderColor: group.color, background: `${group.color}12`, color: group.color, boxShadow: `0 8px 25px ${group.color}30` } : {}}
               >
-                <span className="prod-group-tab-icon">{group.icon}</span>
-                <span className="prod-group-tab-text"><strong>{group.name}</strong><small>{group.fullName}</small></span>
+                <span className="pc-group-tab-icon">{group.icon}</span>
+                <span className="pc-group-tab-text">
+                  <strong>{group.name}</strong>
+                  <small>{group.fullName}</small>
+                </span>
+                <span className="pc-group-count">{group.methods.length}</span>
               </button>
             ))}
           </div>
 
           {testingGroups.filter((g) => g.id === activeTab).map((group) => (
-            <div key={group.id} className="prod-active-group-info">
-              <p className="prod-active-group-desc">{group.description}</p>
-              <div className="prod-active-group-meta">
-                <span className="prod-group-count" style={{ background: `${group.color}15`, color: group.color, borderColor: `${group.color}30` }}>
-                  {group.methods.length} Testing Methods
-                </span>
-              </div>
+            <div key={`info-${group.id}`} className="pc-group-info">
+              <p className="pc-group-desc">{group.description}</p>
+              <span className="pc-group-meta">
+                <Layers size={14} />
+                {group.methods.length} Testing Methods
+              </span>
             </div>
           ))}
 
-          <div className="prod-methods-grid">
+          <div className="pc-method-grid" key={activeTab}>
             {testingGroups
               .filter((g) => g.id === activeTab)
               .flatMap((group) =>
                 group.methods.map((method, index) => {
-                  // 🔑 Compute slug + highlight flag
+                  // 🔑 slug used by the Navbar hash links + highlight pulse
                   const slug = method.shortName.toLowerCase();
                   const isHighlighted = highlightSlug === slug;
                   return (
-                    <div
+                    <article
                       key={method.id}
                       id={slug}
-                      className={`prod-method-card ${visibleSections.methods ? "prod-animate-fade" : ""} ${
-                        isHighlighted ? "prod-method-card-highlight" : ""
-                      }`}
-                      style={{ animationDelay: `${index * 0.08}s` }}
+                      className={`pc-method pc-spot ${isHighlighted ? "pc-method-highlight" : ""}`}
+                      style={{ "--d": `${index * 0.06}s` }}
+                      onMouseMove={(e) => trackPointer(e, 6)}
+                      onMouseLeave={resetPointer}
                     >
-                      <div className="prod-method-card-header" style={{ background: method.gradient }}>
-                        <div className="prod-method-card-icon prod-icon-pulse">{method.icon}</div>
-                        <h3 className="prod-method-card-title">{method.method}</h3>
-                        <div className="prod-method-card-number">#{String(index + 1).padStart(2, "0")}</div>
-                        <div className="prod-method-card-short">{method.shortName}</div>
+                      <header className="pc-method-head">
+                        <span className="pc-method-grid-bg" aria-hidden="true" />
+                        <span className="pc-method-icon">{method.icon}</span>
+                        <span className="pc-method-no">#{pad(index + 1)}</span>
+                        <h3>{method.method}</h3>
+                        <span className="pc-method-short">{method.shortName}</span>
+                      </header>
+
+                      <div className="pc-method-body">
+                        <p className="pc-method-desc">{method.description}</p>
+
+                        <div className="pc-method-label">
+                          <Target size={14} />
+                          Applications
+                        </div>
+                        <div className="pc-chips">
+                          {method.applications.map((app) => (
+                            <span key={app} className="pc-chip">
+                              <CheckCircle2 size={12} />
+                              {app}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="pc-method-label">
+                          <BookOpen size={14} />
+                          Standards
+                        </div>
+                        <div className="pc-standards">
+                          {method.standards.map((std) => (
+                            <span key={std}>{std}</span>
+                          ))}
+                        </div>
+
+                        <div className="pc-method-label">
+                          <Rocket size={14} />
+                          Advantages
+                        </div>
+                        <ul className="pc-advantages">
+                          {method.advantages.map((adv) => (
+                            <li key={adv}>
+                              <span className="pc-adv-dot" aria-hidden="true" />
+                              {adv}
+                            </li>
+                          ))}
+                        </ul>
+
+                        <button
+                          type="button"
+                          className="pc-method-btn"
+                          onClick={() => handleRequestService(method)}
+                        >
+                          <span className="pc-method-btn-fill" aria-hidden="true" />
+                          <span>Request Service</span>
+                          <ArrowRight size={16} />
+                        </button>
                       </div>
-
-                      <div className="prod-method-card-content">
-                        <p className="prod-method-card-description">{method.description}</p>
-
-                        <div className="prod-method-card-section">
-                          <h4 className="prod-method-card-subtitle"><Target size={16} />Applications:</h4>
-                          <div className="prod-applications-list">
-                            {method.applications.map((app, i) => (
-                              <span key={i} className="prod-application-tag prod-slide-animation"
-                                style={{ background: method.color + "15", color: method.color, borderColor: method.color + "30", animationDelay: `${i * 0.05}s` }}>
-                                <CheckCircle size={12} />{app}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="prod-method-card-section">
-                          <h4 className="prod-method-card-subtitle"><BookOpen size={16} />Standards:</h4>
-                          <div className="prod-standards-list">
-                            {method.standards.map((std, i) => (
-                              <span key={i} className="prod-standard-badge prod-pop-animation" style={{ animationDelay: `${i * 0.1}s` }}>{std}</span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="prod-method-card-section">
-                          <h4 className="prod-method-card-subtitle"><Rocket size={16} />Advantages:</h4>
-                          <ul className="prod-advantages-list">
-                            {method.advantages.map((adv, i) => (
-                              <li key={i} className="prod-slide-animation" style={{ animationDelay: `${i * 0.1}s` }}>
-                                <div className="prod-advantage-dot prod-pulse-dot" style={{ background: method.color }}></div>
-                                <span className="prod-advantage-text">{adv}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <div className="prod-button-container">
-                          <button className="prod-method-card-button" style={{ background: method.gradient }} onClick={() => handleRequestService(method)}>
-                            <span>Request Service</span>
-                            <div className="prod-button-arrow">→</div>
-                            <div className="prod-btn-ripple"></div>
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="prod-method-card-hover-effect"></div>
-                    </div>
+                    </article>
                   );
                 })
               )}

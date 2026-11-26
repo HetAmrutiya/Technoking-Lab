@@ -1,35 +1,59 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";                    // 🔑 NEW
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "./Contact.css";
-import { SlLocationPin } from "react-icons/sl";
-import { HiOutlineMail } from "react-icons/hi";
-import { LuPhoneCall } from "react-icons/lu";
 import contactImage from "../../assets/contact1.png";
 import mineralsBackground from "../../assets/ut.jpg";
-import { Compass, Activity, BarChart3, Layers, Cpu, Wrench } from "lucide-react";
+import {
+  Activity,
+  AlertCircle,
+  ArrowRight,
+  BarChart3,
+  CheckCircle2,
+  Clock,
+  Compass,
+  Cpu,
+  ExternalLink,
+  Layers,
+  Loader2,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Navigation,
+  Phone,
+  Send,
+  ShieldCheck,
+  User,
+  Wrench,
+} from "lucide-react";
 
 /* ============================================================
    📍 COMPANY / LOCATION DETAILS  —  EDIT ONLY HERE
    ============================================================ */
 const COMPANY = {
   name: "Technoking Testlab Pvt. Ltd.",
-  addressLines: [
-    "Plot No. 2, Shyam Industrial Area,",
-    "Bakrol Bujrang, Ahm, Guj 382430",
-  ],
+  addressLines: ["Plot No. 2, Shyam Industrial Area,", "Bakrol Bujrang, Ahmedabad, Gujarat 382430"],
   email: "info@technokingtestlab.com",
   phone: "+91 95124 00501",
 };
 
-const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  "Technoking Testlab Pvt. Ltd., Plot No. 2, Shyam Industrial Area, Bakrol Bujrang, Ahmedabad, Gujarat 382430"
+const MAP_QUERY =
+  "Technoking Testlab Pvt. Ltd., Plot No. 2, Shyam Industrial Area, Bakrol Bujrang, Ahmedabad, Gujarat 382430";
+const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAP_QUERY)}`;
+const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+  MAP_QUERY
 )}`;
+const MAP_EMBED_URL = `https://maps.google.com/maps?q=${encodeURIComponent(
+  MAP_QUERY
+)}&z=15&output=embed`;
 
-/* Small helper that renders the address with proper line breaks */
+/* Web3Forms access key */
+const WEB3FORMS_KEY = "5162d798-f96f-4824-a967-12cdaad116e8";
+
+/* Renders the address with line breaks */
 const AddressBlock = () => (
   <>
     {COMPANY.addressLines.map((line, index) => (
-      <React.Fragment key={index}>
+      <React.Fragment key={line}>
         {line}
         {index < COMPANY.addressLines.length - 1 && <br />}
       </React.Fragment>
@@ -40,16 +64,16 @@ const AddressBlock = () => (
 /* ============================================================
    🔬 NDT & DT TESTING TYPES — used in the form selector
    ============================================================ */
-const testingTypes = [
+const TESTING_TYPES = [
   {
     id: "ndt",
     name: "NDT Testing",
-    icon: <Activity size={16} />,
+    Icon: Activity,
     services: [
       "Ultrasonic Testing (UT)",
       "Magnetic Particle Testing (MPT)",
       "Dye Penetrant Testing (DPT)",
-      "Phase Array Ultrasonic Testing (PAUT)",
+      "Phased Array Ultrasonic Testing (PAUT)",
       "Eddy Current Testing (ET)",
       "Portable Spectro Testing (PST)",
     ],
@@ -57,7 +81,7 @@ const testingTypes = [
   {
     id: "dt",
     name: "DT Testing",
-    icon: <BarChart3 size={16} />,
+    Icon: BarChart3,
     services: [
       "Tensile Testing",
       "Compression Testing",
@@ -70,7 +94,7 @@ const testingTypes = [
   {
     id: "advanced",
     name: "Advanced NDT",
-    icon: <Cpu size={16} />,
+    Icon: Cpu,
     services: [
       "Phased Array UT",
       "Time of Flight Diffraction",
@@ -83,7 +107,7 @@ const testingTypes = [
   {
     id: "material",
     name: "Material Testing",
-    icon: <Layers size={16} />,
+    Icon: Layers,
     services: [
       "Chemical & Corrosion Testing",
       "Metallurgical Testing",
@@ -96,7 +120,7 @@ const testingTypes = [
   {
     id: "mechanical",
     name: "Mechanical Testing",
-    icon: <Wrench size={16} />,
+    Icon: Wrench,
     services: [
       "Tensile Testing",
       "Compression Testing",
@@ -111,9 +135,9 @@ const testingTypes = [
 /* ============================================================
    📇 CONTACT CARDS — each card is fully clickable
    ============================================================ */
-const contactData = [
+const CONTACT_CARDS = [
   {
-    icon: <SlLocationPin style={{ fontSize: 30, color: "#235781" }} />,
+    Icon: MapPin,
     title: "Our Address",
     description: <AddressBlock />,
     href: MAPS_URL,
@@ -121,7 +145,7 @@ const contactData = [
     actionLabel: "Open in Google Maps",
   },
   {
-    icon: <HiOutlineMail style={{ fontSize: 30, color: "#235781" }} />,
+    Icon: Mail,
     title: "Email Us",
     description: COMPANY.email,
     href: `mailto:${COMPANY.email}`,
@@ -129,7 +153,7 @@ const contactData = [
     actionLabel: "Send an Email",
   },
   {
-    icon: <LuPhoneCall style={{ fontSize: 30, color: "#235781" }} />,
+    Icon: Phone,
     title: "Call Us",
     description: COMPANY.phone,
     href: `tel:${COMPANY.phone.replace(/\s+/g, "")}`,
@@ -138,614 +162,665 @@ const contactData = [
   },
 ];
 
-/* Helper: builds the default auto-filled message for a given type */
+const FORM_PERKS = [
+  { Icon: Clock, text: "Reply within 24 hours" },
+  { Icon: ShieldCheck, text: "Expert NDT & DT team" },
+  { Icon: CheckCircle2, text: "Clear, traceable reports" },
+];
+
+/* Auto-filled first line of the message */
 const buildDefaultMessage = (typeName) => `Testing Type: ${typeName}`;
+const isDefaultMessage = (text) =>
+  text.trim() === "" || TESTING_TYPES.some((t) => text.trim() === buildDefaultMessage(t.name));
 
+const MESSAGE_MAX = 1000;
+
+/* Shared section header */
+const SectionHeader = ({ Icon, badge, before, highlight, subtitle }) => (
+  <div className="ct-section-header ct-reveal" style={{ "--d": "0s" }}>
+    <div className="ct-section-badge">
+      <Icon size={16} />
+      {badge}
+    </div>
+    <h2 className="ct-section-title">
+      {before} <span className="ct-title-accent">{highlight}</span>
+    </h2>
+    <div className="ct-section-divider" aria-hidden="true">
+      <span className="ct-divider-line"></span>
+      <span className="ct-divider-dot"></span>
+      <span className="ct-divider-line ct-divider-line-r"></span>
+    </div>
+    <p className="ct-section-subtitle">{subtitle}</p>
+  </div>
+);
+
+/* ============================================================
+   📬 PAGE
+   ============================================================ */
 const Contact = () => {
-  const cardsRef = useRef([]);
-  const [visibleSections, setVisibleSections] = useState({});
-  const sectionRefs = useRef([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const location = useLocation();
 
-  // 🎯 Testing type + selected service
+  const [visibleSections, setVisibleSections] = useState({});
   const [activeTestingType, setActiveTestingType] = useState(0);
   const [selectedService, setSelectedService] = useState("");
+  const [messageText, setMessageText] = useState(buildDefaultMessage(TESTING_TYPES[0].name));
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
+  const [statusText, setStatusText] = useState("");
+  const [indicator, setIndicator] = useState({ left: 0, width: 0, ready: false });
+  const [mapLoaded, setMapLoaded] = useState(false);
 
-  // 📝 Controlled message — auto updates with the active testing type
-  const [messageText, setMessageText] = useState(
-    buildDefaultMessage(testingTypes[0].name)
+  const progressRef = useRef(null);
+  const heroRef = useRef(null);
+  const sectionRefs = useRef([]);
+  const formRef = useRef(null);
+  const railRef = useRef(null);
+  const tabRefs = useRef([]);
+  const statusTimer = useRef(null);
+
+  const currentType = TESTING_TYPES[activeTestingType];
+  const isSubmitting = status === "sending";
+
+  const addToRefs = (el, index) => {
+    sectionRefs.current[index] = el;
+  };
+
+  /* Particles generated once */
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 26 }, (_, i) => ({
+        id: i,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        duration: `${12 + Math.random() * 18}s`,
+        delay: `${Math.random() * 10}s`,
+        size: `${4 + Math.random() * 9}px`,
+        alpha: 0.1 + Math.random() * 0.22,
+      })),
+    []
   );
 
-  const formRef = useRef(null);
-  const heroRef = useRef(null);
-
-  const location = useLocation();                                   // 🔑 NEW
-
-  // 🔵 Primary Blue Colors
-  const primaryColor = "#235781";
-  const primaryLight = "#4A82A8";
-
-  /* ============================================================
-     🔑 HASH → SCROLL TO "Request a Test Quote"
-     ------------------------------------------------------------
-     ServiceDetailModal navigates to `/contact#request-quote`.
-     Browser can't find the anchor by itself when we use SPA
-     routing, so we handle it manually:
-       1. Wait a tick for layout to render
-       2. Scroll to #request-quote (the form section)
-       3. Offset by the fixed navbar height
-     Also handles the legacy `#contact-form` alias.
-     ============================================================ */
+  /* ---------- #request-quote / #contact-form → scroll to the form ---------- */
   useEffect(() => {
     const hash = (location.hash || "").replace("#", "").trim();
     if (hash === "request-quote" || hash === "contact-form") {
       const timer = setTimeout(() => {
         const el = document.getElementById("request-quote");
         if (!el) return;
-        const NAV_OFFSET = 90; // fixed navbar height + a bit of padding
-        const y =
-          el.getBoundingClientRect().top + window.pageYOffset - NAV_OFFSET;
+        const NAV_OFFSET = 90;
+        const y = el.getBoundingClientRect().top + window.pageYOffset - NAV_OFFSET;
         window.scrollTo({ top: y, behavior: "smooth" });
       }, 250);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [location.hash, location.key]);
 
-  // ============================================
-  // 📝 KEEP "Your Message" IN SYNC WITH TESTING TYPE
-  // ============================================
+  /* ---------- Keep the message's first line in sync, but never overwrite typed text ---------- */
   useEffect(() => {
-    setMessageText(buildDefaultMessage(testingTypes[activeTestingType].name));
+    setMessageText((prev) =>
+      isDefaultMessage(prev) ? buildDefaultMessage(TESTING_TYPES[activeTestingType].name) : prev
+    );
   }, [activeTestingType]);
 
-  // ============================================
-  // 📜 SCROLL PROGRESS
-  // ============================================
+  /* ---------- Scroll progress (no re-render) ---------- */
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      setScrollProgress(progress);
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const p = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+      if (progressRef.current) progressRef.current.style.width = `${p}%`;
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
-  // ============================================
-  // 🖱️ MOUSE PARALLAX FOR 3D EFFECT
-  // ============================================
+  /* ---------- Hero spotlight ---------- */
   useEffect(() => {
     const hero = heroRef.current;
-    if (!hero) return;
-
-    const handleMouseMove = (e) => {
-      const { left, top, width, height } = hero.getBoundingClientRect();
-      const x = ((e.clientX - left) / width) * 100;
-      const y = ((e.clientY - top) / height) * 100;
-      hero.style.setProperty("--mouse-x", `${x}%`);
-      hero.style.setProperty("--mouse-y", `${y}%`);
+    if (!hero) return undefined;
+    const onMove = (e) => {
+      const r = hero.getBoundingClientRect();
+      hero.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+      hero.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
     };
-
-    hero.addEventListener("mousemove", handleMouseMove);
-    return () => hero.removeEventListener("mousemove", handleMouseMove);
+    hero.addEventListener("mousemove", onMove);
+    return () => hero.removeEventListener("mousemove", onMove);
   }, []);
 
-  const addToRefs = (el, index) => {
-    sectionRefs.current[index] = el;
-  };
-
-  // Enhanced intersection observer with staggered animations
+  /* ---------- Reveal on scroll ---------- */
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const key = entry.target.dataset.section;
-            if (key) {
-              setVisibleSections((prev) => ({ ...prev, [key]: true }));
-            }
-
-            if (entry.target.classList.contains("qc-contact-card")) {
-              setTimeout(() => {
-                entry.target.classList.add("qc-card-pop-in");
-              }, (Number(entry.target.dataset.index) || 0) * 200);
-            } else {
-              entry.target.classList.add("qc-fade-in-up");
-            }
-
+            setVisibleSections((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
             observer.unobserve(entry.target);
           }
         });
       },
-      {
-        threshold: 0.2,
-        rootMargin: "0px 0px -50px 0px",
-      }
+      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
     );
-
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
-
-    cardsRef.current.forEach((card, index) => {
-      if (card) {
-        card.dataset.index = index;
-        observer.observe(card);
-      }
-    });
-
+    sectionRefs.current.forEach((s) => s && observer.observe(s));
     return () => observer.disconnect();
   }, []);
 
-  // Form submission handler
+  useEffect(() => () => clearTimeout(statusTimer.current), []);
+
+  /* ---------- Sliding indicator for testing-type tabs ---------- */
+  const measureIndicator = useCallback(() => {
+    const tab = tabRefs.current[activeTestingType];
+    if (!tab) return;
+    setIndicator({ left: tab.offsetLeft, width: tab.offsetWidth, ready: true });
+    const rail = railRef.current;
+    if (rail && rail.scrollWidth > rail.clientWidth) {
+      rail.scrollTo({
+        left: tab.offsetLeft - rail.clientWidth / 2 + tab.offsetWidth / 2,
+        behavior: "smooth",
+      });
+    }
+  }, [activeTestingType]);
+
+  useLayoutEffect(() => {
+    measureIndicator();
+  }, [measureIndicator]);
+
+  useEffect(() => {
+    window.addEventListener("resize", measureIndicator);
+    document.fonts?.ready?.then(measureIndicator);
+    return () => window.removeEventListener("resize", measureIndicator);
+  }, [measureIndicator]);
+
+  const selectType = (index) => {
+    setActiveTestingType(index);
+    setSelectedService("");
+  };
+
+  const onTabKeyDown = (e, index) => {
+    let next = null;
+    if (e.key === "ArrowRight") next = index + 1;
+    if (e.key === "ArrowLeft") next = index - 1;
+    if (next === null) return;
+    e.preventDefault();
+    const wrapped = (next + TESTING_TYPES.length) % TESTING_TYPES.length;
+    selectType(wrapped);
+    tabRefs.current[wrapped]?.focus();
+  };
+
+  /* ---------- Submit (Web3Forms) ---------- */
+  const showStatus = (nextStatus, text) => {
+    clearTimeout(statusTimer.current);
+    setStatus(nextStatus);
+    setStatusText(text);
+    statusTimer.current = setTimeout(() => {
+      setStatus("idle");
+      setStatusText("");
+    }, 5000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    if (isSubmitting) return;
+    clearTimeout(statusTimer.current);
+    setStatus("sending");
+    setStatusText("");
 
-    const form = e.target;
+    const form = e.currentTarget;
     const formData = new FormData(form);
-
-    formData.append("testing_type", testingTypes[activeTestingType].name);
+    formData.append("testing_type", currentType.name);
     formData.append("service_selected", selectedService);
+    formData.append("subject", `New enquiry — ${currentType.name}: ${selectedService}`);
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: formData,
       });
-
       const result = await response.json();
 
       if (result.success) {
         form.reset();
         setSelectedService("");
-        setSuccessMessage("Message sent successfully!");
-        setMessageText(buildDefaultMessage(testingTypes[activeTestingType].name));
+        setMessageText(buildDefaultMessage(currentType.name));
+        showStatus("success", "Thank you! Your enquiry has been sent — we'll get back to you soon.");
       } else {
-        setSuccessMessage("Something went wrong! Try again.");
+        showStatus("error", "Something went wrong. Please try again or call us directly.");
       }
     } catch (error) {
-      setSuccessMessage("Error sending message!");
+      showStatus("error", "Couldn't send your message. Check your connection and try again.");
     }
-
-    setTimeout(() => setSuccessMessage(""), 2000);
-    setIsSubmitting(false);
   };
 
-  // Makes the card glow follow the cursor
-  const handleCardMouseMove = (e) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    card.style.setProperty(
-      "--mouse-x",
-      `${((e.clientX - rect.left) / rect.width) * 100}%`
-    );
-    card.style.setProperty(
-      "--mouse-y",
-      `${((e.clientY - rect.top) / rect.height) * 100}%`
-    );
+  /* ---------- Pointer effects ---------- */
+  const handleTilt = (e) => {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--rx", `${(0.5 - py) * 8}deg`);
+    el.style.setProperty("--ry", `${(px - 0.5) * 10}deg`);
+    el.style.setProperty("--mx", `${px * 100}%`);
+    el.style.setProperty("--my", `${py * 100}%`);
   };
 
-  const currentTestingType = testingTypes[activeTestingType];
+  const resetTilt = (e) => {
+    e.currentTarget.style.setProperty("--rx", "0deg");
+    e.currentTarget.style.setProperty("--ry", "0deg");
+  };
+
+  const scrollToForm = () =>
+    document.getElementById("request-quote")?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <div className="qc-contact-container">
-      {/* ==========================================
-          📊 SCROLL PROGRESS BAR
-          ========================================== */}
-      <div
-        className="qc-scroll-progress"
-        style={{ width: `${scrollProgress}%` }}
-      ></div>
+    <div className="ct-page">
+      <div className="ct-scroll-progress" ref={progressRef}></div>
 
       {/* ==========================================
-          🎬 HERO SECTION WITH 3D EFFECT
+          🎬 HERO
           ========================================== */}
       <section
-        className="qc-contact-hero"
+        className={`ct-hero ${visibleSections.hero ? "ct-in" : ""}`}
         ref={(el) => {
           heroRef.current = el;
           addToRefs(el, 0);
         }}
         data-section="hero"
         style={{
-          background: `linear-gradient(135deg, rgba(10, 22, 40, 0.88) 0%, rgba(35, 87, 129, 0.75) 100%), url(${mineralsBackground})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundAttachment: "fixed",
+          backgroundImage: `linear-gradient(135deg, rgba(10, 22, 40, 0.9) 0%, rgba(35, 87, 129, 0.76) 100%), url(${mineralsBackground})`,
         }}
       >
-        <div className="qc-hero-particles">
-          {[...Array(30)].map((_, i) => (
-            <div
-              key={i}
-              className="qc-hero-particle"
+        <div className="ct-hero-spotlight" aria-hidden="true"></div>
+        <div className="ct-hero-grid" aria-hidden="true"></div>
+        <div className="ct-hero-scanline" aria-hidden="true"></div>
+
+        <div className="ct-hero-particles" aria-hidden="true">
+          {particles.map((p) => (
+            <span
+              key={p.id}
+              className="ct-hero-particle"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDuration: `${12 + Math.random() * 18}s`,
-                animationDelay: `${Math.random() * 10}s`,
-                width: `${4 + Math.random() * 10}px`,
-                height: `${4 + Math.random() * 10}px`,
-                background: `rgba(74, 130, 168, ${0.08 + Math.random() * 0.2})`,
+                left: p.left,
+                top: p.top,
+                width: p.size,
+                height: p.size,
+                animationDuration: p.duration,
+                animationDelay: p.delay,
+                background: `rgba(143, 184, 217, ${p.alpha})`,
               }}
-            ></div>
+            ></span>
           ))}
         </div>
 
-        <div className="qc-container">
-          <div
-            className={`qc-hero-content ${
-              visibleSections.hero ? "qc-animate-in" : ""
-            }`}
-          >
-            <div className="qc-hero-badge qc-badge-pulse">
-              <span className="qc-badge-dot"></span>
-              NDT & DT Services
+        <div className="ct-container">
+          <div className="ct-hero-content">
+            <div className="ct-hero-badge ct-hero-step" style={{ "--d": "0.05s" }}>
+              <span className="ct-badge-dot"></span>
+              NDT &amp; DT Services
             </div>
 
-            <p className="qc-hero-subtitle">
-              Let&apos;s discuss your NDT & DT testing and inspection needs.
+            <p className="ct-hero-subtitle ct-hero-step" style={{ "--d": "0.18s" }}>
+              Let&apos;s discuss your NDT &amp; DT testing and inspection needs.
               <br />
               Reliable testing solutions for quality and safety.
             </p>
+            
           </div>
         </div>
 
-        <div className="qc-hero-scroll qc-scroll-3d">
-          <div className="qc-scroll-mouse">
-            <div className="qc-scroll-wheel"></div>
+        <div className="ct-hero-scroll" aria-hidden="true">
+          <div className="ct-scroll-mouse">
+            <div className="ct-scroll-wheel"></div>
           </div>
-          <div className="qc-scroll-text">Scroll Down</div>
+          <div className="ct-scroll-text">Scroll Down</div>
         </div>
       </section>
 
       {/* ==========================================
-          📝 CONTACT FORM SECTION
-          🔑 id="request-quote" — ServiceDetailModal scrolls here
+          📝 FORM — id="request-quote" (ServiceDetailModal scrolls here)
           ========================================== */}
       <section
-        className="qc-contact-form-section"
+        className={`ct-form-section ${visibleSections.form ? "ct-in" : ""}`}
         id="request-quote"
         ref={(el) => addToRefs(el, 1)}
         data-section="form"
       >
-        <div className="qc-form-pattern"></div>
+        <div className="ct-bg-orb ct-bg-orb-1" aria-hidden="true"></div>
+        <div className="ct-bg-orb ct-bg-orb-2" aria-hidden="true"></div>
 
-        <div className="qc-section-header qc-form-header">
-          <div className="qc-section-badge" style={{ background: primaryColor }}>
-            <MessageSquare size={16} />
-            Send Enquiry
-          </div>
-          <h2 className="qc-form-heading qc-text-shimmer">
-            Request a <span style={{ color: primaryColor }}>Test Quote</span>
-          </h2>
-          <div className="qc-section-divider">
-            <div
-              className="qc-divider-line"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-              }}
-            ></div>
-            <div
-              className="qc-divider-dot qc-pulse-dot"
-              style={{ background: primaryColor }}
-            ></div>
-            <div
-              className="qc-divider-line"
-              style={{
-                background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-              }}
-            ></div>
-          </div>
-          <p className="qc-form-subheading">
-            Select your testing type and we&apos;ll get back within 24 hours
-          </p>
-        </div>
+        <div className="ct-container">
+          <SectionHeader
+            Icon={MessageSquare}
+            badge="Send Enquiry"
+            before="Request a"
+            highlight="Test Quote"
+            subtitle="Select your testing type and we'll get back within 24 hours"
+          />
 
-        <div className="qc-form-container qc-form-3d">
-          <div className="qc-form-content">
-            <div className="qc-form-image-box qc-image-float">
-              <img draggable="false" src={contactImage} alt="Contact" />
-              <div
-                className="qc-image-glow"
-                style={{
-                  background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
-                }}
-              ></div>
-            </div>
+          <div className="ct-form-card ct-reveal" style={{ "--d": "0.12s" }}>
+            {/* ---------- Left: info panel ---------- */}
+            <aside className="ct-form-aside">
+              <div className="ct-form-aside-pattern" aria-hidden="true"></div>
 
+              <span className="ct-eyebrow">Get in touch</span>
+              <h3 className="ct-aside-title">Tell us what you need tested</h3>
+              <p className="ct-aside-text">
+                Share a few details about your component and testing requirement — our team will
+                reply with the right method and a quotation.
+              </p>
+
+              <div className="ct-aside-image">
+                <img draggable="false" src={contactImage} alt="" />
+                <span className="ct-aside-image-ring" aria-hidden="true"></span>
+              </div>
+
+              <ul className="ct-aside-perks">
+                {FORM_PERKS.map(({ Icon, text }, i) => (
+                  <li key={text} style={{ "--i": i }}>
+                    <span>
+                      <Icon size={16} />
+                    </span>
+                    {text}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="ct-aside-links">
+                <a href={`tel:${COMPANY.phone.replace(/\s+/g, "")}`}>
+                  <Phone size={15} />
+                  {COMPANY.phone}
+                </a>
+                <a href={`mailto:${COMPANY.email}`}>
+                  <Mail size={15} />
+                  {COMPANY.email}
+                </a>
+              </div>
+            </aside>
+
+            {/* ---------- Right: form ---------- */}
             <form
               ref={formRef}
-              id="qc-contact-form"
+              id="ct-contact-form"
+              className="ct-form"
               action="https://api.web3forms.com/submit"
               method="POST"
               onSubmit={handleSubmit}
-              className="qc-form-slide-in"
             >
-              <input
-                type="hidden"
-                name="access_key"
-                value="5162d798-f96f-4824-a967-12cdaad116e8"
-              />
+              <input type="hidden" name="access_key" value={WEB3FORMS_KEY} />
+              <input type="hidden" name="from_name" value="Technoking Website — Contact Form" />
 
-              {/* ==========================================
-                  🔬 TESTING TYPE SELECTOR (COMPACT TABS)
-                  ========================================== */}
-              <div className="qc-testing-type-selector">
-                {testingTypes.map((type, index) => (
-                  <button
-                    key={type.id}
-                    type="button"
-                    className={`qc-testing-tab ${
-                      activeTestingType === index ? "qc-testing-tab-active" : ""
-                    }`}
-                    onClick={() => {
-                      setActiveTestingType(index);
-                      setSelectedService("");
-                    }}
-                    style={
-                      activeTestingType === index
-                        ? {
-                            borderColor: primaryColor,
-                            color: primaryColor,
-                            background: `${primaryColor}10`,
-                            boxShadow: `0 6px 18px ${primaryColor}25`,
-                          }
-                        : {}
-                    }
-                    title={type.name}
-                  >
-                    <span className="qc-tab-icon-wrap">{type.icon}</span>
-                    <span className="qc-tab-label">{type.name}</span>
-                  </button>
-                ))}
+              {/* Step 1 — testing type */}
+              <div className="ct-step">
+                <span className="ct-step-label">
+                  <b>1</b> Testing type
+                </span>
+                <div className="ct-type-rail" ref={railRef}>
+                  <div className="ct-type-track" role="tablist" aria-label="Testing type">
+                    <span
+                      className={`ct-type-indicator ${indicator.ready ? "is-ready" : ""}`}
+                      style={{ transform: `translateX(${indicator.left}px)`, width: indicator.width }}
+                      aria-hidden="true"
+                    ></span>
+                    {TESTING_TYPES.map((type, index) => {
+                      const isActive = activeTestingType === index;
+                      return (
+                        <button
+                          key={type.id}
+                          ref={(el) => (tabRefs.current[index] = el)}
+                          type="button"
+                          role="tab"
+                          aria-selected={isActive}
+                          tabIndex={isActive ? 0 : -1}
+                          className={`ct-type-tab ${isActive ? "is-active" : ""}`}
+                          onClick={() => selectType(index)}
+                          onKeyDown={(e) => onTabKeyDown(e, index)}
+                        >
+                          <type.Icon size={16} />
+                          <span>{type.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
-              {/* ==========================================
-                  🔬 SERVICE DROPDOWN FOR SELECTED TYPE
-                  ========================================== */}
-              <div className="qc-service-select">
-                <label className="qc-service-label">Testing Service</label>
-                <select
-                  name="service"
-                  value={selectedService}
-                  onChange={(e) => setSelectedService(e.target.value)}
-                  required
-                >
-                  <option value="">Select a test / service</option>
-                  {currentTestingType.services.map((service, idx) => (
-                    <option key={idx} value={service}>
-                      {service}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="qc-form-group">
-                <div className="qc-form-field qc-input-float">
-                  <input type="text" name="name" placeholder=" " required />
-                  <label>Full Name</label>
-                  <i className="fas fa-user"></i>
-                  <div
-                    className="qc-input-focus-line"
-                    style={{ background: primaryColor }}
-                  ></div>
-                </div>
-
-                <div className="qc-form-field qc-input-float">
-                  <input type="email" name="email" placeholder=" " required />
-                  <label>Email Address</label>
-                  <i className="fas fa-envelope"></i>
-                  <div
-                    className="qc-input-focus-line"
-                    style={{ background: primaryColor }}
-                  ></div>
-                </div>
-
-                <div className="qc-form-field qc-input-float">
-                  <input type="text" name="phone" placeholder=" " />
-                  <label>Phone Number</label>
-                  <i className="fas fa-phone-alt"></i>
-                  <div
-                    className="qc-input-focus-line"
-                    style={{ background: primaryColor }}
-                  ></div>
-                </div>
-
-                {/* ==========================================
-                    📝 YOUR MESSAGE — controlled + auto-filled
-                    ========================================== */}
-                <div className="qc-form-message qc-input-float">
-                  <textarea
-                    name="message"
-                    placeholder=" "
+              {/* Step 2 — service */}
+              <div className="ct-step">
+                <label className="ct-step-label" htmlFor="ct-service">
+                  <b>2</b> Testing service
+                </label>
+                <div className="ct-select-wrap" key={currentType.id}>
+                  <currentType.Icon size={18} className="ct-select-icon" />
+                  <select
+                    id="ct-service"
+                    name="service"
+                    value={selectedService}
+                    onChange={(e) => setSelectedService(e.target.value)}
                     required
-                    value={messageText}
-                    onChange={(e) => setMessageText(e.target.value)}
-                  />
-                  <label>Your Message</label>
-                  <i className="fas fa-comment-dots"></i>
-                  <div
-                    className="qc-input-focus-line"
-                    style={{ background: primaryColor }}
-                  ></div>
+                  >
+                    <option value="">Select a test / service</option>
+                    {currentType.services.map((service) => (
+                      <option key={service} value={service}>
+                        {service}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
-              <input
-                type="checkbox"
-                name="botcheck"
-                className="qc-hidden"
-                style={{ display: "none" }}
-              />
+              {/* Step 3 — details */}
+              <div className="ct-step">
+                <span className="ct-step-label">
+                  <b>3</b> Your details
+                </span>
 
-              <div className="qc-button-area">
+                <div className="ct-fields">
+                  <div className="ct-field">
+                    <input id="ct-name" type="text" name="name" placeholder=" " autoComplete="name" required />
+                    <label htmlFor="ct-name">Full Name</label>
+                    <User size={18} className="ct-field-icon" />
+                    <span className="ct-field-line" aria-hidden="true"></span>
+                  </div>
+
+                  <div className="ct-field">
+                    <input id="ct-email" type="email" name="email" placeholder=" " autoComplete="email" required />
+                    <label htmlFor="ct-email">Email Address</label>
+                    <Mail size={18} className="ct-field-icon" />
+                    <span className="ct-field-line" aria-hidden="true"></span>
+                  </div>
+
+                  <div className="ct-field ct-field-full">
+                    <input id="ct-phone" type="tel" name="phone" placeholder=" " autoComplete="tel" />
+                    <label htmlFor="ct-phone">Phone Number (optional)</label>
+                    <Phone size={18} className="ct-field-icon" />
+                    <span className="ct-field-line" aria-hidden="true"></span>
+                  </div>
+
+                  <div className="ct-field ct-field-full ct-field-message">
+                    <textarea
+                      id="ct-message"
+                      name="message"
+                      placeholder=" "
+                      required
+                      maxLength={MESSAGE_MAX}
+                      value={messageText}
+                      onChange={(e) => setMessageText(e.target.value)}
+                    />
+                    <label htmlFor="ct-message">Your Message</label>
+                    <MessageSquare size={18} className="ct-field-icon" />
+                    <span className="ct-field-line" aria-hidden="true"></span>
+                    <span className="ct-char-count">
+                      {messageText.length}/{MESSAGE_MAX}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* honeypot */}
+              <input type="checkbox" name="botcheck" className="ct-hidden" tabIndex={-1} aria-hidden="true" />
+
+              <div className="ct-submit-row">
                 <button
                   type="submit"
-                  className={`qc-btn-magnetic qc-btn-3d ${
-                    isSubmitting ? "qc-btn-loading" : ""
+                  className={`ct-submit ${isSubmitting ? "is-sending" : ""} ${
+                    status === "success" ? "is-success" : ""
                   }`}
                   disabled={isSubmitting}
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
-                  }}
                 >
-                  <span className="qc-btn-text">
-                    {isSubmitting ? "Sending..." : "Send Enquiry"}
+                  <span className="ct-submit-fill" aria-hidden="true"></span>
+                  <span className="ct-submit-text">
+                    {isSubmitting ? "Sending…" : status === "success" ? "Sent!" : "Send Enquiry"}
                   </span>
-                  <span className="qc-btn-icon">
-                    <i className="fa fa-paper-plane"></i>
+                  <span className="ct-submit-icon">
+                    {isSubmitting ? (
+                      <Loader2 size={18} className="ct-spin" />
+                    ) : status === "success" ? (
+                      <CheckCircle2 size={18} />
+                    ) : (
+                      <Send size={18} />
+                    )}
                   </span>
-                  <span className="qc-btn-glow"></span>
-                  <span className="qc-btn-ripple"></span>
                 </button>
+                <p className="ct-submit-note">
+                  <ShieldCheck size={14} />
+                  Your details are only used to reply to your enquiry.
+                </p>
               </div>
 
-              {successMessage && (
-                <div className="qc-success-alert">{successMessage}</div>
-              )}
+              <div className="ct-status-slot" aria-live="polite">
+                {statusText && (
+                  <div className={`ct-status ct-status-${status}`} role="status">
+                    {status === "error" ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
+                    {statusText}
+                  </div>
+                )}
+              </div>
             </form>
           </div>
         </div>
       </section>
 
       {/* ==========================================
-          📇 CONTACT CARDS — entire card is clickable
+          📇 CONTACT CARDS
           ========================================== */}
-      <div className="qc-contact-cards-wrapper">
-        <div className="qc-section-header">
-          <div className="qc-section-badge" style={{ background: primaryColor }}>
-            <Compass size={16} />
-            Connect With Us
+      <section
+        className={`ct-cards-section ${visibleSections.cards ? "ct-in" : ""}`}
+        ref={(el) => addToRefs(el, 2)}
+        data-section="cards"
+      >
+        <div className="ct-container">
+          <SectionHeader
+            Icon={Compass}
+            badge="Connect With Us"
+            before="How to"
+            highlight="Reach Us"
+            subtitle="We're here to help. Reach out through any of these channels — just tap a card."
+          />
+
+          <div className="ct-cards">
+            {CONTACT_CARDS.map((item, index) => (
+              <a
+                key={item.title}
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+                className="ct-card"
+                style={{ "--d": `${0.12 + index * 0.12}s` }}
+                onMouseMove={handleTilt}
+                onMouseLeave={resetTilt}
+                aria-label={`${item.title}: ${item.actionLabel}`}
+              >
+                <span className="ct-card-inner">
+                  <span className="ct-card-fill" aria-hidden="true"></span>
+                  <span className="ct-card-glow" aria-hidden="true"></span>
+                  <span className="ct-card-number" aria-hidden="true">
+                    0{index + 1}
+                  </span>
+
+                  <span className="ct-card-icon">
+                    <item.Icon size={30} strokeWidth={1.8} />
+                    <span className="ct-card-icon-ring" aria-hidden="true"></span>
+                  </span>
+                  <span className="ct-card-title">{item.title}</span>
+                  <span className="ct-card-text">{item.description}</span>
+                  <span className="ct-card-cta">
+                    {item.actionLabel}
+                    {item.external ? <ExternalLink size={15} /> : <ArrowRight size={15} />}
+                  </span>
+                </span>
+              </a>
+            ))}
           </div>
-          <h2 className="qc-section-title">
-            How to <span style={{ color: primaryColor }}>Reach Us</span>
-          </h2>
-          <div className="qc-section-divider">
-            <div
-              className="qc-divider-line"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-              }}
-            ></div>
-            <div
-              className="qc-divider-dot qc-pulse-dot"
-              style={{ background: primaryColor }}
-            ></div>
-            <div
-              className="qc-divider-line"
-              style={{
-                background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-              }}
-            ></div>
-          </div>
-          <p className="qc-section-subtitle">
-            We&apos;re here to help. Reach out to us through any of these
-            channels — just tap a card
-          </p>
         </div>
-
-        <div className="qc-contact-card-container">
-          {contactData.map((item, index) => (
-            <a
-              key={index}
-              href={item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
-              className="qc-contact-card qc-contact-card-link"
-              ref={(el) => (cardsRef.current[index] = el)}
-              data-index={index}
-              onMouseMove={handleCardMouseMove}
-              aria-label={item.actionLabel}
-            >
-              <div
-                className="qc-card-glow"
-                style={{
-                  background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${primaryColor}20, transparent 70%)`,
-                }}
-              ></div>
-              <div className="qc-contact-icon qc-icon-pulse">
-                {item.icon}
-                <div
-                  className="qc-icon-ring"
-                  style={{ borderColor: primaryColor }}
-                ></div>
-              </div>
-              <h2 className="qc-contact-card-title">{item.title}</h2>
-              <p className="qc-contact-card-description">{item.description}</p>
-
-              <span className="qc-contact-card-cta">
-                {item.actionLabel} <span className="qc-cta-arrow">→</span>
-              </span>
-
-              <div
-                className="qc-card-hover-line"
-                style={{
-                  background: `linear-gradient(90deg, ${primaryColor}, ${primaryLight})`,
-                }}
-              ></div>
-              <div className="qc-card-number">0{index + 1}</div>
-            </a>
-          ))}
-        </div>
-      </div>
+      </section>
 
       {/* ==========================================
-          🗺️ MAP SECTION
+          🗺️ MAP
           ========================================== */}
-      <div className="qc-map-section">
-        <div className="qc-map-container qc-map-float">
-          <div className="qc-map-overlay">
-            <div className="qc-map-icon">
-              <SlLocationPin size={48} color="#4A82A8" />
+      <section
+        className={`ct-map-section ${visibleSections.map ? "ct-in" : ""}`}
+        ref={(el) => addToRefs(el, 3)}
+        data-section="map"
+      >
+        <div className="ct-container">
+          <div className="ct-map-card ct-reveal" style={{ "--d": "0s" }}>
+            <div className={`ct-map-frame ${mapLoaded ? "is-loaded" : ""}`}>
+              {visibleSections.map && (
+                <iframe
+                  title={`${COMPANY.name} location map`}
+                  src={MAP_EMBED_URL}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                  onLoad={() => setMapLoaded(true)}
+                />
+              )}
+              <div className="ct-map-placeholder" aria-hidden="true">
+                <span className="ct-map-pin">
+                  <MapPin size={30} />
+                </span>
+              </div>
             </div>
-            <h3>Visit Our Location</h3>
-            <p className="qc-map-address">
-              <AddressBlock />
-            </p>
-            <button
-              className="qc-map-btn qc-btn-3d"
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor}, ${primaryLight})`,
-              }}
-              onClick={() => window.open(MAPS_URL, "_blank")}
-            >
-              <i className="fas fa-map-marker-alt"></i>
-              View on Google Maps
-              <span className="qc-map-arrow">→</span>
-            </button>
+
+            <div className="ct-map-info">
+              <span className="ct-map-info-icon">
+                <MapPin size={24} />
+                <span className="ct-map-info-pulse" aria-hidden="true"></span>
+              </span>
+              <span className="ct-eyebrow">Visit our laboratory</span>
+              <h3>Visit Our Location</h3>
+              <p className="ct-map-name">{COMPANY.name}</p>
+              <p className="ct-map-address">
+                <AddressBlock />
+              </p>
+              <div className="ct-map-actions">
+                <a
+                  className="ct-map-btn ct-map-btn-primary"
+                  href={MAPS_DIRECTIONS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Navigation size={16} />
+                  Get Directions
+                </a>
+                <a className="ct-map-btn" href={MAPS_URL} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink size={16} />
+                  Google Maps
+                </a>
+              </div>
+            </div>
           </div>
-          <div
-            className="qc-map-glow"
-            style={{
-              background: `radial-gradient(circle, ${primaryColor}40, transparent 70%)`,
-            }}
-          ></div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
-
-// MessageSquare Icon Component
-const MessageSquare = ({ size }) => (
-  <svg
-    width={size || 16}
-    height={size || 16}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-  </svg>
-);
 
 export default Contact;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import "./Industry.css";
 import mineralsBackground from "../../assets/ut.jpg";
 import eng from "../../assets/eng.png";
@@ -9,468 +9,493 @@ import weldcast from "../../assets/weldcast.png";
 import qixp from "../../assets/qixp.png";
 import cns from "../../assets/cns.png";
 import {
-  Factory,
-  Zap,
-  Car,
-  Ship,
-  Building,
-  Wrench,
-  Layers,
-  Shield,
-  Cog,
-  Users,
-  CheckCircle,
-  ChevronRight,
-  Target,
-  Briefcase,
-  Award,
-  Box,
-  Globe,
-  Rocket,
-  Star,
-  Sparkles,
-  TrendingUp,
-  Heart,
-  Crown,
-  Gem,
-  Compass,
-  Anchor,
-  Plane,
-  HardHat,
-  Cpu,
-  Battery,
-  Droplet,
-  Wind,
-  Sun,
-  Flame,
   Activity,
+  ArrowRight,
+  Award,
   BarChart3,
-  Clock,
-  Coffee,
-  Smile,
-  ThumbsUp,
-  Zap as ZapIcon,
+  Box,
+  Briefcase,
+  Building2,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Cog,
+  Cpu,
+  Layers,
+  Rocket,
+  Shield,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  Users,
+  Wrench,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Industry = () => {
-  const [visibleSections, setVisibleSections] = useState({});
-  const [activeIndustry, setActiveIndustry] = useState(0);
-  const [hoveredCard, setHoveredCard] = useState(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [counters, setCounters] = useState({
-    projects: 0,
-    industries: 0,
-    experience: 0,
-    satisfaction: 0,
-  });
-  const [is3DHover, setIs3DHover] = useState(false);
+/* ============================================================
+   🎨 THEME
+   ============================================================ */
+const PRIMARY = "#235781";
+const PRIMARY_DARK = "#16405F";
+const PRIMARY_LIGHT = "#4A82A8";
 
-  const sectionRefs = useRef([]);
-  const heroRef = useRef(null);
-  const statsRef = useRef(null);
-  const navigate = useNavigate();
-
-  // 🔵 Primary Blue Colors
-  const primaryColor = "#235781";
-  const primaryDark = "#16405F";
-  const primaryLight = "#4A82A8";
-  const primaryLighter = "#6BA0C9";
-  const primaryLightest = "#8FB8D9";
-  const secondaryColor = "#0a1628";
-
-  // ============================================
-  // 📊 COUNTER ANIMATION
-  // ============================================
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const targets = [
-              { id: 'projects', target: 5000, duration: 2500 },
-              { id: 'industries', target: 25, duration: 2000 },
-              { id: 'experience', target: 15, duration: 2000 },
-              { id: 'satisfaction', target: 98, duration: 2000 },
-            ];
-            
-            targets.forEach(({ id, target, duration }) => {
-              const steps = 60;
-              const increment = target / steps;
-              let current = 0;
-              
-              const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                  current = target;
-                  clearInterval(timer);
-                }
-                setCounters(prev => ({
-                  ...prev,
-                  [id]: Math.floor(current)
-                }));
-              }, duration / steps);
-            });
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    if (statsRef.current) {
-      observer.observe(statsRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  // ============================================
-  // 📜 SCROLL PROGRESS
-  // ============================================
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / docHeight) * 100;
-      setScrollProgress(progress);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  /* ============================================================
+/* ============================================================
    🏢 GROUP OF COMPANIES — EDIT ONLY HERE
    ============================================================ */
-const groupCompanies = [
+const GROUP_COMPANIES = [
+  { id: "ttpl", name: "Technoking Testlab Pvt Ltd", initials: "TT", logo: testlab },
+  { id: "tepl", name: "Technoking Engineers Pvt Ltd", initials: "TE", logo: eng },
+  { id: "te", name: "Technoking Enterprise", initials: "TE", logo: ent },
+  { id: "tns", name: "Technoking NDT Services", initials: "TNS", logo: ndt },
+  { id: "qixs", name: "Quality Industrial X-Ray Company Pvt Ltd", initials: "QX", logo: qixp },
+  { id: "cndt", name: "Capital NDT Services", initials: "CN", logo: cns },
+  { id: "wndt", name: "Weldcast NDT Pvt Ltd", initials: "WN", logo: weldcast },
+];
+
+const INDUSTRIES = [
   {
-    id: "ttpl",
-    name: "Technoking Testlab Pvt Ltd",
-    initials: "TT",
-    logo: testlab,
+    id: 1,
+    name: "NDT Services",
+    Icon: Activity,
+    color: PRIMARY,
+    colorLight: PRIMARY_LIGHT,
+    description:
+      "Non-Destructive Testing services for flaw detection and material integrity without damaging the component.",
+    applications: [
+      "Weld Inspection",
+      "Casting & Forging Inspection",
+      "Pipeline Integrity",
+      "Pressure Vessel Testing",
+      "Structural Steel Inspection",
+      "Aerospace Component Testing",
+    ],
+    features: [
+      "No damage to components",
+      "Real-time defect detection",
+      "Cost-effective inspection",
+      "Compliance with international standards",
+    ],
+    materials: [
+      "Ultrasonic Testing (UT)",
+      "Magnetic Particle Testing (MPT)",
+      "Dye Penetrant Testing (DPT)",
+      "Phased Array Ultrasonic Testing (PAUT)",
+      "Eddy Current Testing (ET)",
+      "Portable Spectro Testing (PST)",
+    ],
   },
   {
-    id: "tepl",
-    name: "Technoking Engineers Pvt Ltd",
-    initials: "TE",
-    logo: eng,
+    id: 2,
+    name: "DT Services",
+    Icon: BarChart3,
+    color: "#0F766E",
+    colorLight: "#2DA79A",
+    description:
+      "Destructive Testing services to evaluate mechanical properties and material performance under stress.",
+    applications: [
+      "Tensile Strength Testing",
+      "Compression Testing",
+      "Bend & Re-bend Testing",
+      "Impact Testing",
+      "Hardness Testing",
+      "Fastener Testing",
+    ],
+    features: [
+      "Accurate mechanical property data",
+      "Quality verification",
+      "Material certification",
+      "Failure analysis support",
+    ],
+    materials: [
+      "Tensile Testing",
+      "Compression Testing",
+      "Bend Testing",
+      "Re-bend Testing",
+      "Impact Testing",
+      "Hardness Testing",
+    ],
   },
   {
-    id: "te",
-    name: "Technoking Enterprise",
-    initials: "TE",
-    logo: ent,
+    id: 3,
+    name: "Material Testing",
+    Icon: Layers,
+    // ✅ CHANGED → burgundy (deep wine red)
+    color: "#7B1E2B",
+    colorLight: "#A93A4C",
+    description:
+      "Comprehensive material characterization and analysis for quality assurance and R&D.",
+    applications: [
+      "Chemical Composition Analysis",
+      "Metallurgical Testing",
+      "Corrosion Testing",
+      "Paint & Coating Testing",
+      "PMI Testing",
+      "Geological Survey",
+    ],
+    features: [
+      "Precise chemical analysis",
+      "Microstructure evaluation",
+      "Corrosion resistance data",
+      "Coating performance metrics",
+    ],
+    materials: [
+      "Chemical & Corrosion Testing",
+      "Metallurgical Testing",
+      "Paint & Surface Coating Testing",
+      "Positive Material Identification (PMI)",
+      "Geological Survey & Consultancy",
+      "Water & Geotextile Testing",
+    ],
   },
   {
-    id: "te",
-    name: "Technoking NDT Services",
-    initials: "TNS",
-    logo: ndt,
+    id: 4,
+    name: "NDT & DT Combined",
+    Icon: Shield,
+    // ✅ CHANGED → dark purple
+    color: "#3F1D5C",
+    colorLight: "#6B3E8E",
+    description:
+      "Integrated NDT and DT solutions for complete material and component qualification.",
+    applications: [
+      "Full Weld Qualification",
+      "Pressure Equipment Certification",
+      "Structural Integrity Assessment",
+      "Material Qualification",
+      "Fitness-for-Service Evaluation",
+      "Remaining Life Assessment",
+    ],
+    features: [
+      "Complete testing coverage",
+      "Single-point coordination",
+      "Comprehensive reporting",
+      "Faster project turnaround",
+    ],
+    materials: [
+      "UT + Tensile Testing",
+      "MPT + Impact Testing",
+      "DPT + Hardness Testing",
+      "PAUT + Bend Testing",
+      "ET + Chemical Analysis",
+      "PST + Metallurgical Testing",
+    ],
   },
   {
-    id: "qixs",
-    name: "Quality Industrial X-Ray Company Pvt Ltd",
-    initials: "QX",
-    logo: qixp,
+    id: 5,
+    name: "Advanced NDT",
+    Icon: Cpu,
+    color: "#0369A1",
+    colorLight: "#38A3D6",
+    description: "Advanced non-destructive techniques for critical and complex applications.",
+    applications: [
+      "Phased Array UT",
+      "Time of Flight Diffraction",
+      "Guided Wave Testing",
+      "Acoustic Emission Testing",
+      "Digital Radiography",
+      "Computed Tomography",
+    ],
+    features: [
+      "High-resolution imaging",
+      "Complex geometry capability",
+      "Volumetric inspection",
+      "Digital data archiving",
+    ],
+    materials: [
+      "Phased Array Ultrasonic Testing (PAUT)",
+      "Eddy Current Testing (ET)",
+      "Portable Spectro Testing (PST)",
+      "Positive Material Identification (PMI)",
+      "Ultrasonic Testing (UT)",
+      "Magnetic Particle Testing (MPT)",
+    ],
   },
   {
-    id: "cndt",
-    name: "Capital NDT Services",
-    initials: "CN",
-    logo: cns,
-  },
-  {
-    id: "wndt",
-    name: "Weldcast NDT Pvt Ltd",
-    initials: "WN",
-    logo: weldcast,
+    id: 6,
+    name: "Mechanical Testing",
+    Icon: Wrench,
+    color: "#C2410C",
+    colorLight: "#F07A3A",
+    description:
+      "Destructive mechanical testing to determine material strength and performance characteristics.",
+    applications: [
+      "Tensile Testing",
+      "Compression Testing",
+      "Bend Testing",
+      "Impact Testing",
+      "Hardness Testing",
+      "Shear Testing",
+    ],
+    features: [
+      "Accurate load measurement",
+      "Standard-compliant procedures",
+      "Detailed stress-strain data",
+      "Failure mode analysis",
+    ],
+    materials: [
+      "Tensile Testing",
+      "Compression Testing",
+      "Bend Testing",
+      "Re-bend Testing",
+      "Impact Testing",
+      "Hardness Testing",
+    ],
   },
 ];
 
-  // ============================================
-  // 🖱️ MOUSE PARALLAX FOR 3D EFFECT
-  // ============================================
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (heroRef.current) {
-        const { left, top, width, height } = heroRef.current.getBoundingClientRect();
-        const x = ((e.clientX - left) / width) * 100;
-        const y = ((e.clientY - top) / height) * 100;
-        setMousePosition({ x, y });
-      }
-    };
+/* ============================================================
+   🛠️ SOLUTIONS — EDIT ONLY HERE
+   ============================================================ */
+const INDUSTRY_SERVICES = [
+  {
+    title: "Material Selection",
+    description: "Expert guidance in choosing the right materials for your application.",
+    Icon: Layers,
+    features: [
+      "Material testing & analysis",
+      "Cost optimization strategies",
+      "Performance evaluation",
+      "Compliance verification",
+    ],
+  },
+  {
+    title: "Quality Assurance",
+    description: "Comprehensive testing and inspection to ensure product reliability.",
+    Icon: ShieldCheck,
+    features: [
+      "NDT & DT testing services",
+      "Dimensional inspection",
+      "Chemical analysis",
+      "Mechanical testing",
+    ],
+  },
+  {
+    title: "Custom Solutions",
+    description: "Tailored products designed to meet unique industry specifications.",
+    Icon: Cog,
+    features: [
+      "Custom alloy development",
+      "Specialized coatings",
+      "Unique geometries",
+      "Prototype development",
+    ],
+  },
+  {
+    title: "Technical Support",
+    description: "24/7 expert support for installation, maintenance, and troubleshooting.",
+    Icon: Users,
+    features: [
+      "On-site assistance",
+      "Training programs",
+      "Technical documentation",
+      "Performance monitoring",
+    ],
+  },
+];
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => ({
-              ...prev,
-              [entry.target.dataset.section]: true,
-            }));
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "-30px" }
-    );
+const DETAIL_COLUMNS = [
+  { key: "applications", title: "Applications", Icon: Box },
+  { key: "features", title: "Key Features", Icon: Award },
+  { key: "materials", title: "Test Methods", Icon: Shield },
+];
 
-    if (heroRef.current) {
-      heroRef.current.addEventListener("mousemove", handleMouseMove);
-    }
+const pad = (n) => String(n).padStart(2, "0");
 
-    sectionRefs.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
+/* Shared section header (same look on every section) */
+const SectionHeader = ({ Icon, badge, before, highlight, after, subtitle }) => (
+  <div className="tk-section-header tk-reveal" style={{ "--d": "0s" }}>
+    <div className="tk-section-badge">
+      <Icon size={16} />
+      {badge}
+    </div>
+    <h2 className="tk-section-title-iws">
+      {before} <span className="tk-title-accent">{highlight}</span>
+      {after ? ` ${after}` : ""}
+    </h2>
+    <div className="tk-section-divider" aria-hidden="true">
+      <span className="tk-divider-line"></span>
+      <span className="tk-divider-dot"></span>
+      <span className="tk-divider-line tk-divider-line-r"></span>
+    </div>
+    <p className="tk-section-subtitle">{subtitle}</p>
+  </div>
+);
 
-    return () => {
-      observer.disconnect();
-      if (heroRef.current) {
-        heroRef.current.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
+/* ============================================================
+   🏭 PAGE
+   ============================================================ */
+const Industry = () => {
+  const navigate = useNavigate();
+
+  const [visibleSections, setVisibleSections] = useState({});
+  const [activeIndustry, setActiveIndustry] = useState(0);
+  const [indicator, setIndicator] = useState({ left: 0, width: 0, ready: false });
+
+  const progressRef = useRef(null);
+  const heroRef = useRef(null);
+  const sectionRefs = useRef([]);
+  const railRef = useRef(null);
+  const tabRefs = useRef([]);
+
+  const current = INDUSTRIES[activeIndustry];
 
   const addToRefs = (el, index) => {
     sectionRefs.current[index] = el;
   };
 
-  // ============================================
-  // 🏭 INDUSTRIES DATA — NDT & DT SERVICES
-  // ============================================
-  // ============================================
-  // 🏭 INDUSTRIES DATA — NDT & DT SERVICES
-  // ============================================
-  const industries = [
-    {
-      id: 1,
-      name: "NDT Services",
-      icon: <Activity size={20} />,
-      color: primaryColor,
-      gradient: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryLight} 100%)`,
-      description: "Non-Destructive Testing services for flaw detection and material integrity without damaging the component",
-      applications: [
-        "Weld Inspection",
-        "Casting & Forging Inspection",
-        "Pipeline Integrity",
-        "Pressure Vessel Testing",
-        "Structural Steel Inspection",
-        "Aerospace Component Testing",
-      ],
-      features: [
-        "No damage to components",
-        "Real-time defect detection",
-        "Cost-effective inspection",
-        "Compliance with international standards",
-      ],
-      materials: [
-        "Ultrasonic Testing (UT)",
-        "Magnetic Particle Testing (MPT)",
-        "Dye Penetrant Testing (DPT)",
-        "Phase Array Ultrasonic Testing (PAUT)",
-        "Eddy Current Testing (ET)",
-        "Portable Spectro Testing (PST)",
-      ],
-    },
-    {
-      id: 2,
-      name: "DT Services",
-      icon: <BarChart3 size={20} />,
-      color: "#009688",
-      gradient: "linear-gradient(135deg, #009688 0%, #4db6ac 100%)",
-      description: "Destructive Testing services to evaluate mechanical properties and material performance under stress",
-      applications: [
-        "Tensile Strength Testing",
-        "Compression Testing",
-        "Bend & Re-bend Testing",
-        "Impact Testing",
-        "Hardness Testing",
-        "Fastener Testing",
-      ],
-      features: [
-        "Accurate mechanical property data",
-        "Quality verification",
-        "Material certification",
-        "Failure analysis support",
-      ],
-      materials: [
-        "Tensile Testing",
-        "Compression Testing",
-        "Bend Testing",
-        "Re-bend Testing",
-        "Impact Testing",
-        "Hardness Testing",
-      ],
-    },
-    {
-      id: 3,
-      name: "Material Testing",
-      icon: <Layers size={20} />,
-      color: "#2196f3",
-      gradient: "linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)",
-      description: "Comprehensive material characterization and analysis for quality assurance and R&D",
-      applications: [
-        "Chemical Composition Analysis",
-        "Metallurgical Testing",
-        "Corrosion Testing",
-        "Paint & Coating Testing",
-        "PMI Testing",
-        "Geological Survey",
-      ],
-      features: [
-        "Precise chemical analysis",
-        "Microstructure evaluation",
-        "Corrosion resistance data",
-        "Coating performance metrics",
-      ],
-      materials: [
-        "Chemical & Corrosion Testing",
-        "Metallurgical Testing",
-        "Paint & Surface Coating Testing",
-        "Positive Material Identification (PMI)",
-        "Geological Survey & Consultancy",
-        "Water & Geotextile Testing",
-      ],
-    },
-    {
-      id: 4,
-      name: "NDT & DT Combined",
-      icon: <Shield size={20} />,
-      color: "#7B1FA2",
-      gradient: "linear-gradient(135deg, #7B1FA2 0%, #AB47BC 100%)",
-      description: "Integrated NDT and DT solutions for complete material and component qualification",
-      applications: [
-        "Full Weld Qualification",
-        "Pressure Equipment Certification",
-        "Structural Integrity Assessment",
-        "Material Qualification",
-        "Fitness-for-Service Evaluation",
-        "Remaining Life Assessment",
-      ],
-      features: [
-        "Complete testing coverage",
-        "Single-point coordination",
-        "Comprehensive reporting",
-        "Faster project turnaround",
-      ],
-      materials: [
-        "UT + Tensile Testing",
-        "MPT + Impact Testing",
-        "DPT + Hardness Testing",
-        "PAUT + Bend Testing",
-        "ET + Chemical Analysis",
-        "PST + Metallurgical Testing",
-      ],
-    },
-    {
-      id: 5,
-      name: "Advanced NDT",
-      icon: <Cpu size={20} />,
-      color: "#1a8cff",
-      gradient: "linear-gradient(135deg, #1a8cff 0%, #4a9eff 100%)",
-      description: "Advanced non-destructive techniques for critical and complex applications",
-      applications: [
-        "Phased Array UT",
-        "Time of Flight Diffraction",
-        "Guided Wave Testing",
-        "Acoustic Emission Testing",
-        "Digital Radiography",
-        "Computed Tomography",
-      ],
-      features: [
-        "High-resolution imaging",
-        "Complex geometry capability",
-        "Volumetric inspection",
-        "Digital data archiving",
-      ],
-      materials: [
-        "Phase Array Ultrasonic Testing (PAUT)",
-        "Eddy Current Testing (ET)",
-        "Portable Spectro Testing (PST)",
-        "Positive Material Identification (PMI)",
-        "Ultrasonic Testing (UT)",
-        "Magnetic Particle Testing (MPT)",
-      ],
-    },
-    {
-      id: 6,
-      name: "Mechanical Testing",
-      icon: <Wrench size={20} />,
-      color: "#E65100",
-      gradient: "linear-gradient(135deg, #E65100 0%, #FF9800 100%)",
-      description: "Destructive mechanical testing to determine material strength and performance characteristics",
-      applications: [
-        "Tensile Testing",
-        "Compression Testing",
-        "Bend Testing",
-        "Impact Testing",
-        "Hardness Testing",
-        "Shear Testing",
-      ],
-      features: [
-        "Accurate load measurement",
-        "Standard-compliant procedures",
-        "Detailed stress-strain data",
-        "Failure mode analysis",
-      ],
-      materials: [
-        "Tensile Testing",
-        "Compression Testing",
-        "Bend Testing",
-        "Re-bend Testing",
-        "Impact Testing",
-        "Hardness Testing",
-      ],
-    },
-  ];
+  /* Particles are generated once (no jumping on re-render) */
+  const heroParticles = useMemo(
+    () =>
+      Array.from({ length: 26 }, (_, i) => ({
+        id: i,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        duration: `${12 + Math.random() * 18}s`,
+        delay: `${Math.random() * 10}s`,
+        size: `${4 + Math.random() * 9}px`,
+        alpha: 0.1 + Math.random() * 0.22,
+      })),
+    []
+  );
 
-  // ============================================
-  // 🛠️ INDUSTRY SERVICES
-  // ============================================
-  const industryServices = [
-    {
-      title: "Material Selection",
-      description: "Expert guidance in choosing the right materials for your application",
-      icon: <Layers size={28} />,
-      features: [
-        "Material testing & analysis",
-        "Cost optimization strategies",
-        "Performance evaluation",
-        "Compliance verification",
-      ],
-    },
-    {
-      title: "Quality Assurance",
-      description: "Comprehensive testing and inspection to ensure product reliability",
-      icon: <Shield size={28} />,
-      features: [
-        "NDT & DT testing services",
-        "Dimensional inspection",
-        "Chemical analysis",
-        "Mechanical testing",
-      ],
-    },
-    {
-      title: "Custom Solutions",
-      description: "Tailored products designed to meet unique industry specifications",
-      icon: <Cog size={28} />,
-      features: [
-        "Custom alloy development",
-        "Specialized coatings",
-        "Unique geometries",
-        "Prototype development",
-      ],
-    },
-    {
-      title: "Technical Support",
-      description: "24/7 expert support for installation, maintenance, and troubleshooting",
-      icon: <Users size={28} />,
-      features: [
-        "On-site assistance",
-        "Training programs",
-        "Technical documentation",
-        "Performance monitoring",
-      ],
-    },
+  const ctaParticles = useMemo(
+    () =>
+      Array.from({ length: 14 }, (_, i) => ({
+        id: i,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        duration: `${8 + Math.random() * 12}s`,
+        delay: `${Math.random() * 5}s`,
+        size: `${4 + Math.random() * 8}px`,
+      })),
+    []
+  );
+
+  /* ---------- Scroll progress (no re-render per scroll) ---------- */
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+      if (progressRef.current) progressRef.current.style.width = `${progress}%`;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  /* ---------- Hero spotlight follows the mouse (CSS vars only) ---------- */
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+    const onMove = (e) => {
+      const r = hero.getBoundingClientRect();
+      hero.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+      hero.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+    };
+    hero.addEventListener("mousemove", onMove);
+    return () => hero.removeEventListener("mousemove", onMove);
+  }, []);
+
+  /* ---------- Reveal sections once they enter the viewport ---------- */
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const key = entry.target.dataset.section;
+            setVisibleSections((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
+    );
+    sectionRefs.current.forEach((s) => s && observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
+  /* ---------- Sliding tab indicator ---------- */
+  const measureIndicator = useCallback(() => {
+    const tab = tabRefs.current[activeIndustry];
+    if (!tab) return;
+    setIndicator({ left: tab.offsetLeft, width: tab.offsetWidth, ready: true });
+
+    const rail = railRef.current;
+    if (rail && rail.scrollWidth > rail.clientWidth) {
+      rail.scrollTo({
+        left: tab.offsetLeft - rail.clientWidth / 2 + tab.offsetWidth / 2,
+        behavior: "smooth",
+      });
+    }
+  }, [activeIndustry]);
+
+  useLayoutEffect(() => {
+    measureIndicator();
+  }, [measureIndicator]);
+
+  useEffect(() => {
+    window.addEventListener("resize", measureIndicator);
+    // fonts can change tab widths after first paint
+    document.fonts?.ready?.then(measureIndicator);
+    return () => window.removeEventListener("resize", measureIndicator);
+  }, [measureIndicator]);
+
+  const goToIndustry = (index) => {
+    const next = (index + INDUSTRIES.length) % INDUSTRIES.length;
+    setActiveIndustry(next);
+  };
+
+  const onTabKeyDown = (e, index) => {
+    let next = null;
+    if (e.key === "ArrowRight") next = index + 1;
+    if (e.key === "ArrowLeft") next = index - 1;
+    if (e.key === "Home") next = 0;
+    if (e.key === "End") next = INDUSTRIES.length - 1;
+    if (next === null) return;
+    e.preventDefault();
+    const wrapped = (next + INDUSTRIES.length) % INDUSTRIES.length;
+    setActiveIndustry(wrapped);
+    tabRefs.current[wrapped]?.focus();
+  };
+
+  /* ---------- Pointer effects for cards ---------- */
+  const handleTilt = (e) => {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--rx", `${(0.5 - py) * 8}deg`);
+    el.style.setProperty("--ry", `${(px - 0.5) * 10}deg`);
+    el.style.setProperty("--mx", `${px * 100}%`);
+    el.style.setProperty("--my", `${py * 100}%`);
+  };
+
+  const resetTilt = (e) => {
+    e.currentTarget.style.setProperty("--rx", "0deg");
+    e.currentTarget.style.setProperty("--ry", "0deg");
+  };
+
+  const handleSpotlight = (e) => {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+    el.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+  };
+
+  const scrollToId = (id) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const heroLinks = [
+    { id: "industry-overview", count: INDUSTRIES.length, label: "Service Areas" },
+    { id: "industry-services", count: INDUSTRY_SERVICES.length, label: "Solutions" },
+    { id: "group-companies", count: GROUP_COMPANIES.length, label: "Group Companies" },
   ];
 
   return (
@@ -478,60 +503,61 @@ const groupCompanies = [
       {/* ==========================================
           📊 SCROLL PROGRESS BAR
           ========================================== */}
-      <div className="tk-scroll-progress" style={{ width: `${scrollProgress}%` }}></div>
+      <div className="tk-scroll-progress" ref={progressRef}></div>
 
       {/* ==========================================
-          🎬 HERO SECTION WITH 3D EFFECT
+          🎬 HERO
           ========================================== */}
       <section
-        className="tk-industry-hero"
-        ref={(el) => { heroRef.current = el; addToRefs(el, 0); }}
+        className={`tk-industry-hero ${visibleSections.hero ? "tk-in" : ""}`}
+        ref={(el) => {
+          heroRef.current = el;
+          addToRefs(el, 0);
+        }}
         data-section="hero"
         style={{
-          background: `linear-gradient(135deg, rgba(10, 22, 40, 0.88) 0%, rgba(35, 87, 129, 0.75) 100%), url(${mineralsBackground})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundAttachment: "fixed",
+          backgroundImage: `linear-gradient(135deg, rgba(10, 22, 40, 0.9) 0%, rgba(35, 87, 129, 0.76) 100%), url(${mineralsBackground})`,
         }}
       >
-        {/* 3D Floating Particles */}
-        <div className="tk-hero-particles">
-          {[...Array(30)].map((_, i) => (
-            <div
-              key={i}
+        <div className="tk-hero-spotlight" aria-hidden="true"></div>
+        <div className="tk-hero-grid" aria-hidden="true"></div>
+        <div className="tk-hero-scanline" aria-hidden="true"></div>
+
+        <div className="tk-hero-particles" aria-hidden="true">
+          {heroParticles.map((p) => (
+            <span
+              key={p.id}
               className="tk-hero-particle"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDuration: `${12 + Math.random() * 18}s`,
-                animationDelay: `${Math.random() * 10}s`,
-                width: `${4 + Math.random() * 10}px`,
-                height: `${4 + Math.random() * 10}px`,
-                background: `rgba(74, 130, 168, ${0.08 + Math.random() * 0.2})`,
-                transform: `rotate(${Math.random() * 360}deg)`,
+                left: p.left,
+                top: p.top,
+                width: p.size,
+                height: p.size,
+                animationDuration: p.duration,
+                animationDelay: p.delay,
+                background: `rgba(143, 184, 217, ${p.alpha})`,
               }}
-            ></div>
+            ></span>
           ))}
         </div>
 
         <div className="tk-container">
-          <div
-            className={`tk-hero-content ${visibleSections.hero ? "tk-animate-in" : ""}`}
-          >
-            <div className="tk-hero-badge tk-badge-pulse">
+          <div className="tk-hero-content">
+            <div className="tk-hero-badge tk-hero-step" style={{ "--d": "0.05s" }}>
               <span className="tk-badge-dot"></span>
-              NDT & DT Services
+              NDT &amp; DT Services
             </div>
 
-            <p className="tk-hero-subtitle">
-              Cutting-edge NDT and DT testing services ensuring superior
-              quality and reliability across all industrial sectors
+            <p className="tk-hero-subtitle tk-hero-step" style={{ "--d": "0.18s" }}>
+              Cutting-edge NDT and DT testing services ensuring superior quality and reliability
+              across all industrial sectors
             </p>
+
+           
           </div>
         </div>
 
-        {/* 3D Scroll Indicator */}
-        <div className="tk-hero-scroll tk-scroll-3d">
+        <div className="tk-hero-scroll" aria-hidden="true">
           <div className="tk-scroll-mouse">
             <div className="tk-scroll-wheel"></div>
           </div>
@@ -539,329 +565,325 @@ const groupCompanies = [
         </div>
       </section>
 
-            {/* ==========================================
-          🏭 INDUSTRIES OVERVIEW SECTION
+      {/* ==========================================
+          🏭 SERVICE AREAS OVERVIEW
           ========================================== */}
       <section
-        className="tk-industries-overview"
+        id="industry-overview"
+        className={`tk-industries-overview ${visibleSections.overview ? "tk-in" : ""}`}
         ref={(el) => addToRefs(el, 1)}
         data-section="overview"
       >
+        <div className="tk-bg-orb tk-bg-orb-1" aria-hidden="true"></div>
+        <div className="tk-bg-orb tk-bg-orb-2" aria-hidden="true"></div>
+
         <div className="tk-container">
-          <div className="tk-section-header">
-            <div className="tk-section-badge" style={{ background: primaryColor }}>
-              <Target size={16} />
-              NDT & DT Services
-            </div>
-            <h2 className="tk-section-title-iws">
-              Powering <span style={{ color: primaryColor }}>Industrial</span> Excellence
-            </h2>
-            <div className="tk-section-divider">
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="tk-divider-dot tk-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
-            </div>
-            <p className="tk-section-subtitle">
-              Specialized NDT and DT testing solutions for diverse industrial sectors with unmatched quality and technical support
-            </p>
-          </div>
+          <SectionHeader
+            Icon={Target}
+            badge="NDT & DT Services"
+            before="Powering"
+            highlight="Industrial"
+            after="Excellence"
+            subtitle="Specialized NDT and DT testing solutions for diverse industrial sectors with unmatched quality and technical support"
+          />
 
-          {/* Industry Navigation Tabs - 3D Style */}
-          <div className="tk-industries-nav tk-nav-3d">
-            {industries.map((industry, index) => (
-              <button
-                key={industry.id}
-                className={`tk-industry-tab ${activeIndustry === index ? "tk-active" : ""} tk-tab-3d`}
-                onClick={() => setActiveIndustry(index)}
-                style={
-                  activeIndustry === index
-                    ? { 
-                        borderColor: industry.color,
-                        boxShadow: `0 8px 30px ${industry.color}40`,
-                      }
-                    : {}
-                }
-              >
-                <div className="tk-tab-icon" style={{ color: industry.color }}>
-                  {industry.icon}
-                </div>
-                <span className="tk-tab-name">{industry.name}</span>
-                {activeIndustry === index && (
-                  <div className="tk-tab-active-indicator" style={{ background: industry.color }}></div>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Industry Detail - 3D Card */}
-          <div className="tk-industry-detail tk-detail-3d">
-            {industries[activeIndustry] && (
-              <div className="tk-detail-content">
-                <div className="tk-detail-header">
-                  <div
-                    className="tk-industry-icon-large tk-icon-3d"
-                    style={{ 
-                      color: industries[activeIndustry].color,
-                      background: `${industries[activeIndustry].color}15`,
-                      borderColor: industries[activeIndustry].color,
-                    }}
+          {/* Tabs — sliding indicator, scrollable on mobile */}
+          <div className="tk-tabs-rail tk-reveal" ref={railRef} style={{ "--d": "0.1s" }}>
+            <div className="tk-tabs-track" role="tablist" aria-label="Service areas">
+              <span
+                className={`tk-tabs-indicator ${indicator.ready ? "is-ready" : ""}`}
+                style={{
+                  transform: `translateX(${indicator.left}px)`,
+                  width: indicator.width,
+                  background: `linear-gradient(135deg, ${current.color}, ${current.colorLight})`,
+                  boxShadow: `0 10px 26px ${current.color}55`,
+                }}
+                aria-hidden="true"
+              ></span>
+              {INDUSTRIES.map((industry, index) => {
+                const isActive = activeIndustry === index;
+                return (
+                  <button
+                    key={industry.id}
+                    ref={(el) => (tabRefs.current[index] = el)}
+                    type="button"
+                    role="tab"
+                    id={`tk-tab-${industry.id}`}
+                    aria-selected={isActive}
+                    aria-controls="tk-industry-panel"
+                    tabIndex={isActive ? 0 : -1}
+                    className={`tk-industry-tab ${isActive ? "tk-active" : ""}`}
+                    style={{ "--tab-color": industry.color }}
+                    onClick={() => setActiveIndustry(index)}
+                    onKeyDown={(e) => onTabKeyDown(e, index)}
                   >
-                    {industries[activeIndustry].icon}
-                  </div>
-                  <div>
-                    <h3 className="tk-industry-name" style={{ color: industries[activeIndustry].color }}>
-                      {industries[activeIndustry].name}
-                    </h3>
-                    <p className="tk-industry-description">
-                      {industries[activeIndustry].description}
-                    </p>
-                  </div>
-                </div>
+                    <span className="tk-tab-icon">
+                      <industry.Icon size={18} />
+                    </span>
+                    <span className="tk-tab-name">{industry.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-                <div className="tk-detail-grid">
-                  <div className="tk-detail-card tk-card-3d">
-                    <h4 className="tk-detail-card-title">
-                      <Box size={20} style={{ color: primaryColor }} />
-                      Applications
-                    </h4>
-                    <ul className="tk-applications-list">
-                      {industries[activeIndustry].applications.map((app, idx) => (
-                        <div key={idx} className="tk-feature-item2 tk-feature-3d">
-                          <CheckCircle size={16} style={{ color: primaryColor }} />
-                          {app}
-                        </div>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="tk-detail-card tk-card-3d">
-                    <h4 className="tk-detail-card-title">
-                      <Award size={20} style={{ color: primaryColor }} />
-                      Key Features
-                    </h4>
-                    <div className="tk-features-grid">
-                      {industries[activeIndustry].features.map((feature, idx) => (
-                        <div key={idx} className="tk-feature-item tk-feature-3d">
-                          <CheckCircle size={16} style={{ color: primaryColor }} />
-                          {feature}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="tk-detail-card tk-card-3d">
-                    <h4 className="tk-detail-card-title">
-                      <Shield size={20} style={{ color: primaryColor }} />
-                      Materials
-                    </h4>
-                    <div className="tk-features-grid">
-                      {industries[activeIndustry].materials.map((materials, idx) => (
-                        <div key={idx} className="tk-feature-item tk-feature-3d">
-                          <CheckCircle size={16} style={{ color: primaryColor }} />
-                          {materials}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+          {/* Detail panel — re-mounts on tab change to replay animations */}
+          <div
+            key={current.id}
+            id="tk-industry-panel"
+            role="tabpanel"
+            aria-labelledby={`tk-tab-${current.id}`}
+            className="tk-detail-panel"
+            style={{ "--ind": current.color, "--ind-light": current.colorLight }}
+          >
+            <aside className="tk-detail-hero">
+              <div className="tk-detail-hero-pattern" aria-hidden="true"></div>
+              <div className="tk-detail-hero-top">
+                <span className="tk-detail-index">
+                  {pad(activeIndustry + 1)}
+                  <small> / {pad(INDUSTRIES.length)}</small>
+                </span>
+                <div className="tk-detail-arrows">
+                  <button
+                    type="button"
+                    onClick={() => goToIndustry(activeIndustry - 1)}
+                    aria-label="Previous service area"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => goToIndustry(activeIndustry + 1)}
+                    aria-label="Next service area"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
                 </div>
               </div>
-            )}
+
+              <div className="tk-detail-icon">
+                <current.Icon size={30} />
+                <span className="tk-detail-icon-ring" aria-hidden="true"></span>
+              </div>
+
+              <h3 className="tk-industry-name">{current.name}</h3>
+              <p className="tk-industry-description">{current.description}</p>
+
+              <ul className="tk-detail-stats">
+                {DETAIL_COLUMNS.map((col) => (
+                  <li key={col.key}>
+                    <strong>{current[col.key].length}</strong>
+                    <span>{col.title}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                type="button"
+                className="tk-detail-cta"
+                onClick={() => navigate("/contact")}
+              >
+                Request a quote
+                <ArrowRight size={17} />
+              </button>
+            </aside>
+
+            <div className="tk-detail-grid">
+              {DETAIL_COLUMNS.map((col, ci) => (
+                <div key={col.key} className="tk-detail-card" style={{ "--c": ci }}>
+                  <h4 className="tk-detail-card-title">
+                    <span className="tk-detail-card-icon">
+                      <col.Icon size={18} />
+                    </span>
+                    {col.title}
+                    <span className="tk-detail-card-count">{current[col.key].length}</span>
+                  </h4>
+                  <ul className="tk-detail-list">
+                    {current[col.key].map((item, idx) => (
+                      <li key={item} className="tk-detail-item" style={{ "--i": idx }}>
+                        <CheckCircle2 size={16} />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* ==========================================
-          🛠️ INDUSTRY SERVICES SECTION
+          🛠️ SOLUTIONS
           ========================================== */}
       <section
-        className="tk-industry-services"
+        id="industry-services"
+        className={`tk-industry-services ${visibleSections.services ? "tk-in" : ""}`}
         ref={(el) => addToRefs(el, 2)}
         data-section="services"
       >
         <div className="tk-container">
-          <div className="tk-section-header">
-            <div className="tk-section-badge" style={{ background: primaryColor }}>
-              <Briefcase size={16} />
-              Our Services
-            </div>
-            <h2 className="tk-section-title-iws">
-              Comprehensive <span style={{ color: primaryColor }}>Industry</span> Solutions
-            </h2>
-            <div className="tk-section-divider">
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="tk-divider-dot tk-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="tk-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
-            </div>
-            <p className="tk-section-subtitle">
-              End-to-end support from material selection to after-sales service
-            </p>
-          </div>
+          <SectionHeader
+            Icon={Briefcase}
+            badge="Our Services"
+            before="Comprehensive"
+            highlight="Industry"
+            after="Solutions"
+            subtitle="End-to-end support from material selection to after-sales service"
+          />
 
           <div className="tk-services-grid">
-            {industryServices.map((service, index) => (
-              <div
-                key={index}
-                className={`tk-service-card ${visibleSections.services ? "tk-animate-slide-up" : ""}`}
-                style={{ animationDelay: `${index * 0.12}s` }}
-                onMouseEnter={() => setHoveredCard(`service-${index}`)}
-                onMouseLeave={() => setHoveredCard(null)}
+            {INDUSTRY_SERVICES.map((service, index) => (
+              <article
+                key={service.title}
+                className="tk-service-card"
+                style={{ "--d": `${0.12 + index * 0.1}s` }}
+                onMouseMove={handleTilt}
+                onMouseLeave={resetTilt}
               >
-                <div className="tk-service-card-inner tk-card-3d">
-                  <div
-                    className="tk-service-icon tk-icon-float"
-                    style={{
-                      background: `linear-gradient(135deg, ${primaryColor}20, ${primaryColor}10)`,
-                      borderColor: primaryColor,
-                    }}
-                  >
-                    {service.icon}
+                <div className="tk-service-card-inner">
+                  <span className="tk-service-glow" aria-hidden="true"></span>
+                  <span className="tk-service-number" aria-hidden="true">
+                    {pad(index + 1)}
+                  </span>
+
+                  <div className="tk-service-icon">
+                    <service.Icon size={26} />
                   </div>
                   <h3 className="tk-service-title">{service.title}</h3>
                   <p className="tk-service-description">{service.description}</p>
 
                   <ul className="tk-service-features">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="tk-feature-3d">
-                        <ChevronRight size={14} style={{ color: primaryColor }} />
+                    {service.features.map((feature) => (
+                      <li key={feature}>
+                        <ChevronRight size={14} />
                         {feature}
                       </li>
                     ))}
                   </ul>
 
                   <button
-                    className="tk-service-button tk-btn-3d"
-                    style={{
-                      borderColor: primaryColor,
-                      color: primaryColor,
-                    }}
+                    type="button"
+                    className="tk-service-button"
                     onClick={() => navigate("/contact")}
                   >
                     <span>Learn More</span>
-                    <ChevronRight size={16} />
+                    <ArrowRight size={16} />
                   </button>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
-      </section>      
+      </section>
 
-{/* ==========================================
-    🏢 GROUP OF COMPANIES
-    ========================================== */}
-<section
-  className="tk-clients-section tk-group-section"
-  id="group-companies"
-  ref={(el) => addToRefs(el, 3)}
-  data-section="groupCompanies"
->
-  <div className="tk-container">
-    <div className="tk-section-header">
-      <div
-        className="tk-section-badge"
-        style={{ background: primaryColor }}
+      {/* ==========================================
+          🏢 GROUP OF COMPANIES
+          ========================================== */}
+      <section
+        id="group-companies"
+        className={`tk-group-section ${visibleSections.groupCompanies ? "tk-in" : ""}`}
+        ref={(el) => addToRefs(el, 3)}
+        data-section="groupCompanies"
       >
-        <Users size={16} />
-        Group of Company
-      </div>
+        <div className="tk-container">
+          <SectionHeader
+            Icon={Users}
+            badge="Group of Companies"
+            before="Our"
+            highlight="Group of Companies"
+            subtitle="Providing reliable NDT and DT testing services for quality, safety and structural integrity."
+          />
 
-      <h2 className="tk-section-title-iws">
-        Our{" "}
-        <span style={{ color: primaryColor }}>Group of Companies</span>
-      </h2>
-
-      <div className="tk-section-divider">
-        <div
-          className="tk-divider-line"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${primaryColor})`,
-          }}
-        />
-        <div
-          className="tk-divider-dot tk-pulse-dot"
-          style={{ background: primaryColor }}
-        />
-        <div
-          className="tk-divider-line"
-          style={{
-            background: `linear-gradient(90deg, ${primaryColor}, transparent)`,
-          }}
-        />
-      </div>
-
-      <p className="tk-section-subtitle">
-        Providing reliable NDT and DT testing services for quality, safety and
-        structural integrity.
-      </p>
-    </div>
-
-    <div className="tk-group-grid">
-      {groupCompanies.map((company, i) => (
-        <article
-          key={company.id}
-          className="tk-company-card"
-          style={{
-            "--tk-accent": primaryColor,
-            "--tk-delay": `${i * 0.12}s`,
-            "--tk-float-delay": `${i * 0.45}s`,
-          }}
-        >
-          <div className="tk-company-logo">
-            <div className="tk-company-logo-inner">
-              {company.logo ? (
-                <img
-                  src={company.logo}
-                  alt={`${company.name} logo`}
-                  draggable="false"
-                  loading="lazy"
-                />
-              ) : (
-                <span
-                  className="tk-company-initials"
-                  style={{ color: primaryColor }}
-                >
-                  {company.initials}
+          <div className="tk-group-grid">
+            {GROUP_COMPANIES.map((company, i) => (
+              <article
+                key={company.id}
+                className="tk-company-card"
+                style={{ "--d": `${0.1 + i * 0.08}s`, "--float-delay": `${i * 0.45}s` }}
+                onMouseMove={handleSpotlight}
+              >
+                <span className="tk-company-spot" aria-hidden="true"></span>
+                <div className="tk-company-logo">
+                  <span className="tk-company-orbit" aria-hidden="true"></span>
+                  <div className="tk-company-logo-inner">
+                    {company.logo ? (
+                      <img
+                        src={company.logo}
+                        alt={`${company.name} logo`}
+                        draggable="false"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="tk-company-initials">{company.initials}</span>
+                    )}
+                  </div>
+                </div>
+                <h3 className="tk-company-name">{company.name}</h3>
+                <span className="tk-company-tag">
+                  <Building2 size={12} />
+                  Group Company
                 </span>
-              )}
-            </div>
+              </article>
+            ))}
           </div>
-
-          <h3 className="tk-company-name">{company.name}</h3>
-        </article>
-      ))}
-    </div>
-  </div>
-</section>
+        </div>
+      </section>
 
       {/* ==========================================
           🎯 CTA BANNER
           ========================================== */}
-      <section className="tk-cta-banner" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryDark})` }}>
+      <section
+        className={`tk-cta-banner ${visibleSections.cta ? "tk-in" : ""}`}
+        ref={(el) => addToRefs(el, 4)}
+        data-section="cta"
+        style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY_DARK})` }}
+      >
+        <div className="tk-cta-grid" aria-hidden="true"></div>
+        <div className="tk-cta-orb tk-cta-orb-1" aria-hidden="true"></div>
+        <div className="tk-cta-orb tk-cta-orb-2" aria-hidden="true"></div>
+
         <div className="tk-cta-content">
-          <div className="tk-cta-icon">
-            <Rocket size={48} style={{ color: 'white' }} />
+          <div className="tk-cta-icon tk-reveal" style={{ "--d": "0s" }}>
+            <Rocket size={40} />
+            <span className="tk-cta-icon-ring" aria-hidden="true"></span>
           </div>
-          <h2 className="tk-cta-title">Ready to <span>Transform</span> Your Industry?</h2>
-          <p className="tk-cta-description">Contact us today for expert NDT & DT solutions tailored to your needs</p>
-          <button className="tk-cta-button tk-btn-3d" onClick={() => navigate("/contact")}>
-            <span>Get Started</span>
-            <span className="tk-cta-arrow">→</span>
-          </button>
+          <h2 className="tk-cta-title tk-reveal" style={{ "--d": "0.1s" }}>
+            Ready to <span>Transform</span> Your Industry?
+          </h2>
+          <p className="tk-cta-description tk-reveal" style={{ "--d": "0.2s" }}>
+            Contact us today for expert NDT &amp; DT solutions tailored to your needs
+          </p>
+          <div className="tk-cta-actions tk-reveal" style={{ "--d": "0.3s" }}>
+            <button type="button" className="tk-cta-button" onClick={() => navigate("/contact")}>
+              <span>Get Started</span>
+              <ArrowRight size={18} className="tk-cta-arrow" />
+            </button>
+            <button
+              type="button"
+              className="tk-cta-button tk-cta-button-ghost"
+              onClick={() => scrollToId("industry-overview")}
+            >
+              <Sparkles size={17} />
+              <span>Explore Services</span>
+            </button>
+          </div>
         </div>
-        <div className="tk-cta-particles">
-          {[...Array(15)].map((_, i) => (
-            <div
-              key={i}
+
+        <div className="tk-cta-particles" aria-hidden="true">
+          {ctaParticles.map((p) => (
+            <span
+              key={p.id}
               className="tk-cta-particle"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDuration: `${8 + Math.random() * 12}s`,
-                animationDelay: `${Math.random() * 5}s`,
-                width: `${4 + Math.random() * 8}px`,
-                height: `${4 + Math.random() * 8}px`,
+                left: p.left,
+                top: p.top,
+                width: p.size,
+                height: p.size,
+                animationDuration: p.duration,
+                animationDelay: p.delay,
               }}
-            ></div>
+            ></span>
           ))}
         </div>
       </section>
