@@ -177,6 +177,14 @@ const Product = () => {
     { icon: <Award size={32} />, title: "NABL Accredited", description: "Industry-recognized accreditation for aerospace testing", color: "#8e44ad", gradient: "linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%)" },
   ];
 
+  /* overview check-list (same text as before) */
+  const serviceHighlights = [
+    "ISO 9712 & ASNT SNT-TC-1A Certified",
+    "NABL Accredited for Aerospace",
+    "24/7 Emergency Inspection Services",
+    "Worldwide Testing Capabilities",
+  ];
+
   /* ==========================================================
      🔬 TESTING GROUPS — with certification levels
      ========================================================== */
@@ -749,48 +757,72 @@ const Product = () => {
         </div>
       </section>
 
-      {/* OVERVIEW */}
-      <section className="prod-overview-section" ref={(el) => addToRefs(el, 1)} data-section="overview">
-        <div className="prod-container-inner">
-          <div className="prod-section-header">
-            <div className="prod-section-badge" style={{ background: primaryColor }}><Shield size={16} />Our Services</div>
-            <h2 className="prod-section-title">Comprehensive <span style={{ color: primaryColor }}>Testing Solutions</span></h2>
-            <div className="prod-section-divider">
-              <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, transparent, ${primaryColor})` }}></div>
-              <div className="prod-divider-dot prod-pulse-dot" style={{ background: primaryColor }}></div>
-              <div className="prod-divider-line" style={{ background: `linear-gradient(90deg, ${primaryColor}, transparent)` }}></div>
+      {/* OVERVIEW — same design as the Home screen "Comprehensive Testing Solutions" */}
+      <section
+        className={`po-overview ${visibleSections.overview ? "po-in" : ""}`}
+        ref={(el) => addToRefs(el, 1)}
+        data-section="overview"
+      >
+        <span className="po-orb po-orb-a" aria-hidden="true" />
+        <span className="po-orb po-orb-b" aria-hidden="true" />
+        <div className="po-container">
+          <div className="po-header po-reveal" style={{ "--d": "0s" }}>
+            <div className="po-badge">
+              <Shield size={16} />
+              Our Services
             </div>
-            <p className="prod-section-description">
+            <h2 className="po-title">
+              Comprehensive <span className="po-title-accent">Testing Solutions</span>
+            </h2>
+            <div className="po-divider" aria-hidden="true">
+              <span className="po-divider-line"></span>
+              <span className="po-divider-dot"></span>
+              <span className="po-divider-line po-divider-line-r"></span>
+            </div>
+            <p className="po-subtitle">
               ASNT Level III certified NDT and DT testing services with advanced equipment and expert analysis
             </p>
           </div>
-          <div className="prod-overview-content">
-            <div className={`prod-overview-text ${visibleSections.overview ? "prod-animate-fade" : ""}`}>
-              <div className="prod-content-highlight prod-float-animation">
-                <div className="prod-highlight-icon"><Star size={24} style={{ color: primaryColor }} /></div>
+
+          <div className="po-grid">
+            <div className="po-text">
+              <div className="po-intro-card po-reveal" style={{ "--d": "0.1s" }}>
+                <span className="po-intro-icon">
+                  <Star size={22} />
+                </span>
                 <p>
-                  We provide complete <strong className="prod-highlight-text" style={{ color: primaryColor }}>NDT &amp; DT Testing</strong> services for quality assurance and structural integrity evaluation. Our certified technicians use state-of-the-art equipment to detect flaws, measure material properties, and ensure compliance with international standards.
+                  We provide complete <strong>NDT &amp; DT Testing</strong> services for quality assurance and
+                  structural integrity evaluation. Our certified technicians use state-of-the-art equipment to
+                  detect flaws, measure material properties, and ensure compliance with international standards.
                 </p>
               </div>
-              <div className="prod-service-highlights">
-                <div className="prod-highlight-item prod-slide-animation"><CheckCircle color={primaryColor} size={24} /><span>ISO 9712 &amp; ASNT SNT-TC-1A Certified</span></div>
-                <div className="prod-highlight-item prod-slide-animation" style={{ animationDelay: "0.1s" }}><CheckCircle color={primaryColor} size={24} /><span>NABL Accredited for Aerospace</span></div>
-                <div className="prod-highlight-item prod-slide-animation" style={{ animationDelay: "0.2s" }}><CheckCircle color={primaryColor} size={24} /><span>24/7 Emergency Inspection Services</span></div>
-                <div className="prod-highlight-item prod-slide-animation" style={{ animationDelay: "0.3s" }}><CheckCircle color={primaryColor} size={24} /><span>Worldwide Testing Capabilities</span></div>
-              </div>
+
+              <ul className="po-highlights">
+                {serviceHighlights.map((text, i) => (
+                  <li key={text} className="po-reveal" style={{ "--d": `${0.2 + i * 0.08}s` }}>
+                    <span className="po-check">
+                      <CheckCircle2 size={18} />
+                    </span>
+                    {text}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className={`prod-features-grid ${visibleSections.overview ? "prod-animate-slide-right" : ""}`}>
-              {serviceFeatures.map((feature, index) => (
-                <div key={index} className="prod-feature-card prod-hover-float prod-card-glow" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <div className="prod-feature-card-inner">
-                    <div className="prod-feature-card-icon" style={{ background: feature.gradient }}>
-                      {feature.icon}<div className="prod-icon-ring"></div>
-                    </div>
-                    <h3 className="prod-feature-card-title">{feature.title}</h3>
-                    <p className="prod-feature-card-description">{feature.description}</p>
-                    <div className="prod-feature-card-shine"></div>
-                  </div>
-                </div>
+
+            <div className="po-features">
+              {serviceFeatures.map((feature, i) => (
+                <article
+                  key={feature.title}
+                  className="po-feature po-reveal po-spot"
+                  style={{ "--d": `${0.15 + i * 0.1}s` }}
+                  onMouseMove={(e) => trackPointer(e, 8)}
+                  onMouseLeave={resetPointer}
+                >
+                  <span className="po-feature-no">{pad(i + 1)}</span>
+                  <span className="po-feature-icon">{feature.icon}</span>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.description}</p>
+                </article>
               ))}
             </div>
           </div>
