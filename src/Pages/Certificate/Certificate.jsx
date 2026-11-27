@@ -3,6 +3,7 @@ import "./Certificate.css";
 import {
   Activity,
   ArrowRight,
+  AudioWaveform,
   Award,
   BadgeCheck,
   BookOpen,
@@ -16,6 +17,7 @@ import {
   Eye,
   FileText,
   FlaskConical,
+  Gauge,
   Globe,
   Hammer,
   Hash,
@@ -26,13 +28,19 @@ import {
   Mail,
   MapPin,
   Microscope,
+  Monitor,
   Phone,
   Ruler,
   Scan,
+  ScanEye,
+  ScanLine,
   ShieldCheck,
+  Sigma,
   Target,
+  Atom,
   User,
   Waves,
+  Wind,
   X,
   Zap,
   ZoomIn,
@@ -71,16 +79,31 @@ const METHODS = {
   UTM: { code: "UTM", name: "Ultrasonic Thickness Measurement", color: "#0F766E", Icon: Ruler },
   ECT: { code: "ECT", name: "Eddy Current Testing", color: "#C2410C", Icon: Zap },
   PMI: { code: "PMI", name: "Positive Material Identification", color: "#047857", Icon: FlaskConical },
+  LT: { code: "LT", name: "Helium Leak Testing", color: "#0369A1", Icon: Wind },
+  VT: { code: "VT", name: "Visual Testing", color: "#0F766E", Icon: Eye },
+  CR: { code: "CR", name: "Computed Radiography", color: "#B45309", Icon: ScanLine },
+  DR: { code: "DR", name: "Digital Radiography", color: "#92400E", Icon: Monitor },
+  HARDNESS: { code: "HT", name: "Portable Hardness Testing", color: "#A16207", Icon: Gauge },
+  FMT: { code: "FMT", name: "Ferrite Metal Testing", color: "#9D174D", Icon: Atom },
+  FM: { code: "FM", name: "Ferrite Measurement", color: "#BE185D", Icon: Sigma },
+  BORO: { code: "BORO", name: "Boroscopy Testing", color: "#EA580C", Icon: ScanEye },
+  VA: { code: "VA", name: "Vibration Analysis", color: "#6D28D9", Icon: AudioWaveform },
+  ISM: { code: "ISM", name: "In-Situ Metallography", color: "#475569", Icon: Microscope },
+  SPECTRO: { code: "SPECTRO", name: "Portable Spectrometer", color: "#065F46", Icon: FlaskConical },
   CATALOG: { code: "CATALOG", name: "Company Catalog", color: "#1C3553", Icon: BookOpen },
 };
 
 /* ============================================================
    📚 CATALOG & BROCHURES
    ------------------------------------------------------------
-   public/catalog/                 → brochure PDFs
-   public/catalog/previews/        → page images ({id}-{n}.jpg)
+   public/certificates/catalog/    → brochure PDFs ("<NAME> BROCHURE.pdf")
+   public/catalog/previews/        → page images ({prefix}-{n}.jpg, 12 per brochure)
+   ------------------------------------------------------------
+   To add a brochure: drop the PDF in public/certificates/catalog/,
+   add its 12 page images to public/catalog/previews/ and add one
+   brochure({...}) entry to BROCHURES below.
    ============================================================ */
-const catalogFile = (name) => `${PUBLIC}/catalog/${name}`;
+const catalogFile = (name) => `${PUBLIC}/certificates/catalog/${encodeURIComponent(name)}`;
 const catalogPages = (prefix, count) =>
   Array.from({ length: count }, (_, i) => `${PUBLIC}/catalog/previews/${prefix}-${i + 1}.jpg`);
 
@@ -100,7 +123,7 @@ const COMPANY_CATALOG = {
   method: "CATALOG",
   title: "Company Catalog — 2026 Edition",
   holder: COMPANY.name,
-  file: catalogFile("TESTLAB_CATALOG.pdf"),
+  file: catalogFile("TESTLAB CATALOG.pdf"),
   previews: catalogPages("testlab-catalog", 3),
 };
 
@@ -134,10 +157,17 @@ const SERVICE_GROUPS = [
       { name: "Eddy Current Testing (ET)", brochure: "brochure-ect" },
       { name: "Phased Array UT (PAUT)", brochure: "brochure-paut" },
       { name: "Time of Flight Diffraction (TOFD)", brochure: "brochure-tofd" },
-      { name: "Helium Leak Testing (LT)" },
-      { name: "Visual Testing (VT)" },
+      { name: "Helium Leak Testing (LT)", brochure: "brochure-lt" },
+      { name: "Visual Testing (VT)", brochure: "brochure-vt" },
       { name: "Positive Material Identification (PMI)", brochure: "brochure-pmi" },
       { name: "Ultrasonic Thickness Measurement (UTM)", brochure: "brochure-utm" },
+      { name: "Computed Radiography (CR)", brochure: "brochure-cr" },
+      { name: "Digital Radiography (DR)", brochure: "brochure-dr" },
+      { name: "Boroscopy Testing", brochure: "brochure-boro" },
+      { name: "Portable Hardness Testing", brochure: "brochure-hardness" },
+      { name: "Ferrite Metal Testing", brochure: "brochure-fmt" },
+      { name: "Ferrite Measurement", brochure: "brochure-fm" },
+      { name: "Vibration Analysis", brochure: "brochure-va" },
     ],
   },
   {
@@ -165,7 +195,7 @@ const SERVICE_GROUPS = [
     items: [
       { name: "Metallurgical Testing", detail: "Microscopic & macroscopic evaluation" },
       { name: "Corrosion Testing", detail: "Salt spray, salt fog" },
-      { name: "Chemical Testing", detail: "PMI, OES, portable spectrometer" },
+      { name: "Chemical Testing", detail: "PMI, OES, portable spectrometer", brochure: "brochure-spectro" },
       { name: "Geological Survey & Consultancy" },
       { name: "Water Testing" },
       { name: "Coating, Plating & Painting" },
@@ -179,7 +209,7 @@ const SERVICE_GROUPS = [
     items: [
       { name: "Microscopic Evaluation" },
       { name: "Macroscopic Evaluation" },
-      { name: "On-Site Metallography" },
+      { name: "On-Site Metallography", brochure: "brochure-ism" },
     ],
   },
 ];
@@ -202,7 +232,7 @@ const brochure = ({ code, file, prefix, family, title, coverLines, tagline }) =>
 const BROCHURES = [
   brochure({
     code: "UT",
-    file: "UT.pdf",
+    file: "UT BROCHURE.pdf",
     prefix: "ut",
     family: "ultrasonic",
     title: "Ultrasonic Testing",
@@ -212,7 +242,7 @@ const BROCHURES = [
   }),
   brochure({
     code: "PAUT",
-    file: "PAUT.pdf",
+    file: "PAUT BROCHURE.pdf",
     prefix: "paut",
     family: "ultrasonic",
     title: "Phased Array Ultrasonic Testing",
@@ -222,7 +252,7 @@ const BROCHURES = [
   }),
   brochure({
     code: "TOFD",
-    file: "TOFD.pdf",
+    file: "TOFD BROCHURE.pdf",
     prefix: "tofd",
     family: "ultrasonic",
     title: "Time-of-Flight Diffraction",
@@ -232,7 +262,7 @@ const BROCHURES = [
   }),
   brochure({
     code: "UTM",
-    file: "UTM.pdf",
+    file: "UTM BROCHURE.pdf",
     prefix: "utm",
     family: "ultrasonic",
     title: "Ultrasonic Thickness Measurement",
@@ -242,7 +272,7 @@ const BROCHURES = [
   }),
   brochure({
     code: "MPT",
-    file: "MPT.pdf",
+    file: "MPT BROCHURE.pdf",
     prefix: "mpt",
     family: "surface",
     title: "Magnetic Particle Testing",
@@ -252,7 +282,7 @@ const BROCHURES = [
   }),
   brochure({
     code: "DPT",
-    file: "DPT.pdf",
+    file: "DPT BROCHURE.pdf",
     prefix: "dpt",
     family: "surface",
     title: "Dye Penetrant Testing",
@@ -262,7 +292,7 @@ const BROCHURES = [
   }),
   brochure({
     code: "ECT",
-    file: "ECT.pdf",
+    file: "ECT BROCHURE.pdf",
     prefix: "ect",
     family: "surface",
     title: "Eddy Current Testing",
@@ -272,7 +302,7 @@ const BROCHURES = [
   }),
   brochure({
     code: "PMI",
-    file: "PMI.pdf",
+    file: "PMI BROCHURE.pdf",
     prefix: "pmi",
     family: "material",
     title: "Positive Material Identification",
@@ -280,13 +310,126 @@ const BROCHURES = [
     tagline:
       "Handheld XRF analysis to verify alloy grades and chemical composition of critical components.",
   }),
+  brochure({
+    code: "CR",
+    file: "CR BROCHURE.pdf",
+    prefix: "cr",
+    family: "radiography",
+    title: "Computed Radiography",
+    coverLines: ["Computed", "Radiography"],
+    tagline:
+      "Reusable imaging plates and laser scanning for digital radiographs of welds, pipes and castings.",
+  }),
+  brochure({
+    code: "DR",
+    file: "DR BROCHURE.pdf",
+    prefix: "dr",
+    family: "radiography",
+    title: "Digital Radiography",
+    coverLines: ["Digital", "Radiography"],
+    tagline:
+      "Flat panel detectors for fast, real-time radiographic imaging and corrosion profiling.",
+  }),
+  brochure({
+    code: "VT",
+    file: "VT BROCHURE.pdf",
+    prefix: "vt",
+    family: "visual",
+    title: "Visual Testing",
+    coverLines: ["Visual", "Testing"],
+    tagline:
+      "Direct and remote visual examination of welds and surfaces with weld gauges and proper lighting.",
+  }),
+  brochure({
+    code: "BORO",
+    file: "BOROSCOPY BROCHURE.pdf",
+    prefix: "boroscopy",
+    family: "visual",
+    title: "Boroscopy Testing",
+    coverLines: ["Boroscopy", "Testing"],
+    tagline:
+      "Videoscope inspection of pipe internals, weld roots, tubes and machinery through small access points.",
+  }),
+  brochure({
+    code: "LT",
+    file: "LT BROCHURE.pdf",
+    prefix: "lt",
+    family: "visual",
+    title: "Helium Leak Testing",
+    coverLines: ["Helium Leak", "Testing"],
+    tagline:
+      "Vacuum, sniffer, spray and accumulation methods to locate and measure leaks with helium tracer gas.",
+  }),
+  brochure({
+    code: "SPECTRO",
+    file: "PORTABLE SPECTROMETER BROCHURE.pdf",
+    prefix: "spectrometer",
+    family: "material",
+    title: "Portable Spectrometer",
+    coverLines: ["Portable", "Spectrometer"],
+    tagline:
+      "Mobile OES and handheld XRF analysis to identify alloy grades and verify chemical composition on site.",
+  }),
+  brochure({
+    code: "HARDNESS",
+    file: "PORTABLE HARDNESS BROCHURE.pdf",
+    prefix: "hardness",
+    family: "material",
+    title: "Portable Hardness Testing",
+    coverLines: ["Hardness", "Testing"],
+    tagline:
+      "UCI and rebound (Leeb) hardness testing of welds, HAZ, forgings and castings, including PWHT checks.",
+  }),
+  brochure({
+    code: "FMT",
+    file: "FERRITE METAL TESTING BROCHURE.pdf",
+    prefix: "ferrite-metal",
+    family: "material",
+    title: "Ferrite Metal Testing",
+    coverLines: ["Ferrite Metal", "Testing"],
+    tagline:
+      "Ferrite content verification of austenitic and duplex stainless steel welds, cladding and castings.",
+  }),
+  brochure({
+    code: "FM",
+    file: "FERRITE MEASUREMENT BROCHURE.pdf",
+    prefix: "ferrite-measurement",
+    family: "material",
+    title: "Ferrite Measurement",
+    coverLines: ["Ferrite", "Measurement"],
+    tagline:
+      "Calibrated ferritescope measurement of Ferrite Number (FN) and ferrite mapping across welds.",
+  }),
+  brochure({
+    code: "ISM",
+    file: "IN-SITU METALLOGRAPHY BROCHURE.pdf",
+    prefix: "metallography",
+    family: "material",
+    title: "In-Situ Metallography",
+    coverLines: ["In-Situ", "Metallography"],
+    tagline:
+      "Field polishing, etching and replicas to evaluate microstructure and creep damage without cutting samples.",
+  }),
+  brochure({
+    code: "VA",
+    file: "VIBRATION ANALYSIS BROCHURE.pdf",
+    prefix: "vibration",
+    family: "condition",
+    title: "Vibration Analysis",
+    coverLines: ["Vibration", "Analysis"],
+    tagline:
+      "FFT spectrum analysis of motors, pumps, fans and gearboxes to detect machine faults early.",
+  }),
 ];
 
 const BROCHURE_FILTERS = [
   { key: "all", label: "All" },
   { key: "ultrasonic", label: "Ultrasonic" },
+  { key: "radiography", label: "Radiography" },
   { key: "surface", label: "Surface & Electromagnetic" },
+  { key: "visual", label: "Visual & Leak" },
   { key: "material", label: "Material Analysis" },
+  { key: "condition", label: "Condition Monitoring" },
 ];
 
 const CERT_SECTIONS = [
@@ -503,7 +646,7 @@ const getValidity = (validUntil) => {
   return { text: "Valid", tone: "valid" };
 };
 
-const downloadName = (cert) => cert.file.split("/").pop();
+const downloadName = (cert) => decodeURIComponent(cert.file.split("/").pop());
 
 /* ============================================================
    🔍 PREVIEW MODAL (image → iframe fallback)
